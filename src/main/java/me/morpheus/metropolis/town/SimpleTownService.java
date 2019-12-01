@@ -99,7 +99,7 @@ public class SimpleTownService implements TownService {
         try (OutputStream out = Files.newOutputStream(tmp, StandardOpenOption.CREATE)) {
             DataFormats.JSON.writeTo(out, container);
             Files.move(tmp, save, StandardCopyOption.REPLACE_EXISTING);
-            town.setDirty(false);
+            ((MPTown) town).setDirty(false);
         } catch (Exception e) {
             MPLog.getLogger().error("Unable to save Town at {}", save);
             MPLog.getLogger().error("Error:", e);
@@ -109,7 +109,7 @@ public class SimpleTownService implements TownService {
     @Override
     public void saveAll() {
         for (Town town : this.towns.values()) {
-            if (town.isDirty()) {
+            if (((MPTown) town).isDirty()) {
                 save(town);
             }
         }

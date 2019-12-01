@@ -58,8 +58,4 @@ public interface Town extends DataHolder, MessageReceiver {
 
     void disband();
 
-    boolean isDirty();
-
-    void setDirty(boolean dirty);
-
 }

@@ -338,16 +338,6 @@ public class MPTown implements Town {
     }
 
     @Override
-    public boolean isDirty() {
-        return this.dirty;
-    }
-
-    @Override
-    public void setDirty(boolean dirty) {
-        this.dirty = dirty;
-    }
-
-    @Override
     public boolean equals(Object obj) {
         return this == obj || (obj instanceof Town && this.id == ((Town) obj).getId());
     }
@@ -364,6 +354,14 @@ public class MPTown implements Town {
                 .add("Name", this.name)
                 .add("Spawn", this.spawn)
                 .toString();
+    }
+
+    public boolean isDirty() {
+        return this.dirty;
+    }
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
     }
 
     public void setCitizens(int citizens) {
