@@ -22,6 +22,8 @@ public final class AdminDispatcher extends AbstractCommandDispatcher {
 
     @Override
     public void registerDefaults() {
+        register(new SaveCommand(), "save");
+
         registerManager(new TownDispatcher(), "town");
         registerManager(new PlotDispatcher(), "plot");
     }
