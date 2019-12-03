@@ -7,6 +7,7 @@ import org.spongepowered.api.world.explosion.Explosion;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -30,8 +31,8 @@ public interface PlotService {
 
     boolean testNear(Location<World> loc, Predicate<PlotData> predicate, boolean and); //TODO
 
-    void saveAll();
+    CompletableFuture<Void> saveAll();
 
-    void loadAll();
+    CompletableFuture<Void> loadAll();
 
 }

@@ -33,6 +33,7 @@ import java.nio.file.StandardOpenOption;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public class SimpleTownService implements TownService {
@@ -89,7 +90,34 @@ public class SimpleTownService implements TownService {
     }
 
     @Override
-    public void save(Town town) {
+    public CompletableFuture<Void> save(Town town) {
+        return CompletableFuture.runAsync(() -> internal$save(town));
+    }
+
+    @Override
+    public CompletableFuture<Void> saveAll() {
+        return CompletableFuture.runAsync(() -> {
+            for (Town town : this.towns.values()) {
+                if (((MPTown) town).isDirty()) {
+                    internal$save(town);
+                }
+            }
+            final IntIterator iterator = this.deleted.iterator();
+
+            while (iterator.hasNext()) {
+                final String current = Integer.toString(iterator.nextInt());
+                try {
+                    Files.deleteIfExists(ConfigUtil.TOWN_DATA.resolve(current));
+                    iterator.remove();
+                } catch (Exception e) {
+                    MPLog.getLogger().error("Unable to remove deleted Town at {}", current);
+                    MPLog.getLogger().error("Error:", e);
+                }
+            }
+        });
+    }
+
+    private void internal$save(Town town) {
         final String id = Integer.toString(town.getId());
 
         final Path save = ConfigUtil.TOWN_DATA.resolve(id);
@@ -107,42 +135,23 @@ public class SimpleTownService implements TownService {
     }
 
     @Override
-    public void saveAll() {
-        for (Town town : this.towns.values()) {
-            if (((MPTown) town).isDirty()) {
-                save(town);
+    public CompletableFuture<Void> loadAll() {
+        return CompletableFuture.runAsync(() -> {
+            try (Stream<Path> towns = Files.list(ConfigUtil.TOWN_DATA)) {
+                towns.forEach(town -> {
+                    try (InputStream in = Files.newInputStream(town)) {
+                        final DataContainer container = DataFormats.JSON.readFrom(in);
+                        final Town t = from(container);
+                        register(t);
+                    } catch (Exception e) {
+                        MPLog.getLogger().error("Unable to load Town ({})", town);
+                        MPLog.getLogger().error("Error: ", e);
+                    }
+                });
+            } catch (IOException e) {
+                MPLog.getLogger().error("Unable to load Towns ", e);
             }
-        }
-        final IntIterator iterator = this.deleted.iterator();
-
-        while (iterator.hasNext()) {
-            final String current = Integer.toString(iterator.nextInt());
-            try {
-                Files.deleteIfExists(ConfigUtil.TOWN_DATA.resolve(current));
-                iterator.remove();
-            } catch (Exception e) {
-                MPLog.getLogger().error("Unable to remove deleted Town at {}", current);
-                MPLog.getLogger().error("Error:", e);
-            }
-        }
-    }
-
-    @Override
-    public void loadAll() {
-        try (Stream<Path> towns = Files.list(ConfigUtil.TOWN_DATA)) {
-            towns.forEach(town -> {
-                try (InputStream in = Files.newInputStream(town)) {
-                    final DataContainer container = DataFormats.JSON.readFrom(in);
-                    final Town t = from(container);
-                    register(t);
-                } catch (Exception e) {
-                    MPLog.getLogger().error("Unable to load Town ({})", town);
-                    MPLog.getLogger().error("Error: ", e);
-                }
-            });
-        } catch (IOException e) {
-            MPLog.getLogger().error("Unable to load Towns ", e);
-        }
+        });
     }
 
     @Override

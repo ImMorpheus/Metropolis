@@ -3,13 +3,14 @@ package me.morpheus.metropolis.api.config;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 
 public interface ConfigService {
 
     GlobalConfig getGlobal();
 
-    void reload() throws ObjectMappingException, IOException;
+    CompletableFuture<Void> reload();
 
-    void save() throws ObjectMappingException, IOException;
+    CompletableFuture<Void> save();
 
 }

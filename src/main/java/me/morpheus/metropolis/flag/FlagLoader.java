@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 public class FlagLoader implements CustomResourceLoader<Flag> {
 
@@ -96,24 +97,26 @@ public class FlagLoader implements CustomResourceLoader<Flag> {
     }
 
     @Override
-    public void save() {
-        final Collection<? extends CatalogType> types = Sponge.getRegistry().getAllOf(Flag.class);
-        for (CatalogType catalogType : types) {
-            final Path save = ConfigUtil.FLAG.resolve(catalogType.getId() + ".conf");
-            try {
-                if (Files.notExists(save)) {
-                    Files.createFile(save);
+    public CompletableFuture<Void> save() {
+        return CompletableFuture.runAsync(() -> {
+            final Collection<? extends CatalogType> types = Sponge.getRegistry().getAllOf(Flag.class);
+            for (CatalogType catalogType : types) {
+                final Path save = ConfigUtil.FLAG.resolve(catalogType.getId() + ".conf");
+                try {
+                    if (Files.notExists(save)) {
+                        Files.createFile(save);
+                    }
+                    final SimpleCommentedConfigurationNode n = SimpleCommentedConfigurationNode.root();
+                    ObjectMapper.forObject(catalogType).serialize(n);
+                    HoconConfigurationLoader.builder()
+                            .setPath(save)
+                            .build()
+                            .save(n);
+                } catch (ObjectMappingException | IOException e) {
+                    MPLog.getLogger().error("Error while saving catalog {} {}", catalogType.getClass(), catalogType.getId());
+                    MPLog.getLogger().error("Exception:", e);
                 }
-                final SimpleCommentedConfigurationNode n = SimpleCommentedConfigurationNode.root();
-                ObjectMapper.forObject(catalogType).serialize(n);
-                HoconConfigurationLoader.builder()
-                        .setPath(save)
-                        .build()
-                        .save(n);
-            } catch (ObjectMappingException | IOException e) {
-                MPLog.getLogger().error("Error while saving catalog {} {}", catalogType.getClass(), catalogType.getId());
-                MPLog.getLogger().error("Exception:", e);
             }
-        }
+        });
     }
 }

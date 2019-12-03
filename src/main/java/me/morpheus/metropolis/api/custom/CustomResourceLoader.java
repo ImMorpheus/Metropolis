@@ -7,6 +7,7 @@ import org.spongepowered.api.util.annotation.CatalogedBy;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 
 @CatalogedBy(CustomResourceLoaders.class)
 public interface CustomResourceLoader<T> extends CatalogType {
@@ -15,6 +16,6 @@ public interface CustomResourceLoader<T> extends CatalogType {
 
     T load(Path path) throws IOException, ObjectMappingException;
 
-    void save();
+    CompletableFuture<Void> save();
 
 }

@@ -13,13 +13,13 @@ public class ReloadHandler {
 
     @Listener
     public void onReload(GameReloadEvent event) {
-        MPLog.getLogger().info("Reloading config...");
-        try {
-            Sponge.getServiceManager().provideUnchecked(ConfigService.class).reload();
-            MPLog.getLogger().info("Done");
-        } catch (ObjectMappingException | IOException e) {
-            MPLog.getLogger().error("Error while reloading config", e);
-        }
+        Sponge.getServiceManager().provideUnchecked(ConfigService.class)
+                .reload()
+                .thenRun(() -> MPLog.getLogger().info("Config reloaded"))
+                .exceptionally(e -> {
+                    MPLog.getLogger().error("Error while reloading config", e);
+                    return null;
+                });
     }
 
 }

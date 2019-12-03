@@ -23,10 +23,12 @@ public class SaveHandler {
         }
         this.last = now;
 
-        MPLog.getLogger().info("Saving towns...");
-        Sponge.getServiceManager().provideUnchecked(TownService.class).saveAll();
+        Sponge.getServiceManager().provideUnchecked(TownService.class)
+                .saveAll()
+                .thenRun(() -> MPLog.getLogger().info("Towns saved"));
 
-        MPLog.getLogger().info("Saving plots...");
-        Sponge.getServiceManager().provideUnchecked(PlotService.class).saveAll();
+        Sponge.getServiceManager().provideUnchecked(PlotService.class)
+                .saveAll()
+                .thenRun(() -> MPLog.getLogger().info("Plots saved"));
     }
 }

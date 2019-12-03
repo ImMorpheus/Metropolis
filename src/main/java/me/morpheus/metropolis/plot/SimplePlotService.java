@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -180,89 +181,93 @@ public class SimplePlotService implements PlotService {
     }
 
     @Override
-    public void saveAll() {
-        for (Map.Entry<UUID, Map<Vector2i, PlotData>> entry : this.map.entrySet()) {
-            final UUID uuid = entry.getKey();
-            final Path worldDir = ConfigUtil.PLOT_DATA.resolve(uuid.toString());
+    public CompletableFuture<Void> saveAll() {
+        return CompletableFuture.runAsync(() -> {
+            for (Map.Entry<UUID, Map<Vector2i, PlotData>> entry : this.map.entrySet()) {
+                final UUID uuid = entry.getKey();
+                final Path worldDir = ConfigUtil.PLOT_DATA.resolve(uuid.toString());
 
-            if (Files.notExists(worldDir)) {
-                try {
-                    Files.createDirectory(worldDir);
-                } catch (IOException e) {
-                    MPLog.getLogger().error("Unable to create world dir at {}", worldDir);
-                    MPLog.getLogger().error("Error:", e);
+                if (Files.notExists(worldDir)) {
+                    try {
+                        Files.createDirectory(worldDir);
+                    } catch (IOException e) {
+                        MPLog.getLogger().error("Unable to create world dir at {}", worldDir);
+                        MPLog.getLogger().error("Error:", e);
+                    }
+                }
+
+                for (Map.Entry<Vector2i, PlotData> worldEntry : entry.getValue().entrySet()) {
+                    final PlotData pd = worldEntry.getValue();
+                    final Vector2i plot = worldEntry.getKey();
+
+                    final String name = plot.getX() + "." + plot.getY();
+                    final Path tmp = worldDir.resolve(name + ".tmp");
+
+                    final DataContainer container = pd.toContainer();
+
+                    try (OutputStream out = Files.newOutputStream(tmp, StandardOpenOption.CREATE)) {
+                        DataFormats.JSON.writeTo(out, container);
+                        Files.move(tmp, worldDir.resolve(name), StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOException e) {
+                        MPLog.getLogger().error("Unable to save Plot at {}", plot);
+                        MPLog.getLogger().error("Error:", e);
+                    }
                 }
             }
 
-            for (Map.Entry<Vector2i, PlotData> worldEntry : entry.getValue().entrySet()) {
-                final PlotData pd = worldEntry.getValue();
-                final Vector2i plot = worldEntry.getKey();
+            for (Map.Entry<UUID, Set<Vector2i>> entry : this.deleted.entrySet()) {
+                final UUID uuid = entry.getKey();
+                final Path worldDir = ConfigUtil.PLOT_DATA.resolve(uuid.toString());
+                final Iterator<Vector2i> iterator = entry.getValue().iterator();
 
-                final String name = plot.getX() + "." + plot.getY();
-                final Path tmp = worldDir.resolve(name + ".tmp");
-
-                final DataContainer container = pd.toContainer();
-
-                try (OutputStream out = Files.newOutputStream(tmp, StandardOpenOption.CREATE)) {
-                    DataFormats.JSON.writeTo(out, container);
-                    Files.move(tmp, worldDir.resolve(name), StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException e) {
-                    MPLog.getLogger().error("Unable to save Plot at {}", plot);
-                    MPLog.getLogger().error("Error:", e);
+                while (iterator.hasNext()) {
+                    final Vector2i plot = iterator.next();
+                    final String name = plot.getX() + "." + plot.getY();
+                    try {
+                        Files.deleteIfExists(worldDir.resolve(name));
+                    } catch (IOException e) {
+                        MPLog.getLogger().error("Unable to remove deleted Plot at {}", name);
+                        MPLog.getLogger().error("Error:", e);
+                    }
+                    iterator.remove();
                 }
             }
-        }
-
-        for (Map.Entry<UUID, Set<Vector2i>> entry : this.deleted.entrySet()) {
-            final UUID uuid = entry.getKey();
-            final Path worldDir = ConfigUtil.PLOT_DATA.resolve(uuid.toString());
-            final Iterator<Vector2i> iterator = entry.getValue().iterator();
-
-            while (iterator.hasNext()) {
-                final Vector2i plot = iterator.next();
-                final String name = plot.getX() + "." + plot.getY();
-                try {
-                    Files.deleteIfExists(worldDir.resolve(name));
-                } catch (IOException e) {
-                    MPLog.getLogger().error("Unable to remove deleted Plot at {}", name);
-                    MPLog.getLogger().error("Error:", e);
-                }
-                iterator.remove();
-            }
-        }
+        });
     }
 
     @Override
-    public void loadAll() {
-        final DataManipulatorBuilder<PlotData, ImmutablePlotData> builder = Sponge.getDataManager().getManipulatorBuilder(PlotData.class).get();
+    public CompletableFuture<Void> loadAll() {
+        return CompletableFuture.runAsync(() -> {
+            final DataManipulatorBuilder<PlotData, ImmutablePlotData> builder = Sponge.getDataManager().getManipulatorBuilder(PlotData.class).get();
 
-        try (DirectoryStream<Path> worlds = Files.newDirectoryStream(ConfigUtil.PLOT_DATA)) {
-            for (Path world : worlds) {
-                final UUID uuid = UUID.fromString(world.getFileName().toString());
-                try (DirectoryStream<Path> plots = Files.newDirectoryStream(world)) {
-                    for (Path plot : plots) {
-                        final String[] name = plot.getFileName().toString().split("\\.");
-                        final Vector2i coord = Vector2i.from(Integer.parseInt(name[0]), Integer.parseInt(name[1]));
+            try (DirectoryStream<Path> worlds = Files.newDirectoryStream(ConfigUtil.PLOT_DATA)) {
+                for (Path world : worlds) {
+                    final UUID uuid = UUID.fromString(world.getFileName().toString());
+                    try (DirectoryStream<Path> plots = Files.newDirectoryStream(world)) {
+                        for (Path plot : plots) {
+                            final String[] name = plot.getFileName().toString().split("\\.");
+                            final Vector2i coord = Vector2i.from(Integer.parseInt(name[0]), Integer.parseInt(name[1]));
 
-                        try (InputStream in = Files.newInputStream(plot)) {
-                            final DataContainer container = DataFormats.JSON.readFrom(in);
-                            final PlotData plotData = builder.build(container)
-                                    .orElseThrow(() -> new InvalidDataException(container.toString()));
-                            claim(uuid, coord, plotData);
-                        } catch (Exception e) {
-                            MPLog.getLogger().error("Unable to load plot {}", plot);
-                            MPLog.getLogger().error("Error: ", e);
+                            try (InputStream in = Files.newInputStream(plot)) {
+                                final DataContainer container = DataFormats.JSON.readFrom(in);
+                                final PlotData plotData = builder.build(container)
+                                        .orElseThrow(() -> new InvalidDataException(container.toString()));
+                                claim(uuid, coord, plotData);
+                            } catch (Exception e) {
+                                MPLog.getLogger().error("Unable to load plot {}", plot);
+                                MPLog.getLogger().error("Error: ", e);
+                            }
                         }
+                    } catch (Exception e) {
+                        MPLog.getLogger().error("Unable to load plots for world {}", uuid);
+                        MPLog.getLogger().error("Error: ", e);
                     }
-                } catch (Exception e) {
-                    MPLog.getLogger().error("Unable to load plots for world {}", uuid);
-                    MPLog.getLogger().error("Error: ", e);
-                }
 
+                }
+            } catch (IOException e) {
+                MPLog.getLogger().error("Unable to load Plots ", e);
             }
-        } catch (IOException e) {
-            MPLog.getLogger().error("Unable to load Plots ", e);
-        }
+        });
     }
 
     @Nullable

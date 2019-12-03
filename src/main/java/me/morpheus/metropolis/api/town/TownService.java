@@ -6,6 +6,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public interface TownService {
@@ -20,11 +21,11 @@ public interface TownService {
 
     Stream<Town> towns();
 
-    void save(Town town);
+    CompletableFuture<Void> save(Town town);
 
-    void saveAll();
+    CompletableFuture<Void> saveAll();
 
-    void loadAll();
+    CompletableFuture<Void> loadAll();
 
     Town from(DataView view);
 

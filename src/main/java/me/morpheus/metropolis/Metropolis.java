@@ -139,14 +139,18 @@ public class Metropolis {
     public void onInit(GameInitializationEvent event) {
         try {
             Sponge.getServiceManager().setProvider(this.container, ConfigService.class, new SimpleConfigService());
-            final ConfigService cs = Sponge.getServiceManager().provideUnchecked(ConfigService.class);
-
-            cs.reload();
-            cs.save();
         } catch (Exception e) {
             Sponge.getServiceManager().provideUnchecked(IncidentService.class)
                     .create(new MPIncident(MPGenericErrors.config(), e));
         }
+        final ConfigService cs = Sponge.getServiceManager().provideUnchecked(ConfigService.class);
+        cs.reload()
+                .thenCompose(v -> cs.save())
+                .exceptionally(throwable -> {
+                    Sponge.getServiceManager().provideUnchecked(IncidentService.class)
+                            .create(new MPIncident(MPGenericErrors.config(), throwable));
+                    return null;
+                });
 
         registerCommands();
 
@@ -180,11 +184,13 @@ public class Metropolis {
 
     @Listener
     public void onServerStarting(GameStartingServerEvent event) {
-        final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        ps.loadAll();
+        Sponge.getServiceManager().provideUnchecked(PlotService.class)
+                .loadAll()
+                .thenRun(() -> MPLog.getLogger().info("Plots loaded"));
 
-        final TownService ts = Sponge.getServiceManager().provideUnchecked(TownService.class);
-        ts.loadAll();
+        Sponge.getServiceManager().provideUnchecked(TownService.class)
+                .loadAll()
+                .thenRun(() -> MPLog.getLogger().info("Towns loaded"));
     }
 
     @Listener
@@ -222,11 +228,13 @@ public class Metropolis {
 
     @Listener
     public void onServerStopping(GameStoppingServerEvent event) {
-        final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        ps.saveAll();
+        Sponge.getServiceManager().provideUnchecked(TownService.class)
+                .saveAll()
+                .thenRun(() -> MPLog.getLogger().info("Towns saved"));
 
-        final TownService ts = Sponge.getServiceManager().provideUnchecked(TownService.class);
-        ts.saveAll();
+        Sponge.getServiceManager().provideUnchecked(PlotService.class)
+                .saveAll()
+                .thenRun(() -> MPLog.getLogger().info("Plots saved"));
 
         for (CustomResourceLoader loader : Sponge.getRegistry().getAllOf(CustomResourceLoader.class)) {
             loader.save();
