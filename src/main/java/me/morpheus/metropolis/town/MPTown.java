@@ -399,7 +399,7 @@ public class MPTown implements Town {
                 .set(DataQuery.of("name"), this.name)
                 .set(DataQuery.of("tag"), this.tag)
                 .set(DataQuery.of("pvp"), this.pvp)
-                .set(DataQuery.of("spawn"), this.spawn)
+                .set(DataQuery.of("spawn"), Hacks.toContainer(this.spawn))
                 .set(DataQuery.of("visibility"), this.visibility)
                 .set(DataQuery.of("plots"), this.citizens)
                 .set(DataQuery.of("citizens"), this.plots);

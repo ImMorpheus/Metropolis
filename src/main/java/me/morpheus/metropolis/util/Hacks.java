@@ -1,10 +1,14 @@
 package me.morpheus.metropolis.util;
 
+import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.DataView;
+import org.spongepowered.api.data.Queries;
 import org.spongepowered.api.data.manipulator.DataManipulator;
 import org.spongepowered.api.data.manipulator.DataManipulatorBuilder;
 import org.spongepowered.api.data.persistence.AbstractDataBuilder;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -54,6 +58,16 @@ public final class Hacks {
         } catch (IllegalAccessException e) {
             throw new RuntimeException("REPORT THIS", e);
         }
+    }
+
+    public static DataContainer toContainer(Location<World> location) {
+        return DataContainer.createNew()
+                .set(Queries.CONTENT_VERSION, 1)
+                .set(Queries.WORLD_NAME, location.getExtent().getName())
+                .set(Queries.WORLD_ID, location.getExtent().getUniqueId().toString())
+                .set(Queries.POSITION_X, location.getX())
+                .set(Queries.POSITION_Y, location.getY())
+                .set(Queries.POSITION_Z, location.getZ());
     }
 
     private Hacks() {}
