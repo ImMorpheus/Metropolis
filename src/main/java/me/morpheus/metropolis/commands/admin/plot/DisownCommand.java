@@ -39,7 +39,7 @@ class DisownCommand extends AbstractPlayerCommand {
 
     @Override
     public boolean testPermission(Player source) {
-        return true;
+        return source.hasPermission("metropolis.command.admin.disown");
     }
 
     @Override

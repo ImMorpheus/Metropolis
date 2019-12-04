@@ -27,7 +27,7 @@ class LeaveCommand extends AbstractCitizenCommand {
 
     @Override
     public boolean testPermission(Player source, CitizenData cd) {
-        return true;
+        return source.hasPermission("metropolis.command.admin.leave");
     }
 
     @Override

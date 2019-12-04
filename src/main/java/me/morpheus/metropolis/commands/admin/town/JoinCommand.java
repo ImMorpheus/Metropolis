@@ -33,7 +33,7 @@ class JoinCommand extends AbstractPlayerCommand {
 
     @Override
     protected boolean testPermission(Player player) {
-        return true;
+        return player.hasPermission("metropolis.command.admin.join");
     }
 
     @Override
