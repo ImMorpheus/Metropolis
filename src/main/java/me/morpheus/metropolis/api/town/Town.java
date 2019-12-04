@@ -12,6 +12,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import javax.annotation.Nullable;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -47,6 +48,8 @@ public interface Town extends DataHolder, MessageReceiver {
     void setVisibility(Visibility visibility);
 
     Optional<Account> getBank();
+
+    BigDecimal getUpkeep();
 
     boolean accept(UUID user, Rank rank);
 

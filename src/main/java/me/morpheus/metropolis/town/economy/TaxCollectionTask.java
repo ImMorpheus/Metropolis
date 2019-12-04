@@ -130,7 +130,15 @@ public class TaxCollectionTask implements Consumer<Task> {
                     int j = 0;
                     while (j++ < global.getUserspertick() && this.towns.hasNext()) {
                         final Town town = this.towns.next();
-                        //TODO
+                        final BigDecimal upkeep = town.getUpkeep();
+                        if (town.getBank().isPresent()) {
+                            ResultType result = EconomyUtil.withdraw(town.getBank().get(), es.getDefaultCurrency(), upkeep);
+                            if (result == ResultType.ACCOUNT_NO_FUNDS) {
+                                town.disband();
+                            }
+                        } else {
+                            MPLog.getLogger().error("Unable to create an Account for {}", town.getName());
+                        }
                     }
                 }
                 if (!this.towns.hasNext()) {

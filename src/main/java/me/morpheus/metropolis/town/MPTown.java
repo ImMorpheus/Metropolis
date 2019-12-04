@@ -1,7 +1,9 @@
 package me.morpheus.metropolis.town;
 
 import com.google.common.base.MoreObjects;
+import com.udojava.evalex.Expression;
 import me.morpheus.metropolis.Metropolis;
+import me.morpheus.metropolis.event.TownTransactionEventUpkeep;
 import me.morpheus.metropolis.util.Hacks;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.api.config.ConfigService;
@@ -42,6 +44,7 @@ import org.spongepowered.api.data.value.immutable.ImmutableValue;
 import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.CauseStackManager;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.user.UserStorageService;
@@ -52,6 +55,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import javax.annotation.Nullable;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
@@ -63,6 +67,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.DoubleSupplier;
 
 public class MPTown implements Town {
 
@@ -210,6 +215,24 @@ public class MPTown implements Town {
         }
 
         return accountOpt;
+    }
+
+    @Override
+    public BigDecimal getUpkeep() {
+        if (this.type.getTaxFunction().isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+        Expression expression = new Expression(this.type.getTaxFunction());
+        try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            TownTransactionEventUpkeep event = new TownTransactionEventUpkeep(frame.getCurrentCause(), this);
+            if (Sponge.getEventManager().post(event)) {
+                return BigDecimal.ZERO;
+            }
+            for (Map.Entry<String, DoubleSupplier> entry : event.getMap().entrySet()) {
+                expression.with(entry.getKey(), BigDecimal.valueOf(entry.getValue().getAsDouble()));
+            }
+        }
+        return expression.eval();
     }
 
     @Override
@@ -364,8 +387,16 @@ public class MPTown implements Town {
         this.dirty = dirty;
     }
 
+    public int getCitizens() {
+        return this.citizens;
+    }
+
     public void setCitizens(int citizens) {
         this.citizens = citizens;
+    }
+
+    public int getPlots() {
+        return this.plots;
     }
 
     public void setPlots(int plots) {

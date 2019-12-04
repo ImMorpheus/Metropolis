@@ -12,6 +12,7 @@ dependencies {
 
     shadow 'it.unimi.dsi:fastutil:8.2.1'
     compile 'me.lucko.luckperms:luckperms-api:4.4'
+    compile 'com.udojava:EvalEx:2.1'
 }
 
 shadowJar {
@@ -20,6 +21,7 @@ shadowJar {
     version = null
 
     relocate 'it.unimi', 'shadow.it'
+    relocate 'com.udojava', 'shadow.com'
 
 }
 

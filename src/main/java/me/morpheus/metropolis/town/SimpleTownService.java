@@ -5,7 +5,9 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.town.TownTypes;
+import me.morpheus.metropolis.town.listeners.InternalTownHandler;
 import me.morpheus.metropolis.util.Hacks;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.api.town.Town;
@@ -14,11 +16,13 @@ import me.morpheus.metropolis.api.town.TownType;
 import me.morpheus.metropolis.api.town.pvp.PvPOption;
 import me.morpheus.metropolis.api.town.visibility.Visibility;
 import me.morpheus.metropolis.config.ConfigUtil;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.DataView;
 import org.spongepowered.api.data.manipulator.DataManipulator;
 import org.spongepowered.api.data.persistence.DataFormats;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -40,6 +44,11 @@ public class SimpleTownService implements TownService {
     private int lastID = Integer.MIN_VALUE + 1;
     private final Int2ObjectMap<Town> towns = new Int2ObjectOpenHashMap<>();
     private final IntSet deleted = new IntOpenHashSet();
+
+    static {
+        final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+        Sponge.getEventManager().registerListeners(plugin, new InternalTownHandler());
+    }
 
     @Override
     public Optional<Town> create(Text name, Location<World> spawn) {
