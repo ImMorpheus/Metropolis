@@ -29,6 +29,6 @@ public class MPTownDataBuilder extends AbstractDataBuilder<TownData> implements 
 
     @Override
     protected Optional<TownData> buildContent(DataView container) throws InvalidDataException {
-        return create().from(container.getContainer());
+        return create().from(container.copy());
     }
 }

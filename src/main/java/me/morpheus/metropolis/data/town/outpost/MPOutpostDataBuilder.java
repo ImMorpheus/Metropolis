@@ -29,6 +29,6 @@ public class MPOutpostDataBuilder extends AbstractDataBuilder<OutpostData> imple
 
     @Override
     protected Optional<OutpostData> buildContent(DataView container) throws InvalidDataException {
-        return create().from(container.getContainer());
+        return create().from(container.copy());
     }
 }

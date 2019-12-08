@@ -29,6 +29,6 @@ public class MPTaxDataBuilder extends AbstractDataBuilder<TaxData> implements Da
 
     @Override
     protected Optional<TaxData> buildContent(DataView container) throws InvalidDataException {
-        return create().from(container.getContainer());
+        return create().from(container.copy());
     }
 }

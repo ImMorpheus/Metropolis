@@ -29,6 +29,6 @@ public class MPCitizenDataBuilder extends AbstractDataBuilder<CitizenData> imple
 
     @Override
     protected Optional<CitizenData> buildContent(DataView container) throws InvalidDataException {
-        return create().from(container.getContainer());
+        return create().from(container.copy());
     }
 }
