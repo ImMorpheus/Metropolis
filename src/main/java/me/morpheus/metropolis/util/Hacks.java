@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.util;
 
+import me.morpheus.metropolis.api.data.town.TownKeys;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.DataView;
@@ -13,7 +14,11 @@ import org.spongepowered.api.world.World;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public final class Hacks {
 
@@ -68,6 +73,20 @@ public final class Hacks {
                 .set(Queries.POSITION_X, location.getX())
                 .set(Queries.POSITION_Y, location.getY())
                 .set(Queries.POSITION_Z, location.getZ());
+    }
+
+    public static Map<String, Location<World>> outpostFrom(DataContainer container) {
+        Optional<? extends Map<?, ?>> oupostsOpt = container.getMap(TownKeys.OUTPOSTS.getQuery());
+        if (!oupostsOpt.isPresent()) {
+            return Collections.emptyMap();
+        }
+        Map<String, Location<World>> map = new HashMap<>();
+        for (Map.Entry<?, ?> entry : oupostsOpt.get().entrySet()) {
+            String key = (String) entry.getKey();
+            Location loc = container.getView(TownKeys.OUTPOSTS.getQuery()).get().getSerializable(DataQuery.of(key), Location.class).get();
+            map.put(key, loc);
+        }
+        return map;
     }
 
     private Hacks() {}

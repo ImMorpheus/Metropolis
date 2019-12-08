@@ -4,9 +4,11 @@ import me.morpheus.metropolis.api.data.town.TownKeys;
 import me.morpheus.metropolis.api.data.town.outpost.ImmutableOutpostData;
 import me.morpheus.metropolis.api.data.town.outpost.OutpostData;
 import me.morpheus.metropolis.data.DataVersions;
+import me.morpheus.metropolis.util.Hacks;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataHolder;
+import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.manipulator.mutable.common.AbstractData;
 import org.spongepowered.api.data.merge.MergeFunction;
 import org.spongepowered.api.data.value.mutable.MapValue;
@@ -51,12 +53,11 @@ public class MPOutpostData extends AbstractData<OutpostData, ImmutableOutpostDat
 
     @Override
     public Optional<OutpostData> from(DataContainer container) {
-        Optional<? extends Map<?, ?>> oupostsOpt = container.getMap(TownKeys.OUTPOSTS.getQuery());
-        if (!oupostsOpt.isPresent()) {
+        final Map<String, Location<World>> map = Hacks.outpostFrom(container);
+        if (map.isEmpty()) {
             return Optional.empty();
         }
-
-        this.outposts = (Map<String, Location<World>>) oupostsOpt.get();
+        this.outposts = map;
         return Optional.of(this);
     }
 
