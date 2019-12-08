@@ -14,6 +14,7 @@ import org.spongepowered.api.world.World;
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -50,6 +51,8 @@ public interface Town extends DataHolder, MessageReceiver {
     Optional<Account> getBank();
 
     BigDecimal getUpkeep();
+
+    List<Text> getTownScreen(@Nullable MessageReceiver receiver);
 
     boolean accept(UUID user, Rank rank);
 

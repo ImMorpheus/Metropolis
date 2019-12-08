@@ -3,6 +3,8 @@ package me.morpheus.metropolis.town;
 import com.google.common.base.MoreObjects;
 import com.udojava.evalex.Expression;
 import me.morpheus.metropolis.Metropolis;
+import me.morpheus.metropolis.api.data.town.TownData;
+import me.morpheus.metropolis.api.town.visibility.Visibilities;
 import me.morpheus.metropolis.event.TownTransactionEventUpkeep;
 import me.morpheus.metropolis.util.Hacks;
 import me.morpheus.metropolis.MPLog;
@@ -28,6 +30,8 @@ import me.morpheus.metropolis.data.DataVersions;
 import me.morpheus.metropolis.town.chat.TownMessageChannel;
 import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.DataQuery;
@@ -50,6 +54,7 @@ import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.channel.MessageChannel;
+import org.spongepowered.api.text.channel.MessageReceiver;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
@@ -58,11 +63,14 @@ import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -233,6 +241,52 @@ public class MPTown implements Town {
             }
         }
         return expression.eval();
+    }
+
+    @Override
+    public List<Text> getTownScreen(@Nullable MessageReceiver receiver) {
+        final List<Text> list = new ArrayList<>();
+        list.add(Text.of(TextColors.DARK_GREEN, "Founded: ", TextColors.GREEN, this.founded.truncatedTo(ChronoUnit.SECONDS)));
+        list.add(Text.of(TextColors.DARK_GREEN, "Type: ", TextColors.GREEN, this.type.getName()));
+        list.add(Text.of(TextColors.DARK_GREEN, "PvP: ", TextColors.GREEN, this.pvp.getName()));
+        list.add(Text.of(TextColors.DARK_GREEN, "Visibility: ", TextColors.GREEN, this.visibility.getName()));
+        if (canSeeSpawn(receiver)) {
+            list.add(Text.of(TextColors.DARK_GREEN, "Spawn: ", TextColors.GREEN, this.spawn.getBlockPosition(), " in ", this.spawn.getExtent().getName()));
+        }
+        list.add(Text.of(TextColors.DARK_GREEN, "Citizens: ", TextColors.GREEN, "[", this.citizens, "/", this.type.getMaxCitizen(), "]"));
+        list.add(Text.of(TextColors.DARK_GREEN, "Plots: ", TextColors.GREEN, "[", this.plots, "/", this.type.getMaxPlot(), "]"));
+        list.add(Text.of(TextColors.DARK_GREEN, "Tag: ", TextColors.GREEN, this.tag));
+        final Optional<TownData> tdOpt = get(TownData.class);
+        if (tdOpt.isPresent()) {
+            if (tdOpt.get().description().get().isPresent()) {
+                list.add(Text.of(TextColors.DARK_GREEN, "Description: ", TextColors.GREEN, tdOpt.get().description().get().get()));
+            }
+            if (tdOpt.get().motd().get().isPresent()) {
+                list.add(Text.of(TextColors.DARK_GREEN, "Motd: ", TextColors.GREEN, tdOpt.get().motd().get().get()));
+            }
+        }
+        return list;
+    }
+
+    private boolean canSeeSpawn(@Nullable MessageReceiver receiver) {
+        if (receiver == null) {
+            return true;
+        }
+
+        if (this.visibility == Visibilities.PUBLIC) {
+            return true;
+        }
+
+        if (receiver instanceof Player) {
+            final Optional<CitizenData> cdOpt = ((Player) receiver).get(CitizenData.class);
+            return cdOpt.isPresent() && cdOpt.get().town().get().intValue() == this.id;
+        }
+
+        if (receiver instanceof ConsoleSource) {
+            return true;
+        }
+
+        return false;
     }
 
     @Override

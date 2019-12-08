@@ -38,52 +38,14 @@ class InfoCommand extends AbstractMPCommand {
         }
 
         final Town t = tOpt.get();
-        final Optional<TownData> tdOpt = t.get(TownData.class);
-        final Text description = tdOpt.isPresent() && tdOpt.get().description().get().isPresent()
-                ? Text.of(TextColors.DARK_GREEN, "Description: ", tdOpt.get().description().get().get()) :
-                Text.of();
-
-        final Text motd = tdOpt.isPresent() && tdOpt.get().motd().get().isPresent()
-                ? Text.of(TextColors.DARK_GREEN, "Motd: ", tdOpt.get().motd().get().get())
-                : Text.of();
-
-        final Text spawn = canSeeSpawn(source, t)
-                ? Text.of(TextColors.DARK_GREEN, "Spawn: ", TextColors.GREEN, t.getSpawn().getBlockPosition(), " in ", t.getSpawn().getExtent().getName())
-                : Text.of();
 
         PaginationList.builder()
                 .title(Text.of(TextColors.GOLD, "[", TextColors.YELLOW, t.getName(), TextColors.GOLD, "]"))
-                .contents(
-                        description,
-                        Text.of(TextColors.DARK_GREEN, "Founded: ", TextColors.GREEN, t.getFounded().truncatedTo(ChronoUnit.SECONDS)),
-                        Text.of(TextColors.DARK_GREEN, "Type: ", TextColors.GREEN, t.getType().getName()),
-                        spawn,
-                        Text.of(TextColors.DARK_GREEN, "Tag: ", TextColors.GREEN, t.getTag()),
-                        Text.of(TextColors.DARK_GREEN, "PvP: ", TextColors.GREEN, t.getPvP().getName()),
-                        Text.of(TextColors.DARK_GREEN, "Visibility: ", TextColors.GREEN, t.getVisibility().getName()),
-                        motd
-                )
+                .contents(t.getTownScreen(source))
                 .padding(Text.of(TextColors.GOLD, "-"))
                 .sendTo(source);
 
         return CommandResult.success();
-    }
-
-    private boolean canSeeSpawn(CommandSource source, Town t) {
-        if (t.getVisibility() == Visibilities.PUBLIC) {
-            return true;
-        }
-
-        if (source instanceof Player) {
-            final Optional<CitizenData> cdOpt = ((Player) source).get(CitizenData.class);
-            return cdOpt.isPresent() && cdOpt.get().town().get().intValue() == t.getId();
-        }
-
-        if (source instanceof ConsoleSource) {
-            return true;
-        }
-
-        return false;
     }
 
     @Override
