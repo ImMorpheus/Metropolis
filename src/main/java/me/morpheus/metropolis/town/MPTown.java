@@ -265,6 +265,7 @@ public class MPTown implements Town {
                 list.add(Text.of(TextColors.DARK_GREEN, "Motd: ", TextColors.GREEN, tdOpt.get().motd().get().get()));
             }
         }
+        //TODO fire an event
         return list;
     }
 
