@@ -437,7 +437,7 @@ public class MPTown implements Town {
 
         final Collection<DataManipulator> manipulators = this.manipulators.values();
         if (!manipulators.isEmpty()) {
-            data.set(DataQuery.of("data"), Hacks.serializeManipulatorList((Iterable<DataManipulator<?, ?>>) (Object) manipulators));
+            data.set(Hacks.DATA_MANIPULATORS, Hacks.serializeManipulatorList((Iterable<DataManipulator<?, ?>>) (Object) manipulators));
         }
 
         return data;
