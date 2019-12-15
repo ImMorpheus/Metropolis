@@ -28,6 +28,7 @@ public final class TownDispatcher extends AbstractCommandDispatcher {
     public void registerDefaults() {
         register(new ChatCommand(), "chat");
         register(new ClaimCommand(), "claim");
+        register(new DepositCommand(), "deposit");
         register(new DisbandCommand(), "disband");
         register(new InfoCommand(), "info");
         register(new InviteCommand(), "invite");
@@ -41,6 +42,7 @@ public final class TownDispatcher extends AbstractCommandDispatcher {
         register(new SpawnCommand(), "spawn");
         register(new TreeCommand(), "tree");
         register(new UnclaimCommand(), "unclaim");
+        register(new WithdrawCommand(), "withdraw");
 
         registerManager(new CitizenDispatcher(), "citizen");
         registerManager(new FriendDispatcher(), "friend");
