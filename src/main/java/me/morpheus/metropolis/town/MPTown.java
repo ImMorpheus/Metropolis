@@ -79,6 +79,8 @@ import java.util.function.DoubleSupplier;
 
 public class MPTown implements Town {
 
+    private static final boolean ECONOMY = Sponge.getServiceManager().provide(EconomyService.class).isPresent();
+
     private final int id;
     private final Instant founded;
 
@@ -211,12 +213,11 @@ public class MPTown implements Town {
 
     @Override
     public Optional<Account> getBank() {
-        final Optional<EconomyService> serviceOpt = Sponge.getServiceManager().provide(EconomyService.class);
-        if (!serviceOpt.isPresent()) {
+        if (!MPTown.ECONOMY) {
             return Optional.empty();
         }
-
-        Optional<Account> accountOpt = serviceOpt.get().getOrCreateAccount(Metropolis.ID + "+" + this.id);
+        final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
+        final Optional<Account> accountOpt = es.getOrCreateAccount(Metropolis.ID + "+" + this.id);
 
         if (!accountOpt.isPresent()) {
             MPLog.getLogger().error("Error while creating a bank for town {} ({})", this.name, Integer.toString(this.id));
@@ -252,6 +253,11 @@ public class MPTown implements Town {
         list.add(Text.of(TextColors.DARK_GREEN, "Visibility: ", TextColors.GREEN, this.visibility.getName()));
         if (canSeeSpawn(receiver)) {
             list.add(Text.of(TextColors.DARK_GREEN, "Spawn: ", TextColors.GREEN, this.spawn.getBlockPosition(), " in ", this.spawn.getExtent().getName()));
+        }
+        final Optional<Account> bOpt = getBank();
+        if (bOpt.isPresent()) {
+            final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
+            list.add(Text.of(TextColors.DARK_GREEN, "Bank: ", TextColors.GREEN, es.getDefaultCurrency().getSymbol(), bOpt.get().getBalance(es.getDefaultCurrency())));
         }
         list.add(Text.of(TextColors.DARK_GREEN, "Citizens: ", TextColors.GREEN, "[", this.citizens, "/", this.type.getMaxCitizen(), "]"));
         list.add(Text.of(TextColors.DARK_GREEN, "Plots: ", TextColors.GREEN, "[", this.plots, "/", this.type.getMaxPlot(), "]"));
