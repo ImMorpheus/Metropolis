@@ -18,6 +18,7 @@ import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
+import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.service.economy.transaction.ResultType;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -49,12 +50,12 @@ class SpawnCommand extends AbstractPlayerCommand {
 
         final GlobalConfig global = Sponge.getServiceManager().provideUnchecked(ConfigService.class).getGlobal();
         if (global.getEconomyCategory().isEnabled()) {
-            final Optional<Account> accOpt = EconomyUtil.getAccount(source);
+            final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
+            final Optional<UniqueAccount> accOpt = es.getOrCreateAccount(source.getUniqueId());
             if (!accOpt.isPresent()) {
                 source.sendMessage(TextUtil.watermark(TextColors.RED, "Unable to retrieve player account"));
                 return CommandResult.empty();
             }
-            final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
             final ResultType result = EconomyUtil.withdraw(accOpt.get(), es.getDefaultCurrency(), BigDecimal.valueOf(townOpt.get().getType().getSpawnCost()));
             if (result == ResultType.ACCOUNT_NO_FUNDS) {
                 source.sendMessage(TextUtil.watermark(TextColors.RED, "Not enough money"));

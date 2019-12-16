@@ -32,12 +32,6 @@ public class DepositCommand extends AbstractCitizenCommand {
 
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
-        final GlobalConfig global = Sponge.getServiceManager().provideUnchecked(ConfigService.class).getGlobal();
-        if (!global.getEconomyCategory().isEnabled()) {
-            source.sendMessage(TextUtil.watermark(TextColors.RED, "Economy integration is not enabled"));
-            return CommandResult.empty();
-        }
-
         final Optional<Account> bOpt = t.getBank();
         if (!bOpt.isPresent()) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Unable to retrieve Town bank"));

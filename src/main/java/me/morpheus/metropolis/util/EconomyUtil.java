@@ -52,20 +52,5 @@ public final class EconomyUtil {
         return result.getResult();
     }
 
-    public static Optional<Account> getAccount(Player player) {
-        final Optional<EconomyService> serviceOpt = Sponge.getServiceManager().provide(EconomyService.class);
-        if (!serviceOpt.isPresent()) {
-            return Optional.empty();
-        }
-
-        final Optional<Account> accountOpt = serviceOpt.get().getOrCreateAccount(player.getIdentifier());
-
-        if (!accountOpt.isPresent()) {
-            MPLog.getLogger().error("Error while creating an account for player {} ", player.getName());
-        }
-
-        return accountOpt;
-    }
-
     private EconomyUtil() {}
 }
