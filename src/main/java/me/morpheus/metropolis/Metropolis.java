@@ -94,6 +94,7 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
@@ -137,21 +138,7 @@ public class Metropolis {
 
     @Listener
     public void onInit(GameInitializationEvent event) {
-        try {
-            Sponge.getServiceManager().setProvider(this.container, ConfigService.class, new SimpleConfigService());
-        } catch (Exception e) {
-            Sponge.getServiceManager().provideUnchecked(IncidentService.class)
-                    .create(new MPIncident(MPGenericErrors.config(), e));
-        }
-        final ConfigService cs = Sponge.getServiceManager().provideUnchecked(ConfigService.class);
-        cs.reload()
-                .thenCompose(v -> cs.save())
-                .exceptionally(throwable -> {
-                    Sponge.getServiceManager().provideUnchecked(IncidentService.class)
-                            .create(new MPIncident(MPGenericErrors.config(), throwable));
-                    return null;
-                });
-
+        initConfigService();
         registerCommands();
 
         Sponge.getEventManager().registerListeners(this.container, new ChangeBlockHandler());
@@ -324,5 +311,29 @@ public class Metropolis {
         final CommandDispatcher mpadmin = new AdminDispatcher();
         mpadmin.registerDefaults();
         Sponge.getCommandManager().register(this.container, mpadmin, "mpadmin");
+    }
+
+    private void initConfigService() {
+        try {
+            final ConfigService cs = new SimpleConfigService();
+            if (Files.notExists(ConfigUtil.CONF)) {
+                Files.createFile(ConfigUtil.CONF);
+                Sponge.getServiceManager().setProvider(this.container, ConfigService.class, cs);
+                cs.save()
+                        .thenRun(() -> MPLog.getLogger().info("Config saved"))
+                        .exceptionally(throwable -> {
+                            Sponge.getServiceManager().provideUnchecked(IncidentService.class)
+                                    .create(new MPIncident(MPGenericErrors.config(), throwable));
+                            return null;
+                        });
+            } else {
+                cs.reload().get();
+                MPLog.getLogger().info("Config loaded");
+                Sponge.getServiceManager().setProvider(this.container, ConfigService.class, cs);
+            }
+        } catch (Exception e) {
+            Sponge.getServiceManager().provideUnchecked(IncidentService.class)
+                    .create(new MPIncident(MPGenericErrors.config(), e));
+        }
     }
 }

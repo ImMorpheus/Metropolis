@@ -39,10 +39,6 @@ public final class ConfigUtil {
         createDir(RANK);
         createDir(FLAG);
         createDir(TOWN_TYPE);
-
-        if (Files.notExists(CONF)) {
-            Files.createFile(CONF);
-        }
     }
 
     private static void createDir(Path path) throws IOException {
