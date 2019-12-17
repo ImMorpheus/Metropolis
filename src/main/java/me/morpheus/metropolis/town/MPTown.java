@@ -257,7 +257,7 @@ public class MPTown implements Town {
         final Optional<Account> bOpt = getBank();
         if (bOpt.isPresent()) {
             final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
-            list.add(Text.of(TextColors.DARK_GREEN, "Bank: ", TextColors.GREEN, es.getDefaultCurrency().getSymbol(), bOpt.get().getBalance(es.getDefaultCurrency())));
+            list.add(Text.of(TextColors.DARK_GREEN, "Balance: ", TextColors.GREEN, es.getDefaultCurrency().getSymbol(), bOpt.get().getBalance(es.getDefaultCurrency())));
         }
         list.add(Text.of(TextColors.DARK_GREEN, "Citizens: ", TextColors.GREEN, "[", this.citizens, "/", this.type.getMaxCitizen(), "]"));
         list.add(Text.of(TextColors.DARK_GREEN, "Plots: ", TextColors.GREEN, "[", this.plots, "/", this.type.getMaxPlot(), "]"));
