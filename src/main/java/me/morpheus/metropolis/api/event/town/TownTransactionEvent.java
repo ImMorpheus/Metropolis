@@ -1,7 +1,4 @@
-package me.morpheus.metropolis.api.event;
-
-import org.spongepowered.api.event.Cancellable;
-import org.spongepowered.api.event.Event;
+package me.morpheus.metropolis.api.event.town;
 
 import javax.annotation.Nullable;
 import java.util.function.DoubleSupplier;
@@ -13,8 +10,6 @@ public interface TownTransactionEvent extends TargetTownEvent {
     @Nullable
     DoubleSupplier getSupplier(String key);
 
-    interface Upkeep extends TownTransactionEvent {
-
-    }
+    interface Upkeep extends TownTransactionEvent {}
 
 }

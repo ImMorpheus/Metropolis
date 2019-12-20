@@ -1,8 +1,8 @@
 package me.morpheus.metropolis.town.listeners;
 
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-import me.morpheus.metropolis.api.event.TownTransactionEvent;
 import me.morpheus.metropolis.api.plot.PlotType;
+import me.morpheus.metropolis.api.event.town.TownTransactionEvent;
 import me.morpheus.metropolis.town.MPTown;
 import org.spongepowered.api.event.Listener;
 

@@ -6,8 +6,20 @@ import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.town.TownData;
+import me.morpheus.metropolis.api.event.plot.ClaimPlotEvent;
+import me.morpheus.metropolis.api.event.plot.UnclaimPlotEvent;
+import me.morpheus.metropolis.api.event.town.JoinTownEvent;
+import me.morpheus.metropolis.api.event.town.LeaveTownEvent;
 import me.morpheus.metropolis.api.town.visibility.Visibilities;
-import me.morpheus.metropolis.event.TownTransactionEventUpkeep;
+import me.morpheus.metropolis.event.plot.MPClaimPlotEventPost;
+import me.morpheus.metropolis.event.plot.MPClaimPlotEventPre;
+import me.morpheus.metropolis.event.plot.MPUnclaimPlotEventPost;
+import me.morpheus.metropolis.event.plot.MPUnclaimPlotEventPre;
+import me.morpheus.metropolis.event.town.MPJoinTownEventPost;
+import me.morpheus.metropolis.event.town.MPJoinTownEventPre;
+import me.morpheus.metropolis.event.town.MPLeaveTownEventPost;
+import me.morpheus.metropolis.event.town.MPLeaveTownEventPre;
+import me.morpheus.metropolis.event.town.MPTownTransactionEventUpkeep;
 import me.morpheus.metropolis.util.Hacks;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.api.config.ConfigService;
@@ -236,7 +248,7 @@ public class MPTown implements Town {
         }
         Expression expression = new Expression(this.type.getTaxFunction());
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
-            TownTransactionEventUpkeep event = new TownTransactionEventUpkeep(frame.getCurrentCause(), this);
+            MPTownTransactionEventUpkeep event = new MPTownTransactionEventUpkeep(frame.getCurrentCause(), this);
             if (Sponge.getEventManager().post(event)) {
                 return BigDecimal.ZERO;
             }
@@ -319,7 +331,12 @@ public class MPTown implements Town {
         if (!uOpt.isPresent()) {
             return false;
         }
-
+        try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            JoinTownEvent.Pre event = new MPJoinTownEventPre(frame.getCurrentCause(), this);
+            if (Sponge.getEventManager().post(event)) {
+                return false;
+            }
+        }
         final CitizenData cd = Sponge.getDataManager().getManipulatorBuilder(CitizenData.class).get().create();
         cd.set(CitizenKeys.TOWN, this.id);
         cd.set(CitizenKeys.RANK, rank);
@@ -329,6 +346,10 @@ public class MPTown implements Town {
         }
         this.citizens++;
         setDirty(true);
+        try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            JoinTownEvent.Post event = new MPJoinTownEventPost(frame.getCurrentCause(), this);
+            Sponge.getEventManager().post(event);
+        }
         return true;
     }
 
@@ -339,12 +360,22 @@ public class MPTown implements Town {
         if (!uOpt.isPresent()) {
             return false;
         }
+        try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            LeaveTownEvent.Pre event = new MPLeaveTownEventPre(frame.getCurrentCause(), this);
+            if (Sponge.getEventManager().post(event)) {
+                return false;
+            }
+        }
         final DataTransactionResult result = uOpt.get().remove(CitizenData.class);
         if (!result.isSuccessful()) {
             return false;
         }
         this.citizens--;
         setDirty(true);
+        try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            LeaveTownEvent.Post event = new MPLeaveTownEventPost(frame.getCurrentCause(), this);
+            Sponge.getEventManager().post(event);
+        }
         return true;
     }
 
@@ -353,6 +384,19 @@ public class MPTown implements Town {
         int current = this.plots.getInt(type);
         if (current >= this.type.getMaxPlots(type)) {
             return false;
+        }
+        final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
+        final PlotData pd = Sponge.getDataManager().getManipulatorBuilder(PlotData.class).get().create();
+        pd.set(PlotKeys.TOWN, this.id);
+        pd.set(PlotKeys.TYPE, type);
+        if (name != null) {
+            pd.set(PlotKeys.NAME, name);
+        }
+        try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            ClaimPlotEvent.Pre event = new MPClaimPlotEventPre(frame.getCurrentCause(), pd);
+            if (Sponge.getEventManager().post(event)) {
+                return false;
+            }
         }
         if (type == PlotTypes.OUTPOST) {
             Optional<OutpostData> odOpt = getOrCreate(OutpostData.class);
@@ -368,25 +412,32 @@ public class MPTown implements Town {
             odOpt.get().set(TownKeys.OUTPOSTS, map);
             offer(odOpt.get());
         }
-        final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        final PlotData pd = Sponge.getDataManager().getManipulatorBuilder(PlotData.class).get().create();
-        pd.set(PlotKeys.TOWN, this.id);
-        pd.set(PlotKeys.TYPE, type);
-        if (name != null) {
-            pd.set(PlotKeys.NAME, name);
-        }
         final Optional<PlotData> pdOpt = ps.claim(location, pd);
         if (pdOpt.isPresent()) {
             return false;
         }
         this.plots.put(type, ++current);
         setDirty(true);
+        try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            ClaimPlotEvent.Post event = new MPClaimPlotEventPost(frame.getCurrentCause(), pd);
+            Sponge.getEventManager().post(event);
+        }
         return true;
     }
 
     @Override
     public boolean unclaim(Location<World> location) {
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
+        final Optional<PlotData> pd = ps.get(location);
+        if (!pd.isPresent()) {
+            return false;
+        }
+        try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            UnclaimPlotEvent.Pre event = new MPUnclaimPlotEventPre(frame.getCurrentCause(), pd.get());
+            if (Sponge.getEventManager().post(event)) {
+                return false;
+            }
+        }
         final Optional<PlotData> pdOpt = ps.unclaim(location);
         if (!pdOpt.isPresent()) {
             return false;
@@ -399,6 +450,10 @@ public class MPTown implements Town {
         int current = this.plots.getInt(type);
         this.plots.put(type, --current);
         setDirty(true);
+        try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            UnclaimPlotEvent.Post event = new MPUnclaimPlotEventPost(frame.getCurrentCause(), pd.get());
+            Sponge.getEventManager().post(event);
+        }
         return true;
     }
 

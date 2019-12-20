@@ -1,23 +1,21 @@
-package me.morpheus.metropolis.event;
+package me.morpheus.metropolis.event.town;
 
-import it.unimi.dsi.fastutil.objects.Object2DoubleFunction;
-import me.morpheus.metropolis.api.event.TownTransactionEvent;
+import me.morpheus.metropolis.api.event.town.TownTransactionEvent;
 import me.morpheus.metropolis.api.town.Town;
-import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.cause.Cause;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.DoubleSupplier;
 
-public final class TownTransactionEventUpkeep implements TownTransactionEvent.Upkeep {
+public final class MPTownTransactionEventUpkeep implements TownTransactionEvent.Upkeep {
 
     private final Cause cause;
     private final Town town;
     private final Map<String, DoubleSupplier> map = new HashMap<>();
 
 
-    public TownTransactionEventUpkeep(Cause cause, Town town) {
+    public MPTownTransactionEventUpkeep(Cause cause, Town town) {
         this.cause = cause;
         this.town = town;
     }
