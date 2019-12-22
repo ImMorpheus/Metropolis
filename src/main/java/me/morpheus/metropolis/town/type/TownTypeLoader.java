@@ -31,6 +31,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class TownTypeLoader implements CustomResourceLoader<TownType> {
 
+    private static final Path TOWN_TYPE = ConfigUtil.CUSTOM.resolve("town-type");
+
     @Override
     public String getId() {
         return "town_type";
@@ -44,21 +46,23 @@ public class TownTypeLoader implements CustomResourceLoader<TownType> {
     public Collection<TownType> load() {
         Set<TownType> townTypes = new HashSet<>();
 
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(ConfigUtil.TOWN_TYPE)) {
-            for (Path file : stream) {
-                MPLog.getLogger().info("Loading townType from {}", file.getFileName());
+        if (Files.exists(TownTypeLoader.TOWN_TYPE)) {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(TownTypeLoader.TOWN_TYPE)) {
+                for (Path file : stream) {
+                    MPLog.getLogger().info("Loading townType from {}", file.getFileName());
 
-                try {
-                    if (!townTypes.add(load(file))) {
-                        MPLog.getLogger().warn("Duplicate townType from {}", file.toAbsolutePath());
+                    try {
+                        if (!townTypes.add(load(file))) {
+                            MPLog.getLogger().warn("Duplicate townType from {}", file.toAbsolutePath());
+                        }
+                    } catch (IOException | ObjectMappingException e) {
+                        MPLog.getLogger().error("Unable to load townType", e);
                     }
-                } catch (IOException | ObjectMappingException e) {
-                    MPLog.getLogger().error("Unable to load townType", e);
                 }
+            } catch (IOException e) {
+                MPLog.getLogger().error("Unable to load townTypes", e);
+                return Collections.emptyList();
             }
-        } catch (IOException e) {
-            MPLog.getLogger().error("Unable to load townTypes", e);
-            return Collections.emptyList();
         }
 
         if (townTypes.isEmpty()) {
@@ -93,9 +97,16 @@ public class TownTypeLoader implements CustomResourceLoader<TownType> {
     @Override
     public CompletableFuture<Void> save() {
         return CompletableFuture.runAsync(() -> {
+            if (Files.notExists(TownTypeLoader.TOWN_TYPE)) {
+                try {
+                    Files.createDirectories(TownTypeLoader.TOWN_TYPE);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             final Collection<? extends CatalogType> types = Sponge.getRegistry().getAllOf(TownType.class);
             for (CatalogType catalogType : types) {
-                final Path save = ConfigUtil.TOWN_TYPE.resolve(catalogType.getId() + ".conf");
+                final Path save = TownTypeLoader.TOWN_TYPE.resolve(catalogType.getId() + ".conf");
                 try {
                     if (Files.notExists(save)) {
                         Files.createFile(save);

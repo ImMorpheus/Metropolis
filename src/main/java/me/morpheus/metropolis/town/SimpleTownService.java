@@ -46,6 +46,8 @@ public class SimpleTownService implements TownService {
     private final Int2ObjectMap<Town> towns = new Int2ObjectOpenHashMap<>();
     private final IntSet deleted = new IntOpenHashSet();
 
+    private static final Path TOWN_DATA = ConfigUtil.DATA.resolve("town");
+
     static {
         final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
         Sponge.getEventManager().registerListeners(plugin, new InternalTownHandler());
@@ -108,6 +110,13 @@ public class SimpleTownService implements TownService {
     @Override
     public CompletableFuture<Void> saveAll() {
         return CompletableFuture.runAsync(() -> {
+            if (Files.notExists(SimpleTownService.TOWN_DATA)) {
+                try {
+                    Files.createDirectories(SimpleTownService.TOWN_DATA);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             for (Town town : this.towns.values()) {
                 if (((MPTown) town).isDirty()) {
                     internal$save(town);
@@ -118,7 +127,7 @@ public class SimpleTownService implements TownService {
             while (iterator.hasNext()) {
                 final String current = Integer.toString(iterator.nextInt());
                 try {
-                    Files.deleteIfExists(ConfigUtil.TOWN_DATA.resolve(current));
+                    Files.deleteIfExists(SimpleTownService.TOWN_DATA.resolve(current));
                     iterator.remove();
                 } catch (Exception e) {
                     MPLog.getLogger().error("Unable to remove deleted Town at {}", current);
@@ -131,8 +140,8 @@ public class SimpleTownService implements TownService {
     private void internal$save(Town town) {
         final String id = Integer.toString(town.getId());
 
-        final Path save = ConfigUtil.TOWN_DATA.resolve(id);
-        final Path tmp = ConfigUtil.TOWN_DATA.resolve(id + ".tmp");
+        final Path save = SimpleTownService.TOWN_DATA.resolve(id);
+        final Path tmp = SimpleTownService.TOWN_DATA.resolve(id + ".tmp");
         final DataContainer container = town.toContainer();
 
         try (OutputStream out = Files.newOutputStream(tmp, StandardOpenOption.CREATE)) {
@@ -148,19 +157,21 @@ public class SimpleTownService implements TownService {
     @Override
     public CompletableFuture<Void> loadAll() {
         return CompletableFuture.runAsync(() -> {
-            try (Stream<Path> towns = Files.list(ConfigUtil.TOWN_DATA)) {
-                towns.forEach(town -> {
-                    try (InputStream in = Files.newInputStream(town)) {
-                        final DataContainer container = DataFormats.JSON.readFrom(in);
-                        final Town t = from(container);
-                        register(t);
-                    } catch (Exception e) {
-                        MPLog.getLogger().error("Unable to load Town ({})", town);
-                        MPLog.getLogger().error("Error: ", e);
-                    }
-                });
-            } catch (IOException e) {
-                MPLog.getLogger().error("Unable to load Towns ", e);
+            if (Files.exists(SimpleTownService.TOWN_DATA)) {
+                try (Stream<Path> towns = Files.list(SimpleTownService.TOWN_DATA)) {
+                    towns.forEach(town -> {
+                        try (InputStream in = Files.newInputStream(town)) {
+                            final DataContainer container = DataFormats.JSON.readFrom(in);
+                            final Town t = from(container);
+                            register(t);
+                        } catch (Exception e) {
+                            MPLog.getLogger().error("Unable to load Town ({})", town);
+                            MPLog.getLogger().error("Error: ", e);
+                        }
+                    });
+                } catch (IOException e) {
+                    MPLog.getLogger().error("Unable to load Towns ", e);
+                }
             }
         });
     }

@@ -98,6 +98,7 @@ import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @Plugin(id = Metropolis.ID, name = Metropolis.NAME, version = Metropolis.VERSION, description = Metropolis.DESCRIPTION)
@@ -127,18 +128,16 @@ public class Metropolis {
         Sponge.getServiceManager().setProvider(this.container, PlotService.class, new SimplePlotService());
         Sponge.getServiceManager().setProvider(this.container, InvitationService.class, new SimpleInvitationService());
         Sponge.getServiceManager().setProvider(this.container, IncidentService.class, new SimpleIncidentService());
-
-        try {
-            ConfigUtil.init();
-        } catch (IOException e) {
-            Sponge.getServiceManager().provideUnchecked(IncidentService.class)
-                    .create(new MPIncident(MPGenericErrors.config(), e));
-        }
     }
 
     @Listener
     public void onInit(GameInitializationEvent event) {
-        initConfigService();
+        try {
+            registerConfigService();
+        } catch (Exception e) {
+            Sponge.getServiceManager().provideUnchecked(IncidentService.class)
+                    .create(new MPIncident(MPGenericErrors.config(), e));
+        }
         registerCommands();
 
         Sponge.getEventManager().registerListeners(this.container, new ChangeBlockHandler());
@@ -313,27 +312,22 @@ public class Metropolis {
         Sponge.getCommandManager().register(this.container, mpadmin, "mpadmin");
     }
 
-    private void initConfigService() {
-        try {
-            final ConfigService cs = new SimpleConfigService();
-            if (Files.notExists(ConfigUtil.CONF)) {
-                Files.createFile(ConfigUtil.CONF);
-                Sponge.getServiceManager().setProvider(this.container, ConfigService.class, cs);
-                cs.save()
-                        .thenRun(() -> MPLog.getLogger().info("Config saved"))
-                        .exceptionally(throwable -> {
-                            Sponge.getServiceManager().provideUnchecked(IncidentService.class)
-                                    .create(new MPIncident(MPGenericErrors.config(), throwable));
-                            return null;
-                        });
-            } else {
-                cs.reload().get();
-                MPLog.getLogger().info("Config loaded");
-                Sponge.getServiceManager().setProvider(this.container, ConfigService.class, cs);
-            }
-        } catch (Exception e) {
-            Sponge.getServiceManager().provideUnchecked(IncidentService.class)
-                    .create(new MPIncident(MPGenericErrors.config(), e));
+    private void registerConfigService() throws IOException, ExecutionException, InterruptedException {
+        final ConfigService cs = new SimpleConfigService();
+        if (Files.notExists(ConfigUtil.CONF)) {
+            Files.createFile(ConfigUtil.CONF);
+            Sponge.getServiceManager().setProvider(this.container, ConfigService.class, cs);
+            cs.save()
+                    .thenRun(() -> MPLog.getLogger().info("Config saved"))
+                    .exceptionally(throwable -> {
+                        Sponge.getServiceManager().provideUnchecked(IncidentService.class)
+                                .create(new MPIncident(MPGenericErrors.config(), throwable));
+                        return null;
+                    });
+        } else {
+            cs.reload().get();
+            MPLog.getLogger().info("Config loaded");
+            Sponge.getServiceManager().setProvider(this.container, ConfigService.class, cs);
         }
     }
 }

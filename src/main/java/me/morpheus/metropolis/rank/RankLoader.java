@@ -32,6 +32,8 @@ import java.util.concurrent.CompletableFuture;
 
 public class RankLoader implements CustomResourceLoader<Rank> {
 
+    private static final Path RANK = ConfigUtil.CUSTOM.resolve("rank");
+
     @Override
     public String getId() {
         return "rank";
@@ -46,21 +48,23 @@ public class RankLoader implements CustomResourceLoader<Rank> {
     public Collection<Rank> load() {
         Set<Rank> ranks = new HashSet<>();
 
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(ConfigUtil.RANK)) {
-            for (Path file : stream) {
-                MPLog.getLogger().info("Loading rank from {}", file.getFileName());
+        if (Files.exists(RankLoader.RANK)) {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(RankLoader.RANK)) {
+                for (Path file : stream) {
+                    MPLog.getLogger().info("Loading rank from {}", file.getFileName());
 
-                try {
-                    if (!ranks.add(load(file))) {
-                        MPLog.getLogger().warn("Duplicate rank from {}", file.toAbsolutePath());
+                    try {
+                        if (!ranks.add(load(file))) {
+                            MPLog.getLogger().warn("Duplicate rank from {}", file.toAbsolutePath());
+                        }
+                    } catch (IOException | ObjectMappingException e) {
+                        MPLog.getLogger().error("Unable to load rank", e);
                     }
-                } catch (IOException | ObjectMappingException e) {
-                    MPLog.getLogger().error("Unable to load rank", e);
                 }
+            } catch (IOException e) {
+                MPLog.getLogger().error("Unable to load ranks", e);
+                return Collections.emptyList();
             }
-        } catch (IOException e) {
-            MPLog.getLogger().error("Unable to load ranks", e);
-            return Collections.emptyList();
         }
 
         if (ranks.isEmpty()) {
@@ -96,9 +100,16 @@ public class RankLoader implements CustomResourceLoader<Rank> {
     @Override
     public CompletableFuture<Void> save() {
         return CompletableFuture.runAsync(() -> {
+            if (Files.notExists(RankLoader.RANK)) {
+                try {
+                    Files.createDirectories(RankLoader.RANK);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
             final Collection<? extends CatalogType> types = Sponge.getRegistry().getAllOf(Rank.class);
             for (CatalogType catalogType : types) {
-                final Path save = ConfigUtil.RANK.resolve(catalogType.getId() + ".conf");
+                final Path save = RankLoader.RANK.resolve(catalogType.getId() + ".conf");
                 try {
                     if (Files.notExists(save)) {
                         Files.createFile(save);
