@@ -185,8 +185,7 @@ public class Metropolis {
         final Collection<Incident> incidents = is.getAll();
 
         if (!incidents.isEmpty()) {
-            Sponge.getEventManager().unregisterPluginListeners(this.container);
-            Sponge.getEventManager().registerListeners(this.container, new WarningLoginHandler());
+            is.setSafeMode();
 
             MPLog.getLogger().error("{} failed to start", Metropolis.NAME);
 

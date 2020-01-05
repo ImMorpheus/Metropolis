@@ -9,4 +9,6 @@ public interface IncidentService {
 
     Collection<Incident> getAll();
 
+    void setSafeMode(); //TODO
+
 }
