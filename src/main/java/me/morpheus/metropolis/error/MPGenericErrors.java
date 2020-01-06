@@ -16,11 +16,11 @@ public final class MPGenericErrors {
                 .build();
     }
 
-    public static Text permissionService() {
+    public static Text economyService() {
         return Text.builder()
                 .append(Text.NEW_LINE)
                 .append(Text.of(TextColors.RED, "+----------------------------+")).append(Text.NEW_LINE)
-                .append(Text.of(TextColors.RED, "| MISSING PERMISSIONSERVICE  |")).append(Text.NEW_LINE)
+                .append(Text.of(TextColors.RED, "| MISSING ECONOMYSERVICE     |")).append(Text.NEW_LINE)
                 .append(Text.of(TextColors.RED, "+----------------------------+")).append(Text.NEW_LINE)
                 .append(Text.EMPTY).append(Text.NEW_LINE)
                 .append(Text.of(TextColors.RED, "The server has been whitelisted to protect the towns")).append(Text.NEW_LINE)

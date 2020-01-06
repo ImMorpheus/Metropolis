@@ -161,11 +161,8 @@ public class Metropolis {
 
     @Listener
     public void onPostInit(GameAboutToStartServerEvent event) {
-        final IncidentService is = Sponge.getServiceManager().provideUnchecked(IncidentService.class);
-        Incident i = MPreconditions.checkDefaultRanks();
-        if (i != null) {
-            is.create(i);
-        }
+        MPreconditions.checkDefaultRanks();
+        MPreconditions.checkEconomyIntegration();
     }
 
     @Listener
