@@ -4,9 +4,12 @@ import com.google.common.reflect.TypeToken;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.api.custom.CustomResourceLoader;
+import me.morpheus.metropolis.api.health.IncidentService;
 import me.morpheus.metropolis.api.town.TownType;
 import me.morpheus.metropolis.config.ConfigUtil;
 import me.morpheus.metropolis.configurate.serialize.Object2IntSerializer;
+import me.morpheus.metropolis.error.MPGenericErrors;
+import me.morpheus.metropolis.health.MPIncident;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.commented.SimpleCommentedConfigurationNode;
@@ -23,9 +26,11 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -44,32 +49,24 @@ public class TownTypeLoader implements CustomResourceLoader<TownType> {
     }
 
     public Collection<TownType> load() {
-        Set<TownType> townTypes = new HashSet<>();
-
         if (Files.exists(TownTypeLoader.TOWN_TYPE)) {
+            final List<TownType> townTypes = new ArrayList<>();
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(TownTypeLoader.TOWN_TYPE)) {
                 for (Path file : stream) {
                     MPLog.getLogger().info("Loading townType from {}", file.getFileName());
-
-                    try {
-                        if (!townTypes.add(load(file))) {
-                            MPLog.getLogger().warn("Duplicate townType from {}", file.toAbsolutePath());
-                        }
-                    } catch (IOException | ObjectMappingException e) {
-                        MPLog.getLogger().error("Unable to load townType", e);
-                    }
+                    townTypes.add(load(file));
                 }
-            } catch (IOException e) {
-                MPLog.getLogger().error("Unable to load townTypes", e);
+                return townTypes;
+            } catch (Exception e) {
+                Sponge.getServiceManager().provideUnchecked(IncidentService.class)
+                        .create(new MPIncident(MPGenericErrors.config(), e));
                 return Collections.emptyList();
             }
         }
 
-        if (townTypes.isEmpty()) {
-            townTypes.add(new MPTownType("settlement", "Settlement", "", 1, 10, 100, 20, 100));
-        }
-        return townTypes;
-
+        return Collections.singletonList(
+                new MPTownType("settlement", "Settlement", "", 1, 10, 100, 20, 100)
+        );
     }
 
     @Override

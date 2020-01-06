@@ -5,8 +5,11 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.api.custom.CustomResourceLoader;
 import me.morpheus.metropolis.api.flag.Flag;
+import me.morpheus.metropolis.api.health.IncidentService;
 import me.morpheus.metropolis.config.ConfigUtil;
 import me.morpheus.metropolis.configurate.serialize.Object2IntSerializer;
+import me.morpheus.metropolis.error.MPGenericErrors;
+import me.morpheus.metropolis.health.MPIncident;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.commented.SimpleCommentedConfigurationNode;
@@ -23,9 +26,12 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -45,37 +51,29 @@ public class FlagLoader implements CustomResourceLoader<Flag> {
 
     @Override
     public Collection<Flag> load() {
-        Set<Flag> flags = new HashSet<>();
-
         if (Files.exists(FlagLoader.FLAG)) {
+            final List<Flag> flags = new ArrayList<>();
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(FlagLoader.FLAG)) {
                 for (Path file : stream) {
                     MPLog.getLogger().info("Loading flag from {}", file.getFileName());
-
-                    try {
-                        if (!flags.add(load(file))) {
-                            MPLog.getLogger().warn("Duplicate flag from {}", file.toAbsolutePath());
-                        }
-                    } catch (IOException | ObjectMappingException e) {
-                        MPLog.getLogger().error("Unable to load flag", e);
-                    }
+                    flags.add(load(file));
                 }
-            } catch (IOException e) {
-                MPLog.getLogger().error("Unable to load flags", e);
+                return flags;
+            } catch (Exception e) {
+                Sponge.getServiceManager().provideUnchecked(IncidentService.class)
+                        .create(new MPIncident(MPGenericErrors.config(), e));
                 return Collections.emptyList();
             }
         }
 
-        if (flags.isEmpty()) {
-            flags.add(new MPFlag("block_break", "Block Break"));
-            flags.add(new MPFlag("block_change", "Block Change"));
-            flags.add(new MPFlag("block_place", "Block Place"));
-            flags.add(new MPFlag("damage", "Damage"));
-            flags.add(new MPFlag("interact_block", "Interact Block"));
-            flags.add(new MPFlag("interact_entity", "Interact Entity"));
-        }
-        return flags;
-
+        return Arrays.asList(
+                new MPFlag("block_break", "Block Break"),
+                new MPFlag("block_change", "Block Change"),
+                new MPFlag("block_place", "Block Place"),
+                new MPFlag("damage", "Damage"),
+                new MPFlag("interact_block", "Interact Block"),
+                new MPFlag("interact_entity", "Interact Entity")
+        );
     }
 
     @Override

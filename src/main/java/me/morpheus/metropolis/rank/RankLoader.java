@@ -5,9 +5,12 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.api.custom.CustomResourceLoader;
+import me.morpheus.metropolis.api.health.IncidentService;
 import me.morpheus.metropolis.api.rank.Rank;
 import me.morpheus.metropolis.config.ConfigUtil;
 import me.morpheus.metropolis.configurate.serialize.Object2IntSerializer;
+import me.morpheus.metropolis.error.MPGenericErrors;
+import me.morpheus.metropolis.health.MPIncident;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.commented.SimpleCommentedConfigurationNode;
@@ -24,9 +27,12 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -46,33 +52,25 @@ public class RankLoader implements CustomResourceLoader<Rank> {
 
     @Override
     public Collection<Rank> load() {
-        Set<Rank> ranks = new HashSet<>();
-
         if (Files.exists(RankLoader.RANK)) {
+            final List<Rank> ranks = new ArrayList<>();
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(RankLoader.RANK)) {
                 for (Path file : stream) {
                     MPLog.getLogger().info("Loading rank from {}", file.getFileName());
-
-                    try {
-                        if (!ranks.add(load(file))) {
-                            MPLog.getLogger().warn("Duplicate rank from {}", file.toAbsolutePath());
-                        }
-                    } catch (IOException | ObjectMappingException e) {
-                        MPLog.getLogger().error("Unable to load rank", e);
-                    }
+                    ranks.add(load(file));
                 }
-            } catch (IOException e) {
-                MPLog.getLogger().error("Unable to load ranks", e);
+                return ranks;
+            } catch (Exception e) {
+                Sponge.getServiceManager().provideUnchecked(IncidentService.class)
+                        .create(new MPIncident(MPGenericErrors.config(), e));
                 return Collections.emptyList();
             }
         }
 
-        if (ranks.isEmpty()) {
-            ranks.add(new MPRank("citizen", "Citizen", false, true, true, 0, Object2IntMaps.emptyMap()));
-            ranks.add(new MPRank("mayor", "Mayor", true, false, false, 250, Object2IntMaps.emptyMap()));
-        }
-        return ranks;
-
+        return Arrays.asList(
+                new MPRank("citizen", "Citizen", false, true, true, 0, Object2IntMaps.emptyMap()),
+                new MPRank("mayor", "Mayor", true, false, false, 250, Object2IntMaps.emptyMap())
+        );
     }
 
     @Override
