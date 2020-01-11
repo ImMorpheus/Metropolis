@@ -137,6 +137,7 @@ public class Metropolis {
         } catch (Exception e) {
             Sponge.getServiceManager().provideUnchecked(IncidentService.class)
                     .create(new MPIncident(MPGenericErrors.config(), e));
+            return;
         }
         registerCommands();
 
