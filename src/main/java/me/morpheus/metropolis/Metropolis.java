@@ -167,6 +167,12 @@ public class Metropolis {
 
     @Listener
     public void onServerStarting(GameStartingServerEvent event) {
+        final IncidentService is = Sponge.getServiceManager().provideUnchecked(IncidentService.class);
+
+        if (!is.isEmpty()) {
+            return;
+        }
+
         Sponge.getServiceManager().provideUnchecked(PlotService.class)
                 .loadAll()
                 .thenRun(() -> MPLog.getLogger().info("Plots loaded"));
@@ -209,6 +215,12 @@ public class Metropolis {
 
     @Listener
     public void onServerStopping(GameStoppingServerEvent event) {
+        final IncidentService is = Sponge.getServiceManager().provideUnchecked(IncidentService.class);
+
+        if (!is.isEmpty()) {
+            return;
+        }
+
         Sponge.getServiceManager().provideUnchecked(TownService.class)
                 .saveAll()
                 .thenRun(() -> MPLog.getLogger().info("Towns saved"));
