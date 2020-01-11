@@ -179,9 +179,8 @@ public class Metropolis {
     @Listener
     public void onServerStarted(GameStartedServerEvent event) {
         final IncidentService is = Sponge.getServiceManager().provideUnchecked(IncidentService.class);
-        final Collection<Incident> incidents = is.getAll();
 
-        if (!incidents.isEmpty()) {
+        if (!is.isEmpty()) {
             is.setSafeMode();
 
             MPLog.getLogger().error("{} failed to start", Metropolis.NAME);

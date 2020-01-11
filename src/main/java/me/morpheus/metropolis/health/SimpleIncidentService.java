@@ -36,6 +36,11 @@ public class SimpleIncidentService implements IncidentService {
     }
 
     @Override
+    public boolean isEmpty() {
+        return this.incidents == null;
+    }
+
+    @Override
     public void setSafeMode() {
         final PluginContainer container = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
         Sponge.getEventManager().unregisterPluginListeners(container);

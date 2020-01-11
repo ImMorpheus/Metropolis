@@ -9,6 +9,8 @@ public interface IncidentService {
 
     Collection<Incident> getAll();
 
+    boolean isEmpty();
+
     void setSafeMode(); //TODO
 
 }
