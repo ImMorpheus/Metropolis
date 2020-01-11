@@ -8,6 +8,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -16,15 +17,21 @@ import java.util.function.Supplier;
 
 public class SimpleIncidentService implements IncidentService {
 
-    private final List<Incident> incidents = new ArrayList<>();
+    @Nullable private List<Incident> incidents;
 
     @Override
     public void create(Incident i) {
+        if (this.incidents == null) {
+            this.incidents = new ArrayList<>();
+        }
         this.incidents.add(i);
     }
 
     @Override
     public Collection<Incident> getAll() {
+        if (this.incidents == null) {
+            return Collections.emptyList();
+        }
         return Collections.unmodifiableList(this.incidents);
     }
 
