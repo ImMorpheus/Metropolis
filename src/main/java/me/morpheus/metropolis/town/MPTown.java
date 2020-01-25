@@ -266,7 +266,7 @@ public class MPTown implements Town {
         final Text.Builder hoverBuilder = Text.builder();
         for (Reference2IntMap.Entry<PlotType> entry : this.plots.reference2IntEntrySet()) {
             hoverBuilder
-                    .append(Text.of(TextColors.DARK_GREEN, entry.getKey().getName(), TextColors.GREEN, ": [", entry.getIntValue(), "/", this.type.getMaxPlots(entry.getKey()), "]"))
+                    .append(Text.of(TextColors.DARK_GREEN, entry.getKey().getName(), ":", TextColors.GREEN, " [", entry.getIntValue(), "/", this.type.getMaxPlots(entry.getKey()), "]"))
                     .append(Text.NEW_LINE);
         }
         final Text plots = Text.builder()
