@@ -75,7 +75,8 @@ class ClaimCommand extends AbstractCitizenCommand {
                 return CommandResult.empty();
             }
             final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
-            final ResultType result = EconomyUtil.withdraw(accOpt.get(), es.getDefaultCurrency(), BigDecimal.valueOf(type.price(t)));
+            final double price = t.getType().getClaimPrice(type);
+            final ResultType result = EconomyUtil.withdraw(accOpt.get(), es.getDefaultCurrency(), BigDecimal.valueOf(price));
             if (result == ResultType.ACCOUNT_NO_FUNDS) {
                 source.sendMessage(TextUtil.watermark(TextColors.RED, "Not enough money"));
                 return CommandResult.empty();

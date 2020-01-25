@@ -1,6 +1,9 @@
 package me.morpheus.metropolis.town.type;
 
 import com.google.common.base.MoreObjects;
+import it.unimi.dsi.fastutil.objects.Reference2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import me.morpheus.metropolis.api.plot.PlotType;
 import me.morpheus.metropolis.api.town.TownType;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
@@ -11,33 +14,28 @@ class MPTownType implements TownType {
     @Setting private String id;
     @Setting private String name;
     @Setting(value = "tax-function") private String taxFunction;
-    @Setting(value = "spawn-cost") private double spawnCost;
-    @Setting(value = "plot-cost") private double plotCost;
-    @Setting(value = "outpost-cost") private double outpostCost;
-    @Setting(value = "max-citizen") private int maxCitizen;
-    @Setting(value = "max-plot") private int maxPlot;
+    @Setting(value = "spawn-price") private double spawnPrice;
+    @Setting(value = "claim-prices") private Reference2DoubleMap<PlotType> prices;
+    @Setting(value = "max-citizens") private int maxCitizens;
+    @Setting(value = "max-plots") private Reference2IntMap<PlotType> maxPlots;
 
-    MPTownType(String id, String name, String taxFunction,
-               double spawnCost, double plotCost, double outpostCost, int maxCitizen, int maxPlot) {
+    MPTownType(String id, String name, String taxFunction, double spawnPrice, int maxCitizens,
+               Reference2DoubleMap<PlotType> prices, Reference2IntMap<PlotType> maxPlots) {
         this.id = id;
         this.name = name;
         this.taxFunction = taxFunction;
-        this.spawnCost = spawnCost;
-        this.plotCost = plotCost;
-        this.outpostCost = outpostCost;
-        this.maxCitizen = maxCitizen;
-        this.maxPlot = maxPlot;
+        this.spawnPrice = spawnPrice;
+        this.maxCitizens = maxCitizens;
+        this.prices = prices;
+        this.prices.defaultReturnValue(Double.MAX_VALUE);
+        this.maxPlots = maxPlots;
+        this.maxPlots.defaultReturnValue(0);
     }
 
     private MPTownType() {
         this.id = "dummy";
         this.name = "DUMMY";
         this.taxFunction = "0";
-        this.spawnCost = 0;
-        this.plotCost = 0;
-        this.outpostCost = 0;
-        this.maxCitizen = 0;
-        this.maxPlot = 0;
     }
 
     @Override
@@ -56,28 +54,23 @@ class MPTownType implements TownType {
     }
 
     @Override
-    public double getSpawnCost() {
-        return this.spawnCost;
+    public double getSpawnPrice() {
+        return this.spawnPrice;
     }
 
     @Override
-    public double getPlotCost() {
-        return this.plotCost;
+    public double getClaimPrice(PlotType type) {
+        return this.prices.getDouble(type);
     }
 
     @Override
-    public double getOutpostCost() {
-        return this.outpostCost;
+    public int getMaxCitizens() {
+        return this.maxCitizens;
     }
 
     @Override
-    public int getMaxCitizen() {
-        return this.maxCitizen;
-    }
-
-    @Override
-    public int getMaxPlot() {
-        return this.maxPlot;
+    public int getMaxPlots(PlotType type) {
+        return this.maxPlots.getInt(type);
     }
 
     @Override

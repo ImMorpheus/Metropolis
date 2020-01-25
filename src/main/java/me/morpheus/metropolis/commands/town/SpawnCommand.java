@@ -56,7 +56,7 @@ class SpawnCommand extends AbstractPlayerCommand {
                 source.sendMessage(TextUtil.watermark(TextColors.RED, "Unable to retrieve player account"));
                 return CommandResult.empty();
             }
-            final ResultType result = EconomyUtil.withdraw(accOpt.get(), es.getDefaultCurrency(), BigDecimal.valueOf(townOpt.get().getType().getSpawnCost()));
+            final ResultType result = EconomyUtil.withdraw(accOpt.get(), es.getDefaultCurrency(), BigDecimal.valueOf(townOpt.get().getType().getSpawnPrice()));
             if (result == ResultType.ACCOUNT_NO_FUNDS) {
                 source.sendMessage(TextUtil.watermark(TextColors.RED, "Not enough money"));
                 return CommandResult.empty();

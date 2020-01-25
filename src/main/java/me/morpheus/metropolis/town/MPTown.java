@@ -2,6 +2,8 @@ package me.morpheus.metropolis.town;
 
 import com.google.common.base.MoreObjects;
 import com.udojava.evalex.Expression;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.town.TownData;
 import me.morpheus.metropolis.api.town.visibility.Visibilities;
@@ -53,6 +55,7 @@ import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.text.channel.MessageReceiver;
 import org.spongepowered.api.text.format.TextColors;
@@ -96,7 +99,7 @@ public class MPTown implements Town {
     private boolean dirty;
 
     private int citizens = 0;
-    private int plots = 0;
+    private final Reference2IntMap<PlotType> plots = new Reference2IntOpenHashMap<>();
 
     //Data
     private final Map<Class, DataManipulator> manipulators = new IdentityHashMap<>();
@@ -259,8 +262,18 @@ public class MPTown implements Town {
             final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
             list.add(Text.of(TextColors.DARK_GREEN, "Balance: ", TextColors.GREEN, es.getDefaultCurrency().getSymbol(), bOpt.get().getBalance(es.getDefaultCurrency())));
         }
-        list.add(Text.of(TextColors.DARK_GREEN, "Citizens: ", TextColors.GREEN, "[", this.citizens, "/", this.type.getMaxCitizen(), "]"));
-        list.add(Text.of(TextColors.DARK_GREEN, "Plots: ", TextColors.GREEN, "[", this.plots, "/", this.type.getMaxPlot(), "]"));
+        list.add(Text.of(TextColors.DARK_GREEN, "Citizens: ", TextColors.GREEN, "[", this.citizens, "/", this.type.getMaxCitizens(), "]"));
+        final Text.Builder hoverBuilder = Text.builder();
+        for (Reference2IntMap.Entry<PlotType> entry : this.plots.reference2IntEntrySet()) {
+            hoverBuilder
+                    .append(Text.of(TextColors.DARK_GREEN, entry.getKey().getName(), TextColors.GREEN, ": [", entry.getIntValue(), "/", this.type.getMaxPlots(entry.getKey()), "]"))
+                    .append(Text.NEW_LINE);
+        }
+        final Text plots = Text.builder()
+                .append(Text.of(TextColors.DARK_GREEN, "Plots: ", TextColors.GREEN, "[...]"))
+                .onHover(TextActions.showText(hoverBuilder.build()))
+                .build();
+        list.add(plots);
         list.add(Text.of(TextColors.DARK_GREEN, "Tag: ", TextColors.GREEN, this.tag));
         final Optional<TownData> tdOpt = get(TownData.class);
         if (tdOpt.isPresent()) {
@@ -298,7 +311,7 @@ public class MPTown implements Town {
 
     @Override
     public boolean accept(UUID user, Rank rank) {
-        if (this.citizens >= this.type.getMaxCitizen()) {
+        if (this.citizens >= this.type.getMaxCitizens()) {
             return false;
         }
         final UserStorageService uss = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
@@ -337,7 +350,8 @@ public class MPTown implements Town {
 
     @Override
     public boolean claim(Location<World> location, PlotType type, @Nullable Text name) {
-        if (this.plots >= this.type.getMaxPlot()) {
+        int current = this.plots.getInt(type);
+        if (current >= this.type.getMaxPlots(type)) {
             return false;
         }
         if (type == PlotTypes.OUTPOST) {
@@ -365,7 +379,7 @@ public class MPTown implements Town {
         if (pdOpt.isPresent()) {
             return false;
         }
-        this.plots++;
+        this.plots.put(type, ++current);
         setDirty(true);
         return true;
     }
@@ -377,11 +391,13 @@ public class MPTown implements Town {
         if (!pdOpt.isPresent()) {
             return false;
         }
-        if (pdOpt.get().type().get() == PlotTypes.OUTPOST) {
+        final PlotType type = pdOpt.get().type().get();
+        if (type == PlotTypes.OUTPOST) {
             Optional<OutpostData> odOpt = get(OutpostData.class);
             odOpt.ifPresent(outpostData -> outpostData.outposts().remove(pdOpt.get().name().get().toPlain()));
         }
-        this.plots--;
+        int current = this.plots.getInt(type);
+        this.plots.put(type, --current);
         setDirty(true);
         return true;
     }
@@ -456,12 +472,12 @@ public class MPTown implements Town {
         this.citizens = citizens;
     }
 
-    public int getPlots() {
+    public Reference2IntMap<PlotType> getPlots() {
         return this.plots;
     }
 
-    public void setPlots(int plots) {
-        this.plots = plots;
+    public void setPlots(Reference2IntMap<PlotType> plots) {
+        this.plots.putAll(plots);
     }
 
     // Data
@@ -493,9 +509,12 @@ public class MPTown implements Town {
                 .set(DataQuery.of("pvp"), this.pvp)
                 .set(DataQuery.of("spawn"), Hacks.toContainer(this.spawn))
                 .set(DataQuery.of("visibility"), this.visibility)
-                .set(DataQuery.of("citizens"), this.citizens)
-                .set(DataQuery.of("plots"), this.plots);
-
+                .set(DataQuery.of("citizens"), this.citizens);
+        final DataContainer plots = DataContainer.createNew();
+        for (Reference2IntMap.Entry<PlotType> entry : this.plots.reference2IntEntrySet()) {
+            plots.set(DataQuery.of(entry.getKey().getId()), entry.getIntValue());
+        }
+        data.set(DataQuery.of("plots"), plots);
         final Collection<DataManipulator> manipulators = this.manipulators.values();
         if (!manipulators.isEmpty()) {
             data.set(Hacks.DATA_MANIPULATORS, Hacks.serializeManipulatorList((Iterable<DataManipulator<?, ?>>) (Object) manipulators));

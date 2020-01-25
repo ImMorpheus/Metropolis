@@ -11,6 +11,4 @@ public interface PlotType extends CatalogType {
 
     boolean canClaim(Town t, Location<World> location);
 
-    double price(Town t);
-
 }

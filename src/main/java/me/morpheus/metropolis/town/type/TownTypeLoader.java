@@ -2,12 +2,21 @@ package me.morpheus.metropolis.town.type;
 
 import com.google.common.reflect.TypeToken;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Reference2DoubleOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.api.custom.CustomResourceLoader;
+import me.morpheus.metropolis.api.data.plot.PlotKeys;
 import me.morpheus.metropolis.api.health.IncidentService;
+import me.morpheus.metropolis.api.plot.PlotType;
+import me.morpheus.metropolis.api.plot.PlotTypes;
 import me.morpheus.metropolis.api.town.TownType;
 import me.morpheus.metropolis.config.ConfigUtil;
 import me.morpheus.metropolis.configurate.serialize.Object2IntSerializer;
+import me.morpheus.metropolis.configurate.serialize.Reference2DoubleSerializer;
+import me.morpheus.metropolis.configurate.serialize.Reference2IntSerializer;
 import me.morpheus.metropolis.error.MPGenericErrors;
 import me.morpheus.metropolis.health.MPIncident;
 import ninja.leaping.configurate.ConfigurationOptions;
@@ -64,8 +73,18 @@ public class TownTypeLoader implements CustomResourceLoader<TownType> {
             }
         }
 
+        final Reference2DoubleMap<PlotType> prices = new Reference2DoubleOpenHashMap<>();
+        prices.put(PlotTypes.HOMEBLOCK, 0);
+        prices.put(PlotTypes.PLOT, 10);
+        prices.put(PlotTypes.OUTPOST, 100);
+
+        final Reference2IntMap<PlotType> caps = new Reference2IntOpenHashMap<>();
+        caps.put(PlotTypes.HOMEBLOCK, 1);
+        caps.put(PlotTypes.PLOT, 100);
+        caps.put(PlotTypes.OUTPOST, 5);
+
         return Collections.singletonList(
-                new MPTownType("settlement", "Settlement", "", 1, 10, 100, 20, 100)
+                new MPTownType("settlement", "Settlement", "", 1, 20, prices, caps)
         );
     }
 
@@ -73,6 +92,8 @@ public class TownTypeLoader implements CustomResourceLoader<TownType> {
     public TownType load(Path path) throws IOException, ObjectMappingException {
         TypeSerializerCollection serializers = TypeSerializers.getDefaultSerializers().newChild();
         serializers.registerType(TypeToken.of(Object2IntMap.class), new Object2IntSerializer());
+        serializers.registerType(TypeToken.of(Reference2IntMap.class), new Reference2IntSerializer());
+        serializers.registerType(TypeToken.of(Reference2DoubleMap.class), new Reference2DoubleSerializer());
 
         ConfigurationOptions options = ConfigurationOptions.defaults().setSerializers(serializers);
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder()

@@ -4,6 +4,7 @@ import me.morpheus.metropolis.api.custom.CustomResourceLoaders;
 import me.morpheus.metropolis.api.town.TownType;
 import me.morpheus.metropolis.api.town.TownTypes;
 import me.morpheus.metropolis.custom.CustomResourceLoaderRegistryModule;
+import me.morpheus.metropolis.plot.PlotTypeRegistryModule;
 import org.spongepowered.api.registry.AdditionalCatalogRegistryModule;
 import org.spongepowered.api.registry.util.RegisterCatalog;
 import org.spongepowered.api.registry.util.RegistrationDependency;
@@ -14,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@RegistrationDependency(CustomResourceLoaderRegistryModule.class)
+@RegistrationDependency({CustomResourceLoaderRegistryModule.class, PlotTypeRegistryModule.class})
 public final class TownTypeRegistryModule implements AdditionalCatalogRegistryModule<TownType> {
 
     @RegisterCatalog(TownTypes.class)

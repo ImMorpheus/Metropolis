@@ -4,6 +4,7 @@ import me.morpheus.metropolis.api.command.AbstractMPCommand;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.EconomyCategory;
+import me.morpheus.metropolis.api.plot.PlotType;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.town.TownType;
 import me.morpheus.metropolis.api.town.TownTypes;
@@ -16,8 +17,14 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.HoverAction;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 class PriceCommand extends AbstractMPCommand {
@@ -40,15 +47,18 @@ class PriceCommand extends AbstractMPCommand {
                 .map(Town::getType)
                 .orElse(TownTypes.SETTLEMENT);
 
+        final Collection<PlotType> types = Sponge.getRegistry().getAllOf(PlotType.class);
+        final List<Text> contents = new ArrayList<>(types.size() + 3);
+        contents.add(Text.of(TextColors.DARK_GREEN, "Creation: ", TextColors.GREEN, economy.getTownCreationPrice()));
+        contents.add(Text.of(TextColors.DARK_GREEN, "Spawn: ", TextColors.GREEN, type.getSpawnPrice()));
+        contents.add(Text.of(TextColors.DARK_GREEN, "Tax: ", TextColors.GREEN, type.getTaxFunction()));
+        for (PlotType t : types) {
+            contents.add(Text.of(TextColors.DARK_GREEN, t.getName(), ": ", TextColors.GREEN, type.getMaxPlots(t)));
+        }
+
         PaginationList.builder()
                 .title(Text.of(TextColors.GOLD, "[", TextColors.YELLOW, "Prices", TextColors.GOLD, "]"))
-                .contents(
-                        Text.of(TextColors.DARK_GREEN, "Creation: ", TextColors.GREEN, economy.getTownCreationPrice()),
-                        Text.of(TextColors.DARK_GREEN, "Claim: ", TextColors.GREEN, type.getPlotCost()),
-                        Text.of(TextColors.DARK_GREEN, "Outpost: ", TextColors.GREEN, type.getOutpostCost()),
-                        Text.of(TextColors.DARK_GREEN, "Spawn: ", TextColors.GREEN, type.getSpawnCost()),
-                        Text.of(TextColors.DARK_GREEN, "Tax: ", TextColors.GREEN, type.getTaxFunction())
-                )
+                .contents(contents)
                 .padding(Text.of(TextColors.GOLD, "-"))
                 .sendTo(source);
 

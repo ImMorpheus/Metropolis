@@ -14,13 +14,11 @@ class MPPlotType implements PlotType {
     private final String id;
     private final String name;
     private final BiPredicate<Town, Location<World>> canClaim;
-    private final ToDoubleFunction<Town> price;
 
-    MPPlotType(String id, String name, BiPredicate<Town, Location<World>> canClaim, ToDoubleFunction<Town> price) {
+    MPPlotType(String id, String name, BiPredicate<Town, Location<World>> canClaim) {
         this.id = id;
         this.name = name;
         this.canClaim = canClaim;
-        this.price = price;
     }
 
     @Override
@@ -36,11 +34,6 @@ class MPPlotType implements PlotType {
     @Override
     public boolean canClaim(Town t, Location<World> location) {
         return this.canClaim.test(t, location);
-    }
-
-    @Override
-    public double price(Town t) {
-        return this.price.applyAsDouble(t);
     }
 
     @Override

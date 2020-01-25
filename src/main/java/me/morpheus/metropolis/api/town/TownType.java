@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.api.town;
 
+import me.morpheus.metropolis.api.plot.PlotType;
 import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.util.annotation.CatalogedBy;
 
@@ -8,14 +9,12 @@ public interface TownType extends CatalogType {
 
     String getTaxFunction();
 
-    double getSpawnCost();
+    double getSpawnPrice();
 
-    double getPlotCost();
+    double getClaimPrice(PlotType type);
 
-    double getOutpostCost();
+    int getMaxCitizens();
 
-    int getMaxCitizen();
-
-    int getMaxPlot();
+    int getMaxPlots(PlotType type);
 
 }
