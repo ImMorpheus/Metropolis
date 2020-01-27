@@ -33,13 +33,13 @@ class TagCommand extends AbstractCitizenCommand {
 
         final int tagMaxLength = townCategory.getTagMaxLength();
         if (tag.length() > tagMaxLength) {
-            source.sendMessage(TextUtil.watermark(TextColors.RED, "Tag can't be longer than ",  tagMaxLength, " char"));
+            source.sendMessage(TextUtil.watermark(TextColors.RED, "Tag can't be longer than ", tagMaxLength, " char"));
             return CommandResult.empty();
         }
 
         final int tagMinLength = townCategory.getTagMinLength();
         if (tag.length() < tagMinLength) {
-            source.sendMessage(TextUtil.watermark(TextColors.RED, "Tag can't be shorter than ",  tagMinLength, " char"));
+            source.sendMessage(TextUtil.watermark(TextColors.RED, "Tag can't be shorter than ", tagMinLength, " char"));
             return CommandResult.empty();
         }
 

@@ -66,7 +66,7 @@ public class Debug {
                         event.getClass().getSimpleName(), event.getCause().root(), event.getCause().all(), event.getCause().getContext(), canceled, b.toString(), event.toString());
             } else {
                 MPLog.getLogger().error("Class: {} \n| Root: {} \n| Cause: {} \n| Context: {} \n|  Canceled: {} \n| toS: {} \n",
-                        event.getClass().getSimpleName(), event.getCause().root(), event.getCause().all(), event.getCause().getContext(),  canceled, event.toString());
+                        event.getClass().getSimpleName(), event.getCause().root(), event.getCause().all(), event.getCause().getContext(), canceled, event.toString());
             }
         }
     }

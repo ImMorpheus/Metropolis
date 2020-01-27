@@ -87,7 +87,7 @@ public class MPOutpostData extends AbstractData<OutpostData, ImmutableOutpostDat
     }
 
     @Override
-    public MapValue<String, Location<World>>  outposts() {
+    public MapValue<String, Location<World>> outposts() {
         if (this.outposts == null) {
             this.outposts = new HashMap<>();
         }
@@ -99,7 +99,7 @@ public class MPOutpostData extends AbstractData<OutpostData, ImmutableOutpostDat
         return this.outposts;
     }
 
-    private void setOutposts(@Nullable Map<String, Location<World>>  outposts) {
+    private void setOutposts(@Nullable Map<String, Location<World>> outposts) {
         this.outposts = outposts;
     }
 }

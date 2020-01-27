@@ -108,7 +108,7 @@ public class SimpleTownService implements TownService {
 
     @Override
     public CompletableFuture<Void> save(Town town) {
-        return CompletableFuture.runAsync(() -> internal$save(town));
+        return CompletableFuture.runAsync(() -> implSave(town));
     }
 
     @Override
@@ -123,7 +123,7 @@ public class SimpleTownService implements TownService {
             }
             for (Town town : this.towns.values()) {
                 if (((MPTown) town).isDirty()) {
-                    internal$save(town);
+                    implSave(town);
                 }
             }
             final IntIterator iterator = this.deleted.iterator();
@@ -141,7 +141,7 @@ public class SimpleTownService implements TownService {
         });
     }
 
-    private void internal$save(Town town) {
+    private void implSave(Town town) {
         final String id = Integer.toString(town.getId());
 
         final Path save = SimpleTownService.TOWN_DATA.resolve(id);
