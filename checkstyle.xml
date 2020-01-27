@@ -29,7 +29,6 @@
         <module name="NeedBraces"/>
         <module name="NoWhitespaceAfter"/>
         <module name="NoWhitespaceBefore"/>
-        <module name="OperatorWrap"/>
         <module name="PackageName"/>
         <module name="ParameterName"/>
         <module name="ParenPad"/>
