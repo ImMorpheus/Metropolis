@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@RegistrationDependency(CustomResourceLoaderRegistryModule.class)
 public class FlagRegistryModule implements AdditionalCatalogRegistryModule<Flag> {
 
     @RegisterCatalog(Flags.class)
@@ -22,11 +21,12 @@ public class FlagRegistryModule implements AdditionalCatalogRegistryModule<Flag>
 
     @Override
     public void registerDefaults() {
-        final Collection<Flag> flags = CustomResourceLoaders.FLAG.load();
-
-        for (Flag flag : flags) {
-            register(flag);
-        }
+        register(new MPFlag("block_break", "Block Break"));
+        register(new MPFlag("block_change", "Block Change"));
+        register(new MPFlag("block_place", "Block Place"));
+        register(new MPFlag("damage", "Damage"));
+        register(new MPFlag("interact_block", "Interact Block"));
+        register(new MPFlag("interact_entity", "Interact Entity"));
     }
 
     private void register(Flag flag) {
