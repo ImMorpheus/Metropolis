@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.town.Town;
@@ -21,12 +22,17 @@ import java.util.Optional;
 class KickCommand extends AbstractCitizenCommand {
 
     KickCommand() {
-        super(MPGenericArguments.citizen(Text.of("citizen")), InputTokenizer.spaceSplitString());
+        super(
+                MPGenericArguments.citizen(Text.of("citizens")),
+                InputTokenizer.spaceSplitString(),
+                Metropolis.ID + ".commands.town.kick",
+                Text.of()
+        );
     }
 
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
-        final Collection<User> citizens = context.getAll("citizen");
+        final Collection<User> citizens = context.getAll("citizens");
 
         for (User citizen : citizens) {
             final CitizenData targetCd = citizen.get(CitizenData.class).get();
@@ -39,15 +45,5 @@ class KickCommand extends AbstractCitizenCommand {
         }
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Short desc"));
     }
 }

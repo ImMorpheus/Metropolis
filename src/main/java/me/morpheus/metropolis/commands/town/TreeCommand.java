@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractMPCommand;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
@@ -19,6 +20,13 @@ import java.util.Optional;
 import java.util.Set;
 
 class TreeCommand extends AbstractMPCommand {
+
+    public TreeCommand() {
+        super(
+                Metropolis.ID + ".commands.town.tree",
+                Text.of()
+        );
+    }
 
     @Override
     protected CommandResult process(CommandSource source, CommandContext context) throws CommandException {
@@ -49,15 +57,5 @@ class TreeCommand extends AbstractMPCommand {
             }
         }
         return commands;
-    }
-
-    @Override
-    public boolean testPermission(CommandSource source) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.empty();
     }
 }

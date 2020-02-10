@@ -9,19 +9,14 @@ import java.util.Optional;
 public final class TownDispatcher extends AbstractCommandDispatcher {
 
     @Override
-    public boolean testPermission(CommandSource source) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("town dispatcher"));
-    }
-
-    @Override
     public void registerDefaults() {
         register(new JoinCommand(), "join");
         register(new LeaveCommand(), "leave");
         register(new TakeoverCommand(), "takeover");
+    }
+
+    @Override
+    public Optional<Text> getShortDescription(CommandSource source) {
+        return Optional.empty();
     }
 }

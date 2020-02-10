@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town.citizen;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.town.Town;
@@ -23,7 +24,12 @@ import java.util.Optional;
 class InfoCommand extends AbstractMPCommand {
 
     InfoCommand() {
-        super(GenericArguments.onlyOne(MPGenericArguments.citizen(Text.of("citizen"))), InputTokenizer.rawInput());
+        super(
+                GenericArguments.onlyOne(MPGenericArguments.citizen(Text.of("citizen"))),
+                InputTokenizer.rawInput(),
+                Metropolis.ID + ".commands.town.citizen.info",
+                Text.of()
+        );
     }
 
     @Override
@@ -46,15 +52,5 @@ class InfoCommand extends AbstractMPCommand {
                 .sendTo(source);
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(CommandSource source) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Short desc"));
     }
 }

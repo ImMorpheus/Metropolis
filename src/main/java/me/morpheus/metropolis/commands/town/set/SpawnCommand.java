@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town.set;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.town.Town;
@@ -16,21 +17,18 @@ import java.util.Optional;
 
 class SpawnCommand extends AbstractHomeTownCommand {
 
+    public SpawnCommand() {
+        super(
+                Metropolis.ID + ".commands.town.set.spawn",
+                Text.of()
+        );
+    }
+
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, PlotData pd) throws CommandException {
         t.setSpawn(source.getLocation());
         t.sendMessage(TextUtil.watermark("Town spawn set to ", t.getSpawn().getBlockPosition(), " in ", t.getSpawn().getExtent().getName()));
 
         return CommandResult.success();
-    }
-
-    @Override
-    protected boolean testPermission(Player source, CitizenData cd, PlotData pd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Sets the town spawn"));
     }
 }

@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town.invitation;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractPlayerCommand;
 import me.morpheus.metropolis.api.town.invitation.Invitation;
 import me.morpheus.metropolis.api.town.invitation.InvitationService;
@@ -21,6 +22,13 @@ import java.util.List;
 import java.util.Optional;
 
 class ListCommand extends AbstractPlayerCommand {
+
+    public ListCommand() {
+        super(
+                Metropolis.ID + ".commands.town.invitation.list",
+                Text.of()
+        );
+    }
 
     @Override
     protected CommandResult process(Player source, CommandContext context) {
@@ -68,15 +76,5 @@ class ListCommand extends AbstractPlayerCommand {
                 .sendTo(source);
 
         return CommandResult.success();
-    }
-
-    @Override
-    protected boolean testPermission(Player player) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("List your invitation"));
     }
 }

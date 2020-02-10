@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractPlayerCommand;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.GlobalConfig;
@@ -34,7 +35,12 @@ import java.util.Optional;
 class NewCommand extends AbstractPlayerCommand {
 
     NewCommand() {
-        super(GenericArguments.onlyOne(GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)), InputTokenizer.rawInput());
+        super(
+                GenericArguments.onlyOne(GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)),
+                InputTokenizer.rawInput(),
+                Metropolis.ID + ".commands.town.new",
+                Text.of()
+        );
     }
 
     @Override
@@ -101,15 +107,5 @@ class NewCommand extends AbstractPlayerCommand {
         Sponge.getServer().getBroadcastChannel().send(broadcast);
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player player) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Creates new town"));
     }
 }

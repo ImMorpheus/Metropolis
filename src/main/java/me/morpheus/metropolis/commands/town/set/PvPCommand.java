@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town.set;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.town.Town;
@@ -21,26 +22,21 @@ import java.util.Optional;
 class PvPCommand extends AbstractCitizenCommand {
 
     PvPCommand() {
-        super(GenericArguments.onlyOne(MPGenericArguments.catalog(PvPOption.class, Text.of("toggle"))), InputTokenizer.rawInput());
+        super(
+                GenericArguments.onlyOne(MPGenericArguments.catalog(PvPOption.class, Text.of("option"))),
+                InputTokenizer.rawInput(),
+                Metropolis.ID + ".commands.town.set.pvp",
+                Text.of()
+        );
     }
 
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
-        final PvPOption toggle = context.requireOne("toggle");
+        final PvPOption option = context.requireOne("option");
 
-        t.setPvP(toggle);
-        t.sendMessage(TextUtil.watermark(TextColors.AQUA, "Town PvP set to ", toggle.getName()));
+        t.setPvP(option);
+        t.sendMessage(TextUtil.watermark(TextColors.AQUA, "Town PvP set to ", option.getName()));
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of(""));
     }
 }

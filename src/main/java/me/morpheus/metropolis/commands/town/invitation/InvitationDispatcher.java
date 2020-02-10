@@ -9,17 +9,12 @@ import java.util.Optional;
 public final class InvitationDispatcher extends AbstractCommandDispatcher {
 
     @Override
-    public boolean testPermission(CommandSource source) {
-        return true;
+    public void registerDefaults() {
+        register(new ListCommand(), "list");
     }
 
     @Override
     public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Invitation main command"));
-    }
-
-    @Override
-    public void registerDefaults() {
-        register(new ListCommand(), "list");
+        return Optional.empty();
     }
 }

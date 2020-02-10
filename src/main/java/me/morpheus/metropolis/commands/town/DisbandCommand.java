@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.rank.Rank;
 import me.morpheus.metropolis.api.rank.Ranks;
@@ -19,6 +20,13 @@ import java.util.Optional;
 
 class DisbandCommand extends AbstractCitizenCommand {
 
+    public DisbandCommand() {
+        super(
+                Metropolis.ID + ".commands.town.disband",
+                Text.of()
+        );
+    }
+
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
         final Rank rank = cd.rank().get();
@@ -34,15 +42,5 @@ class DisbandCommand extends AbstractCitizenCommand {
         Sponge.getServer().getBroadcastChannel().send(broadcast);
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Disbands a town"));
     }
 }

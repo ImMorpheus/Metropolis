@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town.plot;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.data.plot.PlotKeys;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
@@ -23,6 +24,13 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 class BuyCommand extends AbstractHomeTownCommand {
+
+    public BuyCommand() {
+        super(
+                Metropolis.ID + ".commands.town.plot.buy",
+                Text.of()
+        );
+    }
 
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, PlotData pd) throws CommandException {
@@ -57,15 +65,5 @@ class BuyCommand extends AbstractHomeTownCommand {
         pd.set(PlotKeys.FORSALE, false);
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd, PlotData pd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.empty();
     }
 }

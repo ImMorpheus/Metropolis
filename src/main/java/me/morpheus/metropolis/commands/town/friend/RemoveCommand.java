@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town.friend;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.citizen.CitizenKeys;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
@@ -22,12 +23,17 @@ import java.util.UUID;
 class RemoveCommand extends AbstractCitizenCommand {
 
     RemoveCommand() {
-        super(GenericArguments.user(Text.of("friend")), InputTokenizer.spaceSplitString());
+        super(
+                GenericArguments.user(Text.of("friends")),
+                InputTokenizer.spaceSplitString(),
+                Metropolis.ID + ".commands.town.friend.remove",
+                Text.of()
+        );
     }
 
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
-        Collection<User> users = context.getAll("friend");
+        Collection<User> users = context.getAll("friends");
 
         Set<UUID> friends = cd.friends().get();
         for (User user : users) {
@@ -37,15 +43,5 @@ class RemoveCommand extends AbstractCitizenCommand {
         source.offer(CitizenKeys.FRIENDS, friends);
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Remove friends"));
     }
 }

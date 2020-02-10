@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.town.invitation.InvitationService;
@@ -23,12 +24,17 @@ import java.util.Optional;
 class InviteCommand extends AbstractCitizenCommand {
 
     InviteCommand() {
-        super(MPGenericArguments.player(Text.of("player")), InputTokenizer.spaceSplitString());
+        super(
+                MPGenericArguments.player(Text.of("players")),
+                InputTokenizer.spaceSplitString(),
+                Metropolis.ID + ".commands.town.invite",
+                Text.of()
+        );
     }
 
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
-        final Collection<Player> players = context.getAll("player");
+        final Collection<Player> players = context.getAll("players");
 
         final InvitationService is = Sponge.getServiceManager().provideUnchecked(InvitationService.class);
 
@@ -39,16 +45,6 @@ class InviteCommand extends AbstractCitizenCommand {
         }
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Short desc"));
     }
 
 }

@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.admin.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractPlayerCommand;
 import me.morpheus.metropolis.api.rank.Ranks;
 import me.morpheus.metropolis.api.town.Town;
@@ -18,7 +19,12 @@ import java.util.Optional;
 class JoinCommand extends AbstractPlayerCommand {
 
     JoinCommand() {
-        super(GenericArguments.onlyOne(MPGenericArguments.town(Text.of("town"))), InputTokenizer.rawInput());
+        super(
+                GenericArguments.onlyOne(MPGenericArguments.town(Text.of("town"))),
+                InputTokenizer.rawInput(),
+                Metropolis.ID + ".commands.admin.town.join",
+                Text.of()
+        );
     }
     @Override
     protected CommandResult process(Player source, CommandContext context) throws CommandException {
@@ -29,15 +35,5 @@ class JoinCommand extends AbstractPlayerCommand {
             return CommandResult.empty();
         }
         return CommandResult.success();
-    }
-
-    @Override
-    protected boolean testPermission(Player player) {
-        return player.hasPermission("metropolis.command.admin.join");
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.empty();
     }
 }

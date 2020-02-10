@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.town.outpost.OutpostData;
@@ -23,6 +24,13 @@ import java.util.Optional;
 
 class OutpostsCommand extends AbstractCitizenCommand {
 
+    public OutpostsCommand() {
+        super(
+                Metropolis.ID + ".commands.town.outposts",
+                Text.of()
+        );
+    }
+
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
         final Optional<OutpostData> odOpt = t.get(OutpostData.class);
@@ -44,15 +52,5 @@ class OutpostsCommand extends AbstractCitizenCommand {
                 .sendTo(source);
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("List the outposts of your town"));
     }
 }

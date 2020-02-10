@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town.set;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.town.TownData;
@@ -23,7 +24,12 @@ import java.util.Optional;
 class MotdCommand extends AbstractCitizenCommand {
 
     MotdCommand() {
-        super(GenericArguments.onlyOne(GenericArguments.text(Text.of("motd"), TextSerializers.FORMATTING_CODE, false)), InputTokenizer.rawInput());
+        super(
+                GenericArguments.onlyOne(GenericArguments.text(Text.of("motd"), TextSerializers.FORMATTING_CODE, false)),
+                InputTokenizer.rawInput(),
+                Metropolis.ID + ".commands.town.set.motd",
+                Text.of()
+        );
     }
 
     @Override
@@ -42,15 +48,5 @@ class MotdCommand extends AbstractCitizenCommand {
         t.sendMessage(TextUtil.watermark(TextColors.AQUA, "Town motd set to ", motd));
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Change your town’s motd"));
     }
 }

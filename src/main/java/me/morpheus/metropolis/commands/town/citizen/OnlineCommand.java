@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town.citizen;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.citizen.CitizenKeys;
@@ -22,6 +23,13 @@ import java.util.stream.Collectors;
 
 class OnlineCommand extends AbstractCitizenCommand {
 
+    public OnlineCommand() {
+        super(
+                Metropolis.ID + ".commands.town.citizen.online",
+                Text.of()
+        );
+    }
+
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
         final List<Text> citizens = Sponge.getServer().getOnlinePlayers().stream()
@@ -37,15 +45,5 @@ class OnlineCommand extends AbstractCitizenCommand {
                 .sendTo(source);
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("List the outposts of your town"));
     }
 }

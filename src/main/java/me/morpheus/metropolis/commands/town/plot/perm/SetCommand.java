@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town.plot.perm;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.data.plot.PlotData;
@@ -20,11 +21,14 @@ import java.util.Optional;
 class SetCommand extends AbstractHomeTownCommand {
 
     SetCommand() {
-        super(GenericArguments.seq(
-                GenericArguments.onlyOne(MPGenericArguments.catalog(Flag.class, Text.of("flag"))),
-                GenericArguments.onlyOne(GenericArguments.integer(Text.of("value")))
+        super(
+                GenericArguments.seq(
+                        GenericArguments.onlyOne(MPGenericArguments.catalog(Flag.class, Text.of("flag"))),
+                        GenericArguments.onlyOne(GenericArguments.integer(Text.of("value")))
                 ),
-                InputTokenizer.rawInput()
+                InputTokenizer.rawInput(),
+                Metropolis.ID + ".commands.town.plot.perm.set",
+                Text.of()
         );
     }
 
@@ -36,15 +40,5 @@ class SetCommand extends AbstractHomeTownCommand {
         pd.addPermission(flag, value);
 
         return CommandResult.success();
-    }
-
-    @Override
-    protected boolean testPermission(Player source, CitizenData cd, PlotData pd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Short desc"));
     }
 }

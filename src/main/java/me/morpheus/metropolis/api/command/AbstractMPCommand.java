@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.api.command;
 
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
+import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import org.spongepowered.api.command.CommandCallable;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -9,27 +10,35 @@ import org.spongepowered.api.command.args.CommandArgs;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.parsing.InputTokenizer;
+import org.spongepowered.api.data.DataHolder;
+import org.spongepowered.api.service.context.Context;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public abstract class AbstractMPCommand implements CommandCallable {
 
     private final CommandElement args;
     private final InputTokenizer tokenizer;
+    private final String permission;
+    private final Text description;
 
-    protected AbstractMPCommand(CommandElement args, InputTokenizer tokenizer) {
+    protected AbstractMPCommand(CommandElement args, InputTokenizer tokenizer, String permission, Text description) {
         this.args = args;
         this.tokenizer = tokenizer;
+        this.permission = permission;
+        this.description = description;
     }
 
-    protected AbstractMPCommand() {
-        this(MPGenericArguments.empty(), InputTokenizer.rawInput());
+    protected AbstractMPCommand(String permission, Text description) {
+        this(MPGenericArguments.empty(), InputTokenizer.rawInput(), permission, description);
     }
 
     @Override
@@ -54,6 +63,24 @@ public abstract class AbstractMPCommand implements CommandCallable {
         ctx.putArg(CommandContext.TAB_COMPLETION, true);
         final List<String> ret = this.args.complete(source, args, ctx);
         return Collections.unmodifiableList(ret);
+    }
+
+    @Override
+    public boolean testPermission(CommandSource source) {
+        if (source instanceof DataHolder) {
+            Optional<CitizenData> cdOpt = ((DataHolder) source).get(CitizenData.class);
+            if (cdOpt.isPresent()) {
+                final Set<Context> contexts = new HashSet<>(source.getActiveContexts());
+                contexts.add(new Context("rank", cdOpt.get().rank().get().getId()));
+                return source.hasPermission(contexts, this.permission);
+            }
+        }
+        return source.hasPermission(this.permission);
+    }
+
+    @Override
+    public Optional<Text> getShortDescription(CommandSource source) {
+        return Optional.of(this.description);
     }
 
     @Override

@@ -8,16 +8,17 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 public abstract class AbstractPlayerCommand extends AbstractMPCommand {
 
-    protected AbstractPlayerCommand(CommandElement args, InputTokenizer tokenizer) {
-        super(args, tokenizer);
+    protected AbstractPlayerCommand(CommandElement args, InputTokenizer tokenizer, String permission, Text description) {
+        super(args, tokenizer, permission, description);
     }
 
-    protected AbstractPlayerCommand() {
-        super();
+    protected AbstractPlayerCommand(String permission, Text description) {
+        super(permission, description);
     }
 
     @Override
@@ -32,10 +33,4 @@ public abstract class AbstractPlayerCommand extends AbstractMPCommand {
 
     protected abstract CommandResult process(Player source, CommandContext context) throws CommandException;
 
-    @Override
-    public final boolean testPermission(CommandSource source) {
-        return source instanceof Player && testPermission((Player) source);
-    }
-
-    protected abstract boolean testPermission(Player player);
 }

@@ -11,18 +11,19 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
 public abstract class AbstractCitizenCommand extends AbstractPlayerCommand {
 
-    protected AbstractCitizenCommand(CommandElement args, InputTokenizer tokenizer) {
-        super(args, tokenizer);
+    protected AbstractCitizenCommand(CommandElement args, InputTokenizer tokenizer, String permission, Text description) {
+        super(args, tokenizer, permission, description);
     }
 
-    protected AbstractCitizenCommand() {
-        super();
+    protected AbstractCitizenCommand(String permission, Text description) {
+        super(permission, description);
     }
 
     @Override
@@ -42,14 +43,5 @@ public abstract class AbstractCitizenCommand extends AbstractPlayerCommand {
     }
 
     protected abstract CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException;
-
-    @Override
-    public final boolean testPermission(Player player) {
-        final Optional<CitizenData> cdOpt = player.get(CitizenData.class);
-        return cdOpt.isPresent() && testPermission(player, cdOpt.get());
-    }
-
-    protected abstract boolean testPermission(Player source, CitizenData cd);
-
 
 }

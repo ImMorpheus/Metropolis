@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.admin.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.rank.Rank;
@@ -18,20 +19,17 @@ import java.util.Optional;
 
 class LeaveCommand extends AbstractCitizenCommand {
 
+    public LeaveCommand() {
+        super(
+                Metropolis.ID + ".commands.admin.town.leave",
+                Text.of()
+        );
+    }
+
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
         source.remove(CitizenData.class);
         source.sendMessage(TextUtil.watermark(TextColors.AQUA, "You left the town"));
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return source.hasPermission("metropolis.command.admin.leave");
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Leaves a town"));
     }
 }

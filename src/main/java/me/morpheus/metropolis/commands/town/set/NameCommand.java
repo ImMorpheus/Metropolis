@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town.set;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.TownCategory;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
@@ -23,7 +24,12 @@ import java.util.Optional;
 class NameCommand extends AbstractCitizenCommand {
 
     NameCommand() {
-        super(GenericArguments.onlyOne(GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)), InputTokenizer.rawInput());
+        super(
+                GenericArguments.onlyOne(GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)),
+                InputTokenizer.rawInput(),
+                Metropolis.ID + ".commands.town.set.name",
+                Text.of()
+        );
     }
 
     @Override
@@ -48,15 +54,5 @@ class NameCommand extends AbstractCitizenCommand {
         t.sendMessage(TextUtil.watermark(TextColors.AQUA, "your town was renamed to ", name));
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Change your town’s name"));
     }
 }

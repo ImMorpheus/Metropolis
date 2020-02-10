@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.town.TownData;
 import me.morpheus.metropolis.api.town.Town;
@@ -25,12 +26,17 @@ import java.util.Optional;
 class InfoCommand extends AbstractMPCommand {
 
     InfoCommand() {
-        super(MPGenericArguments.townOrHomeTown(Text.of("town")), InputTokenizer.rawInput());
+        super(
+                MPGenericArguments.townOrHomeTown(Text.of("townOrHomeTown")),
+                InputTokenizer.rawInput(),
+                Metropolis.ID + ".commands.town.info",
+                Text.of()
+        );
     }
 
     @Override
     public CommandResult process(CommandSource source, CommandContext context) throws CommandException {
-        final Optional<Town> tOpt = context.getOne("town");
+        final Optional<Town> tOpt = context.getOne("townOrHomeTown");
 
         if (!tOpt.isPresent()) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "You don't have a town"));
@@ -46,15 +52,5 @@ class InfoCommand extends AbstractMPCommand {
                 .sendTo(source);
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(CommandSource source) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Shows a town’s town screen"));
     }
 }

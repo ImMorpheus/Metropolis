@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.town.TownService;
 import me.morpheus.metropolis.api.command.AbstractMPCommand;
@@ -16,6 +17,13 @@ import java.util.Optional;
 
 class ListCommand extends AbstractMPCommand {
 
+    public ListCommand() {
+        super(
+                Metropolis.ID + ".commands.town.list",
+                Text.of()
+        );
+    }
+
     @Override
     public CommandResult process(CommandSource source, CommandContext context) throws CommandException {
         final Text towns = Sponge.getServiceManager().provideUnchecked(TownService.class).towns()
@@ -29,15 +37,5 @@ class ListCommand extends AbstractMPCommand {
                 .sendTo(source);
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(CommandSource source) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Lists towns"));
     }
 }

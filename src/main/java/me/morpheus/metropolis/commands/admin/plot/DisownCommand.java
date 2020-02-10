@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.admin.plot;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
 import me.morpheus.metropolis.api.command.AbstractPlayerCommand;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
@@ -21,6 +22,13 @@ import java.util.Optional;
 
 class DisownCommand extends AbstractPlayerCommand {
 
+    public DisownCommand() {
+        super(
+                Metropolis.ID + ".commands.admin.plot.disown",
+                Text.of()
+        );
+    }
+
     @Override
     public CommandResult process(Player source, CommandContext context) throws CommandException {
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
@@ -35,15 +43,5 @@ class DisownCommand extends AbstractPlayerCommand {
         source.sendMessage(TextUtil.watermark(TextColors.AQUA, "The plot owner has been removed"));
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source) {
-        return source.hasPermission("metropolis.command.admin.disown");
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.empty();
     }
 }

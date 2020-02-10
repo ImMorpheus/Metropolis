@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.GlobalConfig;
@@ -27,7 +28,12 @@ import java.util.Optional;
 public class DepositCommand extends AbstractCitizenCommand {
 
     DepositCommand() {
-        super(GenericArguments.onlyOne(GenericArguments.bigDecimal(Text.of("amount"))), InputTokenizer.rawInput());
+        super(
+                GenericArguments.onlyOne(GenericArguments.bigDecimal(Text.of("amount"))),
+                InputTokenizer.rawInput(),
+                Metropolis.ID + ".commands.town.deposit",
+                Text.of()
+        );
     }
 
     @Override
@@ -57,15 +63,5 @@ public class DepositCommand extends AbstractCitizenCommand {
         }
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of(""));
     }
 }

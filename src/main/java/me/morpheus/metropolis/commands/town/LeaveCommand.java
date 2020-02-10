@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.rank.Rank;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
@@ -17,6 +18,13 @@ import org.spongepowered.api.text.format.TextColors;
 import java.util.Optional;
 
 class LeaveCommand extends AbstractCitizenCommand {
+
+    public LeaveCommand() {
+        super(
+                Metropolis.ID + ".commands.town.leave",
+                Text.of()
+        );
+    }
 
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
@@ -37,15 +45,5 @@ class LeaveCommand extends AbstractCitizenCommand {
         t.sendMessage(TextUtil.watermark(TextColors.AQUA, NameUtil.getDisplayName(source), " left the town"));
         source.sendMessage(TextUtil.watermark(TextColors.AQUA, "You left the town"));
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Leaves a town"));
     }
 }

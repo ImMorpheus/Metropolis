@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.citizen.CitizenKeys;
@@ -17,6 +18,13 @@ import java.util.Optional;
 
 class ChatCommand extends AbstractCitizenCommand {
 
+    public ChatCommand() {
+        super(
+                Metropolis.ID + ".commands.town.chat",
+                Text.of()
+        );
+    }
+
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
         final boolean current = cd.chat().get().booleanValue();
@@ -24,15 +32,5 @@ class ChatCommand extends AbstractCitizenCommand {
         source.offer(cd);
         source.sendMessage(TextUtil.watermark(TextColors.AQUA, "town chat set to ", !current));
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("TC"));
     }
 }

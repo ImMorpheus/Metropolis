@@ -9,16 +9,6 @@ import java.util.Optional;
 public final class SetDispatcher extends AbstractCommandDispatcher {
 
     @Override
-    public boolean testPermission(CommandSource source) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Town set main command"));
-    }
-
-    @Override
     public void registerDefaults() {
         register(new DescriptionCommand(), "description", "desc");
         register(new MotdCommand(), "motd");
@@ -27,5 +17,10 @@ public final class SetDispatcher extends AbstractCommandDispatcher {
         register(new PvPCommand(), "pvp");
         register(new SpawnCommand(), "spawn");
         register(new TagCommand(), "tag");
+    }
+
+    @Override
+    public Optional<Text> getShortDescription(CommandSource source) {
+        return Optional.empty();
     }
 }

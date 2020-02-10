@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town.plot;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.data.plot.PlotKeys;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
@@ -19,7 +20,12 @@ import java.util.Optional;
 class SellCommand extends AbstractHomeTownCommand {
 
     SellCommand() {
-        super(GenericArguments.onlyOne(GenericArguments.doubleNum(Text.of("price"))), InputTokenizer.rawInput());
+        super(
+                GenericArguments.onlyOne(GenericArguments.doubleNum(Text.of("price"))),
+                InputTokenizer.rawInput(),
+                Metropolis.ID + ".commands.town.plot.sell",
+                Text.of()
+        );
     }
 
     @Override
@@ -30,15 +36,5 @@ class SellCommand extends AbstractHomeTownCommand {
         pd.set(PlotKeys.PRICE, price);
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd, PlotData pd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.empty();
     }
 }

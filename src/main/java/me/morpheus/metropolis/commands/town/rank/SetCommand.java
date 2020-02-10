@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town.rank;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.citizen.CitizenKeys;
 import me.morpheus.metropolis.api.rank.Rank;
@@ -28,15 +29,17 @@ class SetCommand extends AbstractCitizenCommand {
         super(
                 GenericArguments.seq(
                         GenericArguments.onlyOne(MPGenericArguments.catalog(Rank.class, Text.of("rank"))),
-                        MPGenericArguments.citizen(Text.of("citizen"))
+                        MPGenericArguments.citizen(Text.of("citizens"))
                 ),
-                InputTokenizer.quotedStrings(false)
+                InputTokenizer.quotedStrings(false),
+                Metropolis.ID + ".commands.town.rank.set",
+                Text.of()
         );
     }
 
     @Override
     protected CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
-        final Collection<User> citizens = context.getAll("citizen");
+        final Collection<User> citizens = context.getAll("citizens");
         final Rank rank = context.requireOne("rank");
 
         for (User user : citizens) {
@@ -52,15 +55,5 @@ class SetCommand extends AbstractCitizenCommand {
         }
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Short desc"));
     }
 }

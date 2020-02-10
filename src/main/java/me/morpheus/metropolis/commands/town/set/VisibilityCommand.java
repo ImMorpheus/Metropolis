@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town.set;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
@@ -21,7 +22,12 @@ import java.util.Optional;
 class VisibilityCommand extends AbstractCitizenCommand {
 
     VisibilityCommand() {
-        super(GenericArguments.onlyOne(MPGenericArguments.catalog(Visibility.class, Text.of("visibility"))), InputTokenizer.rawInput());
+        super(
+                GenericArguments.onlyOne(MPGenericArguments.catalog(Visibility.class, Text.of("visibility"))),
+                InputTokenizer.rawInput(),
+                Metropolis.ID + ".commands.town.set.visibility",
+                Text.of()
+        );
     }
 
     @Override
@@ -32,15 +38,5 @@ class VisibilityCommand extends AbstractCitizenCommand {
         t.sendMessage(TextUtil.watermark(TextColors.AQUA, "Town visibility status set to ", visibility.getName()));
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of(""));
     }
 }

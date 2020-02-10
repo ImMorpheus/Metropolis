@@ -12,18 +12,19 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
 public abstract class AbstractHomeTownCommand extends AbstractCitizenCommand {
 
-    protected AbstractHomeTownCommand(CommandElement args, InputTokenizer tokenizer) {
-        super(args, tokenizer);
+    protected AbstractHomeTownCommand(CommandElement args, InputTokenizer tokenizer, String permission, Text description) {
+        super(args, tokenizer, permission, description);
     }
 
-    protected AbstractHomeTownCommand() {
-        super();
+    protected AbstractHomeTownCommand(String permission, Text description) {
+        super(permission, description);
     }
 
     @Override
@@ -46,12 +47,4 @@ public abstract class AbstractHomeTownCommand extends AbstractCitizenCommand {
 
     protected abstract CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, PlotData pd) throws CommandException;
 
-    @Override
-    protected final boolean testPermission(Player source, CitizenData cd) {
-        final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        final Optional<PlotData> pdOpt = ps.get(source.getLocation());
-        return pdOpt.isPresent() && testPermission(source, cd, pdOpt.get());
-    }
-
-    protected abstract boolean testPermission(Player source, CitizenData cd, PlotData pd);
 }

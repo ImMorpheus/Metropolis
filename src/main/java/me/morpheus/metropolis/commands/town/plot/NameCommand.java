@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town.plot;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
 import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
@@ -22,7 +23,12 @@ import java.util.Optional;
 class NameCommand extends AbstractHomeTownCommand {
 
     NameCommand() {
-        super(GenericArguments.onlyOne(GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)), InputTokenizer.rawInput());
+        super(
+                GenericArguments.onlyOne(GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)),
+                InputTokenizer.rawInput(),
+                Metropolis.ID + ".commands.town.plot.name",
+                Text.of()
+        );
     }
 
     @Override
@@ -33,15 +39,5 @@ class NameCommand extends AbstractHomeTownCommand {
         source.sendMessage(TextUtil.watermark(TextColors.AQUA, "Plot renamed to ", name));
 
         return CommandResult.success();
-    }
-
-    @Override
-    protected boolean testPermission(Player source, CitizenData cd, PlotData pd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Change your plot’s name"));
     }
 }

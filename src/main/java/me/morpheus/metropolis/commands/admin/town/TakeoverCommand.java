@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.admin.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
@@ -18,22 +19,19 @@ import java.util.Optional;
 
 class TakeoverCommand extends AbstractCitizenCommand {
 
+    public TakeoverCommand() {
+        super(
+                Metropolis.ID + ".commands.admin.town.takeover",
+                Text.of()
+        );
+    }
+
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
         cd.set(CitizenKeys.RANK, Ranks.MAYOR);
         source.offer(cd);
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return source.hasPermission("metropolis.command.admin.takeover");
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.empty();
     }
 }
 

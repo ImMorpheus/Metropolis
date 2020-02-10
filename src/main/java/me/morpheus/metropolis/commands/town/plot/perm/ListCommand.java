@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town.plot.perm;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
 import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
@@ -19,6 +20,13 @@ import java.util.Optional;
 
 class ListCommand extends AbstractHomeTownCommand {
 
+    public ListCommand() {
+        super(
+                Metropolis.ID + ".commands.town.plot.perm.list",
+                Text.of()
+        );
+    }
+
     @Override
     protected CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, PlotData pd) throws CommandException {
         final Text perms = Sponge.getRegistry().getAllOf(Flag.class).stream()
@@ -33,15 +41,5 @@ class ListCommand extends AbstractHomeTownCommand {
                 .sendTo(source);
 
         return CommandResult.success();
-    }
-
-    @Override
-    protected boolean testPermission(Player source, CitizenData cd, PlotData pd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("List perms"));
     }
 }

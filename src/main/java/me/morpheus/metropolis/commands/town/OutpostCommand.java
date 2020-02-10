@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.town.outpost.OutpostData;
@@ -23,7 +24,12 @@ import java.util.Optional;
 class OutpostCommand extends AbstractCitizenCommand {
 
     OutpostCommand() {
-        super(GenericArguments.onlyOne(GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)), InputTokenizer.rawInput());
+        super(
+                GenericArguments.onlyOne(GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)),
+                InputTokenizer.rawInput(),
+                Metropolis.ID + ".commands.town.outpost",
+                Text.of()
+        );
     }
 
     @Override
@@ -46,15 +52,5 @@ class OutpostCommand extends AbstractCitizenCommand {
 
         source.transferToWorld(out.getExtent(), out.getPosition());
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of());
     }
 }

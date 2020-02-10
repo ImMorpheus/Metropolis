@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.commands.admin;
 
 import me.morpheus.metropolis.MPLog;
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractMPCommand;
 import me.morpheus.metropolis.api.custom.CustomResourceLoader;
 import me.morpheus.metropolis.api.plot.PlotService;
@@ -20,6 +21,13 @@ import java.util.Optional;
 
 class SaveCommand extends AbstractMPCommand {
 
+    public SaveCommand() {
+        super(
+                Metropolis.ID + ".commands.admin.save",
+                Text.of()
+        );
+    }
+
     @Override
     public CommandResult process(CommandSource source, CommandContext context) throws CommandException {
         Sponge.getServiceManager().provideUnchecked(TownService.class)
@@ -31,15 +39,5 @@ class SaveCommand extends AbstractMPCommand {
                 .thenRun(() -> source.sendMessage(TextUtil.watermark("Plots saved")));
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(CommandSource source) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("save"));
     }
 }

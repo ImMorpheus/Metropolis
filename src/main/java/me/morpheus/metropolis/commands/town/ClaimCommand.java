@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.commands.town;
 
 import com.flowpowered.math.vector.Vector3i;
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.GlobalConfig;
@@ -41,7 +42,9 @@ class ClaimCommand extends AbstractCitizenCommand {
                                 GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)
                         )
                 ),
-                InputTokenizer.quotedStrings(false)
+                InputTokenizer.quotedStrings(false),
+                Metropolis.ID + ".commands.town.claim",
+                Text.of()
         );
     }
 
@@ -97,15 +100,5 @@ class ClaimCommand extends AbstractCitizenCommand {
         source.sendMessage(TextUtil.watermark(TextColors.AQUA, "Claimed: [", cp.getX(), ", ", cp.getZ(), "]"));
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player source, CitizenData cd) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Short desc"));
     }
 }

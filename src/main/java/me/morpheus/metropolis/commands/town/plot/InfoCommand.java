@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.commands.town.plot;
 
 import com.flowpowered.math.vector.Vector3i;
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.plot.PlotService;
 import me.morpheus.metropolis.api.town.Town;
@@ -23,6 +24,13 @@ import org.spongepowered.api.text.format.TextColors;
 import java.util.Optional;
 
 class InfoCommand extends AbstractPlayerCommand {
+
+    public InfoCommand() {
+        super(
+                Metropolis.ID + ".commands.town.plot.info",
+                Text.of()
+        );
+    }
 
     @Override
     public CommandResult process(Player source, CommandContext context) throws CommandException {
@@ -58,15 +66,5 @@ class InfoCommand extends AbstractPlayerCommand {
                 .sendTo(source);
 
         return CommandResult.success();
-    }
-
-    @Override
-    public boolean testPermission(Player player) {
-        return true;
-    }
-
-    @Override
-    public Optional<Text> getShortDescription(CommandSource source) {
-        return Optional.of(Text.of("Short desc"));
     }
 }
