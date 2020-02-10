@@ -200,6 +200,16 @@ public abstract class AbstractCommandDispatcher implements CommandDispatcher {
     }
 
     @Override
+    public boolean testPermission(CommandSource source) {
+        for (CommandMapping mapping : this.commands.values()) {
+            if (mapping.getCallable().testPermission(source)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public Optional<Text> getHelp(CommandSource source) {
         if (this.commands.isEmpty()) {
             return Optional.empty();
