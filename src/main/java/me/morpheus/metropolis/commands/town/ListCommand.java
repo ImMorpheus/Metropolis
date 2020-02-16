@@ -13,7 +13,9 @@ import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 class ListCommand extends AbstractMPCommand {
 
@@ -26,13 +28,13 @@ class ListCommand extends AbstractMPCommand {
 
     @Override
     public CommandResult process(CommandSource source, CommandContext context) throws CommandException {
-        final Text towns = Sponge.getServiceManager().provideUnchecked(TownService.class).towns()
+        final List<Text> towns = Sponge.getServiceManager().provideUnchecked(TownService.class).towns()
                 .map(Town::getName)
-                .reduce(Text.EMPTY, (t1, t2) -> Text.of(t1, ", ", t2));
+                .collect(Collectors.toList());
 
         PaginationList.builder()
                 .title(Text.of(TextColors.GOLD, "[", TextColors.YELLOW, "Towns", TextColors.GOLD, "]"))
-                .contents(Text.of(TextColors.AQUA, towns))
+                .contents(Text.of(TextColors.AQUA, Text.joinWith(Text.of(", "), towns)))
                 .padding(Text.of(TextColors.GOLD, "-"))
                 .sendTo(source);
 
