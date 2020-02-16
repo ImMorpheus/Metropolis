@@ -407,11 +407,9 @@ public class MPTown implements Town {
         final TownService ts = Sponge.getServiceManager().provideUnchecked(TownService.class);
         ts.delete(this.id);
 
-        final Text disband = TextUtil.watermark(TextColors.RED, "Your town has been disbanded");
         for (Player player : Sponge.getServer().getOnlinePlayers()) {
             player.get(CitizenKeys.TOWN).ifPresent(town -> {
                 if (town.intValue() == this.id) {
-                    player.sendMessage(disband);
                     player.remove(CitizenData.class);
                 }
             });
