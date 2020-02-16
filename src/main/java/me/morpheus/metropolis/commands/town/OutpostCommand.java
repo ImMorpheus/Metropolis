@@ -40,7 +40,7 @@ class OutpostCommand extends AbstractCitizenCommand {
         final Optional<OutpostData> odOpt = t.get(OutpostData.class);
 
         if (!odOpt.isPresent()) {
-            source.sendMessage(TextUtil.watermark(TextColors.RED, "Your town has not outpost"));
+            source.sendMessage(TextUtil.watermark(TextColors.RED, "Your town has no outpost"));
             return CommandResult.empty();
         }
 
