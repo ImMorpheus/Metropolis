@@ -29,13 +29,6 @@ class DisbandCommand extends AbstractCitizenCommand {
 
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
-        final Rank rank = cd.rank().get();
-
-        if (rank != Ranks.MAYOR) {
-            source.sendMessage(TextUtil.watermark(TextColors.RED, "You are not the mayor"));
-            return CommandResult.empty();
-        }
-
         t.disband();
 
         final Text broadcast = TextUtil.watermark(TextColors.AQUA, t.getName(), " fell into ruin ");
