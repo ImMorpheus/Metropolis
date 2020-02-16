@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.commands.town.set;
 
 import me.morpheus.metropolis.Metropolis;
+import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.TownCategory;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
@@ -25,7 +26,7 @@ class TagCommand extends AbstractCitizenCommand {
     TagCommand() {
         super(
                 GenericArguments.onlyOne(GenericArguments.string(Text.of("tag"))),
-                InputTokenizer.rawInput(),
+                MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.set.tag",
                 Text.of()
         );

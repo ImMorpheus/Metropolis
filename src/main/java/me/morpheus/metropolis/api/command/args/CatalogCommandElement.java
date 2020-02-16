@@ -31,10 +31,6 @@ class CatalogCommandElement<T extends CatalogType> extends CommandElement {
 
         final String id = args.next();
 
-        if (id.isEmpty()) {
-            return null;
-        }
-
         return Sponge.getRegistry().getType(this.type, id)
                 .orElseThrow(() -> args.createError(Text.of("Invalid ", this.type.getSimpleName(), "!")));
     }

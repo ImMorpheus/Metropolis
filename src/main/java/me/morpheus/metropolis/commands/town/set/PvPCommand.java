@@ -2,6 +2,7 @@ package me.morpheus.metropolis.commands.town.set;
 
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
+import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
@@ -24,7 +25,7 @@ class PvPCommand extends AbstractCitizenCommand {
     PvPCommand() {
         super(
                 GenericArguments.onlyOne(MPGenericArguments.catalog(PvPOption.class, Text.of("option"))),
-                InputTokenizer.rawInput(),
+                MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.set.pvp",
                 Text.of()
         );

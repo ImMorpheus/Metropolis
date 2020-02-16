@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.commands.town;
 
 import me.morpheus.metropolis.Metropolis;
+import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.town.TownData;
 import me.morpheus.metropolis.api.town.Town;
@@ -28,7 +29,7 @@ class InfoCommand extends AbstractMPCommand {
     InfoCommand() {
         super(
                 MPGenericArguments.townOrHomeTown(Text.of("townOrHomeTown")),
-                InputTokenizer.rawInput(),
+                MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.info",
                 Text.of()
         );

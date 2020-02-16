@@ -3,6 +3,7 @@ package me.morpheus.metropolis.commands.town.set;
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
+import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.town.visibility.Visibility;
@@ -24,7 +25,7 @@ class VisibilityCommand extends AbstractCitizenCommand {
     VisibilityCommand() {
         super(
                 GenericArguments.onlyOne(MPGenericArguments.catalog(Visibility.class, Text.of("visibility"))),
-                InputTokenizer.rawInput(),
+                MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.set.visibility",
                 Text.of()
         );

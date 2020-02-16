@@ -2,6 +2,7 @@ package me.morpheus.metropolis.commands.town.set;
 
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
+import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.town.TownData;
 import me.morpheus.metropolis.api.data.town.TownKeys;
@@ -26,7 +27,7 @@ class DescriptionCommand extends AbstractCitizenCommand {
     DescriptionCommand() {
         super(
                 GenericArguments.onlyOne(GenericArguments.text(Text.of("description"), TextSerializers.FORMATTING_CODE, false)),
-                InputTokenizer.rawInput(),
+                MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.set.description",
                 Text.of()
         );

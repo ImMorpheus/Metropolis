@@ -2,6 +2,7 @@ package me.morpheus.metropolis.commands.town;
 
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
+import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.GlobalConfig;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
@@ -32,7 +33,7 @@ class SpawnCommand extends AbstractPlayerCommand {
     SpawnCommand() {
         super(
                 MPGenericArguments.townOrHomeTown(Text.of("townOrHomeTown")),
-                InputTokenizer.rawInput(),
+                MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.spawn",
                 Text.of()
         );

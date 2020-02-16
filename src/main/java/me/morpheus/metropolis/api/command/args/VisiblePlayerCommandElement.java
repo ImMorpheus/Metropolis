@@ -31,10 +31,6 @@ class VisiblePlayerCommandElement extends CommandElement {
             return null;
         }
 
-        if (args.peek().isEmpty()) {
-            return null;
-        }
-
         final List<Player> players = new ArrayList<>(args.size());
 
         while (args.hasNext()) {

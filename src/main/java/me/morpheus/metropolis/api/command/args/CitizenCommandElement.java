@@ -33,10 +33,6 @@ public class CitizenCommandElement extends CommandElement {
             return null;
         }
 
-        if (args.peek().isEmpty()) {
-            return null;
-        }
-
         final List<User> users = new ArrayList<>(args.size());
 
         while (args.hasNext()) {

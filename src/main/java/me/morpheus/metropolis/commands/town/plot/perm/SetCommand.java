@@ -3,6 +3,7 @@ package me.morpheus.metropolis.commands.town.plot.perm;
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
+import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.flag.Flag;
@@ -26,7 +27,7 @@ class SetCommand extends AbstractHomeTownCommand {
                         GenericArguments.onlyOne(MPGenericArguments.catalog(Flag.class, Text.of("flag"))),
                         GenericArguments.onlyOne(GenericArguments.integer(Text.of("value")))
                 ),
-                InputTokenizer.rawInput(),
+                MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.plot.perm.set",
                 Text.of()
         );

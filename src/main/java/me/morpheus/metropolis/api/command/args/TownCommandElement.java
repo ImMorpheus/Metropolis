@@ -42,12 +42,6 @@ class TownCommandElement extends CommandElement {
         }
 
         final String name = args.next();
-        if (name.isEmpty()) {
-            if (this.sourceIfEmpty) {
-                return getTown(source);
-            }
-            return null;
-        }
 
         return Sponge.getServiceManager().provideUnchecked(TownService.class)
                 .towns()

@@ -21,7 +21,7 @@ class EmptyCommandElement extends CommandElement {
     @Override
     protected Object parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
         final int size = args.size();
-        if (size != 1 || !args.next().isEmpty()) {
+        if (size != 0) {
             throw args.createError(Text.of("This command doesn't need any argument!"));
         }
 

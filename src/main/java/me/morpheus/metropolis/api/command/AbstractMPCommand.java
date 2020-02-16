@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.api.command;
 
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
+import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import org.spongepowered.api.command.CommandCallable;
 import org.spongepowered.api.command.CommandException;
@@ -38,7 +39,7 @@ public abstract class AbstractMPCommand implements CommandCallable {
     }
 
     protected AbstractMPCommand(String permission, Text description) {
-        this(MPGenericArguments.empty(), InputTokenizer.rawInput(), permission, description);
+        this(MPGenericArguments.empty(), MinimalInputTokenizer.INSTANCE, permission, description);
     }
 
     @Override

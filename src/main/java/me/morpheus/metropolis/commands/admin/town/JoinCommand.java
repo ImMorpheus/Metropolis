@@ -2,6 +2,7 @@ package me.morpheus.metropolis.commands.admin.town;
 
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractPlayerCommand;
+import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.rank.Ranks;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
@@ -21,7 +22,7 @@ class JoinCommand extends AbstractPlayerCommand {
     JoinCommand() {
         super(
                 GenericArguments.onlyOne(MPGenericArguments.town(Text.of("town"))),
-                InputTokenizer.rawInput(),
+                MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.admin.town.join",
                 Text.of()
         );

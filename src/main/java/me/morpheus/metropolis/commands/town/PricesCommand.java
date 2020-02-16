@@ -3,6 +3,7 @@ package me.morpheus.metropolis.commands.town;
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractMPCommand;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
+import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.EconomyCategory;
 import me.morpheus.metropolis.api.plot.PlotType;
@@ -33,7 +34,7 @@ class PricesCommand extends AbstractMPCommand {
     PricesCommand() {
         super(
                 MPGenericArguments.townOrHomeTown(Text.of("townOrHomeTown")),
-                InputTokenizer.rawInput(),
+                MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.prices",
                 Text.of()
         );
