@@ -19,6 +19,8 @@ import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 class InfoCommand extends AbstractMPCommand {
@@ -39,6 +41,7 @@ class InfoCommand extends AbstractMPCommand {
 
         final TownService ts = Sponge.getServiceManager().provideUnchecked(TownService.class);
         final Town t = ts.get(cd.town().get().intValue()).get();
+        final String joined = DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneId.systemDefault()).format(cd.joined().get());
 
         PaginationList.builder()
                 .title(Text.of(TextColors.GOLD, "[", TextColors.YELLOW, NameUtil.getDisplayName(user), TextColors.GOLD, "]"))
@@ -46,7 +49,7 @@ class InfoCommand extends AbstractMPCommand {
                         Text.of(TextColors.DARK_GREEN, "Town: ", TextColors.GREEN, t.getName()),
                         Text.of(TextColors.DARK_GREEN, "Rank: ", TextColors.GREEN, cd.rank().get().getName()),
                         Text.of(TextColors.DARK_GREEN, "Friends: ", TextColors.GREEN, cd.friends().get()),
-                        Text.of(TextColors.DARK_GREEN, "Joined: ", TextColors.GREEN, cd.joined().get())
+                        Text.of(TextColors.DARK_GREEN, "Joined: ", TextColors.GREEN, joined)
                 )
                 .padding(Text.of(TextColors.GOLD, "-"))
                 .sendTo(source);
