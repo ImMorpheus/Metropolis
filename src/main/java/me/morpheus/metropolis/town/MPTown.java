@@ -393,7 +393,7 @@ public class MPTown implements Town {
             pd.set(PlotKeys.NAME, name);
         }
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
-            ClaimPlotEvent.Pre event = new MPClaimPlotEventPre(frame.getCurrentCause(), pd);
+            ClaimPlotEvent.Pre event = new MPClaimPlotEventPre(frame.getCurrentCause(), pd, location);
             if (Sponge.getEventManager().post(event)) {
                 return false;
             }
@@ -419,7 +419,7 @@ public class MPTown implements Town {
         this.plots.put(type, ++current);
         setDirty(true);
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
-            ClaimPlotEvent.Post event = new MPClaimPlotEventPost(frame.getCurrentCause(), pd);
+            ClaimPlotEvent.Post event = new MPClaimPlotEventPost(frame.getCurrentCause(), pd, location);
             Sponge.getEventManager().post(event);
         }
         return true;
@@ -427,17 +427,13 @@ public class MPTown implements Town {
 
     @Override
     public boolean unclaim(Location<World> location) {
-        final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        final Optional<PlotData> pd = ps.get(location);
-        if (!pd.isPresent()) {
-            return false;
-        }
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
-            UnclaimPlotEvent.Pre event = new MPUnclaimPlotEventPre(frame.getCurrentCause(), pd.get());
+            UnclaimPlotEvent.Pre event = new MPUnclaimPlotEventPre(frame.getCurrentCause(), location);
             if (Sponge.getEventManager().post(event)) {
                 return false;
             }
         }
+        final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
         final Optional<PlotData> pdOpt = ps.unclaim(location);
         if (!pdOpt.isPresent()) {
             return false;
@@ -451,7 +447,7 @@ public class MPTown implements Town {
         this.plots.put(type, --current);
         setDirty(true);
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
-            UnclaimPlotEvent.Post event = new MPUnclaimPlotEventPost(frame.getCurrentCause(), pd.get());
+            UnclaimPlotEvent.Post event = new MPUnclaimPlotEventPost(frame.getCurrentCause(), location);
             Sponge.getEventManager().post(event);
         }
         return true;

@@ -3,15 +3,17 @@ package me.morpheus.metropolis.event.plot;
 import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.event.plot.UnclaimPlotEvent;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 public final class MPUnclaimPlotEventPost implements UnclaimPlotEvent.Post {
 
     private final Cause cause;
-    private final PlotData plot;
+    private final Location<World> location;
 
-    public MPUnclaimPlotEventPost(Cause cause, PlotData plot) {
+    public MPUnclaimPlotEventPost(Cause cause, Location<World> location) {
         this.cause = cause;
-        this.plot = plot;
+        this.location = location;
     }
 
     @Override
@@ -20,7 +22,7 @@ public final class MPUnclaimPlotEventPost implements UnclaimPlotEvent.Post {
     }
 
     @Override
-    public PlotData getPlot() {
-        return this.plot;
+    public Location<World> getLocation() {
+        return this.location;
     }
 }
