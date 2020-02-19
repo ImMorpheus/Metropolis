@@ -8,6 +8,7 @@ import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.town.TownData;
 import me.morpheus.metropolis.api.event.plot.ClaimPlotEvent;
 import me.morpheus.metropolis.api.event.plot.UnclaimPlotEvent;
+import me.morpheus.metropolis.api.event.town.DeleteTownEvent;
 import me.morpheus.metropolis.api.event.town.JoinTownEvent;
 import me.morpheus.metropolis.api.event.town.LeaveTownEvent;
 import me.morpheus.metropolis.api.town.visibility.Visibilities;
@@ -15,6 +16,8 @@ import me.morpheus.metropolis.event.plot.MPClaimPlotEventPost;
 import me.morpheus.metropolis.event.plot.MPClaimPlotEventPre;
 import me.morpheus.metropolis.event.plot.MPUnclaimPlotEventPost;
 import me.morpheus.metropolis.event.plot.MPUnclaimPlotEventPre;
+import me.morpheus.metropolis.event.town.MPDeleteTownEventPost;
+import me.morpheus.metropolis.event.town.MPDeleteTownEventPre;
 import me.morpheus.metropolis.event.town.MPJoinTownEventPost;
 import me.morpheus.metropolis.event.town.MPJoinTownEventPre;
 import me.morpheus.metropolis.event.town.MPLeaveTownEventPost;
@@ -455,6 +458,12 @@ public class MPTown implements Town {
 
     @Override
     public void disband() {
+        try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            DeleteTownEvent.Pre event = new MPDeleteTownEventPre(frame.getCurrentCause(), this);
+            if (Sponge.getEventManager().post(event)) {
+                return;
+            }
+        }
         final TownService ts = Sponge.getServiceManager().provideUnchecked(TownService.class);
         ts.delete(this.id);
 
@@ -469,6 +478,10 @@ public class MPTown implements Town {
 
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
         ps.unclaim(pd -> pd.town().get().intValue() == this.id);
+        try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            DeleteTownEvent.Post event = new MPDeleteTownEventPost(frame.getCurrentCause(), this);
+            Sponge.getEventManager().post(event);
+        }
     }
 
     @Override
