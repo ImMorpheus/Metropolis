@@ -11,7 +11,7 @@ version = '0.0.1'
 dependencies {
     compile 'org.spongepowered:spongeapi:7.2.0-20200130.194701-33'
 
-    shadow 'it.unimi.dsi:fastutil:8.2.1'
+    shadow 'it.unimi.dsi:fastutil:8.3.1'
     compile 'com.udojava:EvalEx:2.5'
 }
 
