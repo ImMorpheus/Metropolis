@@ -20,13 +20,8 @@ checkstyle {
 }
 
 shadowJar {
-    baseName = 'shadow'
-    classifier = null
-    version = null
-
     relocate 'it.unimi', 'shadow.it'
     relocate 'com.udojava', 'shadow.com'
-
 }
 
 sponge.plugin.id = "metropolis"
