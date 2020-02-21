@@ -12,7 +12,6 @@ dependencies {
     compile 'org.spongepowered:spongeapi:7.2.0-20200130.194701-33'
 
     shadow 'it.unimi.dsi:fastutil:8.2.1'
-    compile 'me.lucko.luckperms:luckperms-api:4.4'
     compile 'com.udojava:EvalEx:2.1'
 }
 
