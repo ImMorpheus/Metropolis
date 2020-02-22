@@ -229,14 +229,16 @@ public class Metropolis {
 
         Sponge.getServiceManager().provideUnchecked(TownService.class)
                 .saveAll()
-                .thenRun(() -> MPLog.getLogger().info("Towns saved"));
+                .join();
+        MPLog.getLogger().info("Towns saved");
 
         Sponge.getServiceManager().provideUnchecked(PlotService.class)
                 .saveAll()
-                .thenRun(() -> MPLog.getLogger().info("Plots saved"));
+                .join();
+        MPLog.getLogger().info("Plots saved");
 
         for (CustomResourceLoader loader : Sponge.getRegistry().getAllOf(CustomResourceLoader.class)) {
-            loader.save();
+            loader.save().join();
         }
     }
 
