@@ -42,6 +42,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 public class TownTypeLoader implements CustomResourceLoader<TownType> {
 
@@ -119,7 +120,7 @@ public class TownTypeLoader implements CustomResourceLoader<TownType> {
                 try {
                     Files.createDirectories(TownTypeLoader.TOWN_TYPE);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new CompletionException(e);
                 }
             }
             final Collection<? extends CatalogType> types = Sponge.getRegistry().getAllOf(TownType.class);

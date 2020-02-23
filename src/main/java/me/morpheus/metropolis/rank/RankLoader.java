@@ -35,6 +35,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 public class RankLoader implements CustomResourceLoader<Rank> {
 
@@ -102,7 +103,7 @@ public class RankLoader implements CustomResourceLoader<Rank> {
                 try {
                     Files.createDirectories(RankLoader.RANK);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new CompletionException(e);
                 }
             }
             final Collection<? extends CatalogType> types = Sponge.getRegistry().getAllOf(Rank.class);

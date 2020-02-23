@@ -42,6 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.stream.Stream;
 
 public class SimpleTownService implements TownService {
@@ -121,7 +122,7 @@ public class SimpleTownService implements TownService {
                 try {
                     Files.createDirectories(SimpleTownService.TOWN_DATA);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new CompletionException(e);
                 }
             }
             for (Town town : this.towns.values()) {

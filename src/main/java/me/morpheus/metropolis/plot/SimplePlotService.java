@@ -35,6 +35,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -192,7 +193,7 @@ public class SimplePlotService implements PlotService {
                 try {
                     Files.createDirectories(SimplePlotService.PLOT_DATA);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new CompletionException(e);
                 }
             }
             for (Map.Entry<UUID, Map<Vector2i, PlotData>> entry : this.map.entrySet()) {
