@@ -269,19 +269,12 @@ public class SimplePlotService implements PlotService {
                                 final PlotData plotData = builder.build(container)
                                         .orElseThrow(() -> new InvalidDataException(container.toString()));
                                 claim(uuid, coord, plotData);
-                            } catch (Exception e) {
-                                MPLog.getLogger().error("Unable to load plot {}", plot);
-                                MPLog.getLogger().error("Error: ", e);
                             }
                         }
-                    } catch (Exception e) {
-                        MPLog.getLogger().error("Unable to load plots for world {}", uuid);
-                        MPLog.getLogger().error("Error: ", e);
                     }
-
                 }
             } catch (IOException e) {
-                MPLog.getLogger().error("Unable to load Plots ", e);
+                throw new CompletionException(e);
             }
         });
     }
