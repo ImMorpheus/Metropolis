@@ -184,6 +184,9 @@ public class SimplePlotService implements PlotService {
 
     @Override
     public CompletableFuture<Void> saveAll() {
+        if (this.map.isEmpty() && this.deleted.isEmpty()) {
+            return CompletableFuture.completedFuture(null);
+        }
         return CompletableFuture.runAsync(() -> {
             if (Files.notExists(SimplePlotService.PLOT_DATA)) {
                 try {
@@ -246,37 +249,38 @@ public class SimplePlotService implements PlotService {
 
     @Override
     public CompletableFuture<Void> loadAll() {
+        if (Files.notExists(SimplePlotService.PLOT_DATA)) {
+            return CompletableFuture.completedFuture(null);
+        }
         return CompletableFuture.runAsync(() -> {
-            if (Files.exists(SimplePlotService.PLOT_DATA)) {
-                final DataManipulatorBuilder<PlotData, ImmutablePlotData> builder = Sponge.getDataManager().getManipulatorBuilder(PlotData.class).get();
+            final DataManipulatorBuilder<PlotData, ImmutablePlotData> builder = Sponge.getDataManager().getManipulatorBuilder(PlotData.class).get();
 
-                try (DirectoryStream<Path> worlds = Files.newDirectoryStream(SimplePlotService.PLOT_DATA)) {
-                    for (Path world : worlds) {
-                        final UUID uuid = UUID.fromString(world.getFileName().toString());
-                        try (DirectoryStream<Path> plots = Files.newDirectoryStream(world)) {
-                            for (Path plot : plots) {
-                                final String[] name = plot.getFileName().toString().split("\\.");
-                                final Vector2i coord = Vector2i.from(Integer.parseInt(name[0]), Integer.parseInt(name[1]));
+            try (DirectoryStream<Path> worlds = Files.newDirectoryStream(SimplePlotService.PLOT_DATA)) {
+                for (Path world : worlds) {
+                    final UUID uuid = UUID.fromString(world.getFileName().toString());
+                    try (DirectoryStream<Path> plots = Files.newDirectoryStream(world)) {
+                        for (Path plot : plots) {
+                            final String[] name = plot.getFileName().toString().split("\\.");
+                            final Vector2i coord = Vector2i.from(Integer.parseInt(name[0]), Integer.parseInt(name[1]));
 
-                                try (InputStream in = Files.newInputStream(plot)) {
-                                    final DataContainer container = DataFormats.JSON.readFrom(in);
-                                    final PlotData plotData = builder.build(container)
-                                            .orElseThrow(() -> new InvalidDataException(container.toString()));
-                                    claim(uuid, coord, plotData);
-                                } catch (Exception e) {
-                                    MPLog.getLogger().error("Unable to load plot {}", plot);
-                                    MPLog.getLogger().error("Error: ", e);
-                                }
+                            try (InputStream in = Files.newInputStream(plot)) {
+                                final DataContainer container = DataFormats.JSON.readFrom(in);
+                                final PlotData plotData = builder.build(container)
+                                        .orElseThrow(() -> new InvalidDataException(container.toString()));
+                                claim(uuid, coord, plotData);
+                            } catch (Exception e) {
+                                MPLog.getLogger().error("Unable to load plot {}", plot);
+                                MPLog.getLogger().error("Error: ", e);
                             }
-                        } catch (Exception e) {
-                            MPLog.getLogger().error("Unable to load plots for world {}", uuid);
-                            MPLog.getLogger().error("Error: ", e);
                         }
-
+                    } catch (Exception e) {
+                        MPLog.getLogger().error("Unable to load plots for world {}", uuid);
+                        MPLog.getLogger().error("Error: ", e);
                     }
-                } catch (IOException e) {
-                    MPLog.getLogger().error("Unable to load Plots ", e);
+
                 }
+            } catch (IOException e) {
+                MPLog.getLogger().error("Unable to load Plots ", e);
             }
         });
     }

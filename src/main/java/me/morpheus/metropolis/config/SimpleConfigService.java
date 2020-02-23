@@ -54,7 +54,7 @@ public final class SimpleConfigService implements ConfigService {
     public CompletableFuture<Void> reload() {
         if (Files.notExists(ConfigUtil.CONF)) {
             save();
-            return CompletableFuture.allOf();
+            return CompletableFuture.completedFuture(null);
         }
         return CompletableFuture.runAsync(() -> {
             try {

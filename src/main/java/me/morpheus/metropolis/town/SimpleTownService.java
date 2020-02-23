@@ -113,6 +113,9 @@ public class SimpleTownService implements TownService {
 
     @Override
     public CompletableFuture<Void> saveAll() {
+        if (this.towns.isEmpty() && this.deleted.isEmpty()) {
+            return CompletableFuture.completedFuture(null);
+        }
         return CompletableFuture.runAsync(() -> {
             if (Files.notExists(SimpleTownService.TOWN_DATA)) {
                 try {
@@ -160,22 +163,23 @@ public class SimpleTownService implements TownService {
 
     @Override
     public CompletableFuture<Void> loadAll() {
+        if (Files.notExists(SimpleTownService.TOWN_DATA)) {
+            return CompletableFuture.completedFuture(null);
+        }
         return CompletableFuture.runAsync(() -> {
-            if (Files.exists(SimpleTownService.TOWN_DATA)) {
-                try (Stream<Path> towns = Files.list(SimpleTownService.TOWN_DATA)) {
-                    towns.forEach(town -> {
-                        try (InputStream in = Files.newInputStream(town)) {
-                            final DataContainer container = DataFormats.JSON.readFrom(in);
-                            final Town t = from(container);
-                            register(t);
-                        } catch (Exception e) {
-                            MPLog.getLogger().error("Unable to load Town ({})", town);
-                            MPLog.getLogger().error("Error: ", e);
-                        }
-                    });
-                } catch (IOException e) {
-                    MPLog.getLogger().error("Unable to load Towns ", e);
-                }
+            try (Stream<Path> towns = Files.list(SimpleTownService.TOWN_DATA)) {
+                towns.forEach(town -> {
+                    try (InputStream in = Files.newInputStream(town)) {
+                        final DataContainer container = DataFormats.JSON.readFrom(in);
+                        final Town t = from(container);
+                        register(t);
+                    } catch (Exception e) {
+                        MPLog.getLogger().error("Unable to load Town ({})", town);
+                        MPLog.getLogger().error("Error: ", e);
+                    }
+                });
+            } catch (IOException e) {
+                MPLog.getLogger().error("Unable to load Towns ", e);
             }
         });
     }
