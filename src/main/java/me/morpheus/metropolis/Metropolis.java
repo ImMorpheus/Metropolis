@@ -93,6 +93,7 @@ import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.text.Text;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -181,11 +182,19 @@ public class Metropolis {
 
         Sponge.getServiceManager().provideUnchecked(PlotService.class)
                 .loadAll()
-                .thenRun(() -> MPLog.getLogger().info("Plots loaded"));
+                .thenRun(() -> MPLog.getLogger().info("Plots loaded"))
+                .exceptionally(e -> {
+                    is.create(new MPIncident(Text.of("Error while loading the plots"), e));
+                    return null;
+                });
 
         Sponge.getServiceManager().provideUnchecked(TownService.class)
                 .loadAll()
-                .thenRun(() -> MPLog.getLogger().info("Towns loaded"));
+                .thenRun(() -> MPLog.getLogger().info("Towns loaded"))
+                .exceptionally(e -> {
+                    is.create(new MPIncident(Text.of("Error while loading the towns"), e));
+                    return null;
+                });
     }
 
     @Listener
