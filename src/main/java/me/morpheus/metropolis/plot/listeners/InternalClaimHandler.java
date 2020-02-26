@@ -23,10 +23,14 @@ public final class InternalClaimHandler {
 
     @Listener(order = Order.FIRST, beforeModifications = true)
     public void onClaimPre(ClaimPlotEvent.Pre event) {
-        final int town = event.getPlot().town().get();
         final PlotType type = event.getPlot().type().get();
+        if (type == PlotTypes.HOMEBLOCK) {
+            return;
+        }
+
         final UUID world = event.getLocation().getExtent().getUniqueId();
         final Vector2i cp = VectorUtil.toChunk2i(event.getLocation());
+
         if (type == PlotTypes.OUTPOST) {
             final PlotData e = this.ps.get(world, cp.add(1, 0));
             final PlotData w = this.ps.get(world, cp.add(-1, 0));
@@ -35,14 +39,16 @@ public final class InternalClaimHandler {
             if (e != null || w != null || s != null || n != null) {
                 event.setCancelled(true);
             }
-        } else if (type == PlotTypes.PLOT) {
-            final PlotData e = this.ps.get(world, cp.add(1, 0));
-            final PlotData w = this.ps.get(world, cp.add(-1, 0));
-            final PlotData s = this.ps.get(world, cp.add(0, 1));
-            final PlotData n = this.ps.get(world, cp.add(0, -1));
-            if (isNotTownPlot(town, e) && isNotTownPlot(town, w) && isNotTownPlot(town, s) && isNotTownPlot(town, n)) {
-                event.setCancelled(true);
-            }
+            return;
+        }
+
+        final int town = event.getPlot().town().get();
+        final PlotData e = this.ps.get(world, cp.add(1, 0));
+        final PlotData w = this.ps.get(world, cp.add(-1, 0));
+        final PlotData s = this.ps.get(world, cp.add(0, 1));
+        final PlotData n = this.ps.get(world, cp.add(0, -1));
+        if (isNotTownPlot(town, e) && isNotTownPlot(town, w) && isNotTownPlot(town, s) && isNotTownPlot(town, n)) {
+            event.setCancelled(true);
         }
     }
 
