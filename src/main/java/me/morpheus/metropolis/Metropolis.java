@@ -33,7 +33,6 @@ import me.morpheus.metropolis.api.town.visibility.Visibility;
 import me.morpheus.metropolis.api.util.MPTypeTokens;
 import me.morpheus.metropolis.commands.admin.AdminDispatcher;
 import me.morpheus.metropolis.commands.town.TownDispatcher;
-import me.morpheus.metropolis.config.ConfigUtil;
 import me.morpheus.metropolis.config.SimpleConfigService;
 import me.morpheus.metropolis.configurate.serialize.DurationSerializer;
 import me.morpheus.metropolis.custom.CustomResourceLoaderRegistryModule;
@@ -53,7 +52,6 @@ import me.morpheus.metropolis.data.town.outpost.ImmutableMPOutpostData;
 import me.morpheus.metropolis.data.town.outpost.MPOutpostData;
 import me.morpheus.metropolis.data.town.outpost.MPOutpostDataBuilder;
 import me.morpheus.metropolis.error.MPGenericErrors;
-import me.morpheus.metropolis.error.WarningLoginHandler;
 import me.morpheus.metropolis.flag.FlagRegistryModule;
 import me.morpheus.metropolis.health.MPIncident;
 import me.morpheus.metropolis.health.MPreconditions;
@@ -98,11 +96,8 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.Tristate;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
-import java.util.concurrent.ExecutionException;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -344,14 +339,14 @@ public class Metropolis {
                 .executor((src, args) -> {
                     final Optional<Boolean> toggleOpt = args.getOne(Text.of("toggle"));
                     if (!toggleOpt.isPresent()) {
-                        if (ChangeBlockDebugHandler.CHANGEBLOCK_CANCELLED == Tristate.UNDEFINED) {
-                            ChangeBlockDebugHandler.CHANGEBLOCK_ENABLED = false;
+                        if (ChangeBlockDebugHandler.changeblockCancelled == Tristate.UNDEFINED) {
+                            ChangeBlockDebugHandler.changeblockEnabled = false;
                         } else {
-                            ChangeBlockDebugHandler.CHANGEBLOCK_CANCELLED = Tristate.UNDEFINED;
+                            ChangeBlockDebugHandler.changeblockCancelled = Tristate.UNDEFINED;
                         }
                     } else {
-                        ChangeBlockDebugHandler.CHANGEBLOCK_ENABLED = true;
-                        ChangeBlockDebugHandler.CHANGEBLOCK_CANCELLED = Tristate.fromBoolean(toggleOpt.get());
+                        ChangeBlockDebugHandler.changeblockEnabled = true;
+                        ChangeBlockDebugHandler.changeblockCancelled = Tristate.fromBoolean(toggleOpt.get());
                     }
                     return CommandResult.success();
                 })

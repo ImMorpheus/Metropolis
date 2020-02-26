@@ -13,13 +13,13 @@ import org.spongepowered.api.util.Tristate;
 
 public final class ChangeBlockDebugHandler {
 
-    public static Tristate CHANGEBLOCK_CANCELLED = Tristate.UNDEFINED;
-    public static boolean CHANGEBLOCK_ENABLED = false;
+    public static Tristate changeblockCancelled = Tristate.UNDEFINED;
+    public static boolean changeblockEnabled = false;
 
     @IsCancelled(Tristate.UNDEFINED)
     @Listener(beforeModifications = true, order = Order.POST)
     public void onChangeBlockDebug(Event event) {
-        if (!ChangeBlockDebugHandler.CHANGEBLOCK_ENABLED) {
+        if (!ChangeBlockDebugHandler.changeblockEnabled) {
             return;
         }
         if (!(event instanceof ChangeBlockEvent.Pre
@@ -29,7 +29,7 @@ public final class ChangeBlockDebugHandler {
         }
 
         final boolean canceled = ((Cancellable) event).isCancelled();
-        if (ChangeBlockDebugHandler.CHANGEBLOCK_CANCELLED != Tristate.UNDEFINED && ChangeBlockDebugHandler.CHANGEBLOCK_CANCELLED != Tristate.fromBoolean(canceled)) {
+        if (ChangeBlockDebugHandler.changeblockCancelled != Tristate.UNDEFINED && ChangeBlockDebugHandler.changeblockCancelled != Tristate.fromBoolean(canceled)) {
             return;
         }
 
