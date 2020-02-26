@@ -19,8 +19,6 @@ public interface PlotService {
 
     Optional<PlotData> get(Location<World> loc);
 
-    Stream<PlotData> get(Explosion explosion); //TODO
-
     Optional<PlotData> claim(Location<World> loc, PlotData pd);
 
     Optional<PlotData> unclaim(Location<World> loc);
@@ -28,8 +26,6 @@ public interface PlotService {
     void unclaim(Predicate<PlotData> predicate);
 
     void unclaim(UUID world, Predicate<PlotData> predicate);
-
-    boolean testNear(Location<World> loc, Predicate<PlotData> predicate, boolean and); //TODO
 
     CompletableFuture<Void> saveAll();
 

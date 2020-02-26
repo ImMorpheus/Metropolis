@@ -91,37 +91,6 @@ public class SimplePlotService implements PlotService {
     }
 
     @Override
-    public Stream<PlotData> get(Explosion explosion) {
-        final Location<World> loc = explosion.getLocation();
-        final Map<Vector2i, PlotData> plots = this.map.get(loc.getExtent().getUniqueId());
-        if (plots == null) {
-            return Stream.empty();
-        }
-
-        final float radius = explosion.getRadius();
-        final Vector2i nw = to2i(loc.sub(radius, 0, radius));
-        final Vector2i se = to2i(loc.add(radius, 0, radius));
-
-        if (nw.equals(se)) {
-            final Vector2i center = to2i(loc);
-            return Stream.of(plots.get(center));
-        }
-
-        final List<PlotData> pds = new ArrayList<>();
-
-        for (; nw.getY() < se.getY(); nw.add(Vector2i.UNIT_Y)) {
-            for (; nw.getX() < se.getX(); nw.add(Vector2i.UNIT_X)) {
-                final PlotData pd = plots.get(nw);
-                if (pd != null) {
-                    pds.add(pd);
-                }
-            }
-        }
-
-        return pds.stream();
-    }
-
-    @Override
     public Optional<PlotData> claim(Location<World> loc, PlotData pd) {
         final Vector2i cp = to2i(loc);
         final UUID world = loc.getExtent().getUniqueId();
@@ -174,30 +143,6 @@ public class SimplePlotService implements PlotService {
                 }
             }
         }
-    }
-
-    @Override
-    public boolean testNear(Location<World> loc, Predicate<PlotData> predicate, boolean and) {
-        final UUID world = loc.getExtent().getUniqueId();
-        final Map<Vector2i, PlotData> plots = this.map.get(world);
-
-        if (plots == null) {
-            return predicate.test(null);
-        }
-        int x = loc.getChunkPosition().getX();
-        int z = loc.getChunkPosition().getZ();
-
-        if (and) {
-            return predicate.test(plots.get(Vector2i.from(x + 1, z)))
-                    && predicate.test(plots.get(Vector2i.from(x - 1, z)))
-                    && predicate.test(plots.get(Vector2i.from(x, z + 1)))
-                    && predicate.test(plots.get(Vector2i.from(x, z - 1)));
-        }
-
-        return predicate.test(plots.get(Vector2i.from(x + 1, z)))
-                || predicate.test(plots.get(Vector2i.from(x - 1, z)))
-                || predicate.test(plots.get(Vector2i.from(x, z + 1)))
-                || predicate.test(plots.get(Vector2i.from(x, z - 1)));
     }
 
     @Override
