@@ -10,6 +10,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.entity.explosive.DetonateExplosiveEvent;
+import org.spongepowered.api.event.world.ExplosionEvent;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.explosion.Explosion;
@@ -30,7 +31,7 @@ public final class InternalExplosionTownHandler {
     }
 
     @Listener(order = Order.FIRST, beforeModifications = true)
-    public void onExplosionPre(ExplosionTownEvent.Pre event) {
+    public void onExplosionPre(ExplosionEvent.Pre event) {
 //        final Optional<User> ownerOpt = event.getContext().get(EventContextKeys.OWNER);
 //        if (!ownerOpt.isPresent()) {
 //            event.setCancelled(true);
