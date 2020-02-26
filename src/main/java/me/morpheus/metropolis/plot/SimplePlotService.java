@@ -14,6 +14,7 @@ import me.morpheus.metropolis.plot.listeners.InternalExplosionTownHandler;
 import me.morpheus.metropolis.plot.listeners.InternalInteractHandler;
 import me.morpheus.metropolis.plot.listeners.InternalMoveEntityHandler;
 import me.morpheus.metropolis.plot.listeners.InternalNotifyHandler;
+import me.morpheus.metropolis.util.VectorUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.manipulator.DataManipulatorBuilder;
@@ -70,15 +71,10 @@ public class SimplePlotService implements PlotService {
 
     @Override
     public Optional<PlotData> get(Location<World> loc) {
-        final Vector2i cp = to2i(loc);
+        final Vector2i cp = VectorUtil.toChunk2i(loc);
         final UUID world = loc.getExtent().getUniqueId();
 
-        final Map<Vector2i, PlotData> plots = this.map.get(world);
-        if (plots == null) {
-            return Optional.empty();
-        }
-
-        return Optional.ofNullable(plots.get(cp));
+        return Optional.ofNullable(get(world, cp));
     }
 
     @Nullable
@@ -92,7 +88,7 @@ public class SimplePlotService implements PlotService {
 
     @Override
     public Optional<PlotData> claim(Location<World> loc, PlotData pd) {
-        final Vector2i cp = to2i(loc);
+        final Vector2i cp = VectorUtil.toChunk2i(loc);
         final UUID world = loc.getExtent().getUniqueId();
 
         return Optional.ofNullable(claim(world, cp, pd));
@@ -100,7 +96,7 @@ public class SimplePlotService implements PlotService {
 
     @Override
     public Optional<PlotData> unclaim(Location<World> loc) {
-        final Vector2i cp = to2i(loc);
+        final Vector2i cp = VectorUtil.toChunk2i(loc);
         final UUID world = loc.getExtent().getUniqueId();
 
         final Map<Vector2i, PlotData> plots = this.map.get(world);
@@ -256,10 +252,5 @@ public class SimplePlotService implements PlotService {
     private PlotData claim(final UUID world, final Vector2i chunk, final PlotData pd) {
         final Map<Vector2i, PlotData> plots = this.map.computeIfAbsent(world, k -> new HashMap<>());
         return plots.putIfAbsent(chunk, pd);
-    }
-
-    private Vector2i to2i(final Location<World> loc) {
-        final Vector3i cp = loc.getChunkPosition();
-        return Vector2i.from(cp.getX(), cp.getZ());
     }
 }
