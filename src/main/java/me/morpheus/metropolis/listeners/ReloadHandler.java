@@ -9,7 +9,7 @@ import org.spongepowered.api.event.game.GameReloadEvent;
 
 import java.io.IOException;
 
-public class ReloadHandler {
+public final class ReloadHandler {
 
     @Listener
     public void onReload(GameReloadEvent event) {

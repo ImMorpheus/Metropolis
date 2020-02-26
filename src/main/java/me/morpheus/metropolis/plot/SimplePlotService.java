@@ -3,15 +3,23 @@ package me.morpheus.metropolis.plot;
 import com.flowpowered.math.vector.Vector2i;
 import com.flowpowered.math.vector.Vector3i;
 import me.morpheus.metropolis.MPLog;
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.plot.ImmutablePlotData;
 import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.plot.PlotService;
 import me.morpheus.metropolis.config.ConfigUtil;
+import me.morpheus.metropolis.plot.listeners.InternalChangeBlockHandler;
+import me.morpheus.metropolis.plot.listeners.InternalClaimHandler;
+import me.morpheus.metropolis.plot.listeners.InternalExplosionTownHandler;
+import me.morpheus.metropolis.plot.listeners.InternalInteractHandler;
+import me.morpheus.metropolis.plot.listeners.InternalMoveEntityHandler;
+import me.morpheus.metropolis.plot.listeners.InternalNotifyHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.manipulator.DataManipulatorBuilder;
 import org.spongepowered.api.data.persistence.DataFormats;
 import org.spongepowered.api.data.persistence.InvalidDataException;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.explosion.Explosion;
@@ -71,6 +79,15 @@ public class SimplePlotService implements PlotService {
         }
 
         return Optional.ofNullable(plots.get(cp));
+    }
+
+    @Nullable
+    public PlotData get(UUID world, Vector2i cp) {
+        final Map<Vector2i, PlotData> plots = this.map.get(world);
+        if (plots == null) {
+            return null;
+        }
+        return plots.get(cp);
     }
 
     @Override
@@ -277,6 +294,17 @@ public class SimplePlotService implements PlotService {
                 throw new CompletionException(e);
             }
         });
+    }
+
+    @Override
+    public void registerListeners() {
+        final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+        Sponge.getEventManager().registerListeners(plugin, new InternalChangeBlockHandler(this));
+        Sponge.getEventManager().registerListeners(plugin, new InternalClaimHandler(this));
+        Sponge.getEventManager().registerListeners(plugin, new InternalExplosionTownHandler(this));
+        Sponge.getEventManager().registerListeners(plugin, new InternalInteractHandler(this));
+        Sponge.getEventManager().registerListeners(plugin, new InternalMoveEntityHandler(this));
+        Sponge.getEventManager().registerListeners(plugin, new InternalNotifyHandler(this));
     }
 
     @Nullable

@@ -10,7 +10,8 @@ import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.plot.PlotType;
 import me.morpheus.metropolis.api.town.TownTypes;
-import me.morpheus.metropolis.town.listeners.InternalTownHandler;
+import me.morpheus.metropolis.town.listeners.InternalTownTransactionHandler;
+import me.morpheus.metropolis.town.listeners.InternalLoginHandler;
 import me.morpheus.metropolis.util.Hacks;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.api.town.Town;
@@ -53,11 +54,6 @@ public class SimpleTownService implements TownService {
     private final IntSet deleted = new IntOpenHashSet();
 
     private static final Path TOWN_DATA = ConfigUtil.DATA.resolve("town");
-
-    static {
-        final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
-        Sponge.getEventManager().registerListeners(plugin, new InternalTownHandler());
-    }
 
     @Override
     public Optional<Town> create(Text name, Location<World> spawn) {
@@ -217,5 +213,12 @@ public class SimpleTownService implements TownService {
         town.setCitizens(view.getInt(DataQuery.of("citizens")).get());
 
         return town;
+    }
+
+    @Override
+    public void registerListeners() {
+        final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+        Sponge.getEventManager().registerListeners(plugin, new InternalTownTransactionHandler());
+        Sponge.getEventManager().registerListeners(plugin, new InternalLoginHandler());
     }
 }

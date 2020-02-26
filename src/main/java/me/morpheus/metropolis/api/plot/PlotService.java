@@ -35,4 +35,6 @@ public interface PlotService {
 
     CompletableFuture<Void> loadAll();
 
+    void registerListeners();
+
 }

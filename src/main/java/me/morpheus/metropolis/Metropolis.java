@@ -58,15 +58,13 @@ import me.morpheus.metropolis.flag.FlagRegistryModule;
 import me.morpheus.metropolis.health.MPIncident;
 import me.morpheus.metropolis.health.MPreconditions;
 import me.morpheus.metropolis.health.SimpleIncidentService;
-import me.morpheus.metropolis.listeners.ChangeBlockHandler;
+import me.morpheus.metropolis.listeners.ChangeBlockTownHandler;
 import me.morpheus.metropolis.listeners.ChatHandler;
 import me.morpheus.metropolis.listeners.DamageEntityHandler;
-import me.morpheus.metropolis.listeners.Debug;
-import me.morpheus.metropolis.listeners.ExplosionHandler;
-import me.morpheus.metropolis.listeners.InteractHandler;
-import me.morpheus.metropolis.listeners.LoginHandler;
-import me.morpheus.metropolis.listeners.MoveEntityHandler;
-import me.morpheus.metropolis.listeners.NotifyHandler;
+import me.morpheus.metropolis.listeners.debug.ChangeBlockDebugHandler;
+import me.morpheus.metropolis.listeners.ExplosionTownHandler;
+import me.morpheus.metropolis.listeners.InteractTownHandler;
+import me.morpheus.metropolis.listeners.MoveEntityTownHandler;
 import me.morpheus.metropolis.listeners.ReloadHandler;
 import me.morpheus.metropolis.listeners.SaveHandler;
 import me.morpheus.metropolis.plot.PlotTypeRegistryModule;
@@ -81,6 +79,9 @@ import me.morpheus.metropolis.town.visibility.VisibilityRegistryModule;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.DataRegistration;
 import org.spongepowered.api.data.key.Key;
 import org.spongepowered.api.event.Listener;
@@ -94,6 +95,7 @@ import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.util.Tristate;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -101,6 +103,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.concurrent.ExecutionException;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Plugin(id = Metropolis.ID, name = Metropolis.NAME, version = Metropolis.VERSION, description = Metropolis.DESCRIPTION)
@@ -147,12 +150,13 @@ public class Metropolis {
         }
         registerCommands();
 
-        Sponge.getEventManager().registerListeners(this.container, new ChangeBlockHandler());
+        Sponge.getServiceManager().provideUnchecked(TownService.class).registerListeners();
+        Sponge.getServiceManager().provideUnchecked(PlotService.class).registerListeners();
+
+        Sponge.getEventManager().registerListeners(this.container, new ChangeBlockTownHandler());
         Sponge.getEventManager().registerListeners(this.container, new DamageEntityHandler());
-        Sponge.getEventManager().registerListeners(this.container, new ExplosionHandler());
-        Sponge.getEventManager().registerListeners(this.container, new InteractHandler());
-        Sponge.getEventManager().registerListeners(this.container, new LoginHandler());
-        Sponge.getEventManager().registerListeners(this.container, new NotifyHandler());
+        Sponge.getEventManager().registerListeners(this.container, new ExplosionTownHandler());
+        Sponge.getEventManager().registerListeners(this.container, new InteractTownHandler());
         Sponge.getEventManager().registerListeners(this.container, new ReloadHandler());
         Sponge.getEventManager().registerListeners(this.container, new ChatHandler());
         Sponge.getEventManager().registerListeners(this.container, new SaveHandler());
@@ -160,10 +164,10 @@ public class Metropolis {
         final GlobalConfig g = Sponge.getServiceManager().provideUnchecked(ConfigService.class).getGlobal();
 
         if (g.isPlotMessageEnabled()) {
-            Sponge.getEventManager().registerListeners(this.container, new MoveEntityHandler());
+            Sponge.getEventManager().registerListeners(this.container, new MoveEntityTownHandler());
         }
 
-        Sponge.getEventManager().registerListeners(this.container, new Debug()); //TODO
+        Sponge.getEventManager().registerListeners(this.container, new ChangeBlockDebugHandler()); //TODO
     }
 
     @Listener
@@ -334,6 +338,26 @@ public class Metropolis {
         final CommandDispatcher mpadmin = new AdminDispatcher();
         mpadmin.registerDefaults();
         Sponge.getCommandManager().register(this.container, mpadmin, "mpadmin");
+
+        final CommandSpec debug = CommandSpec.builder()
+                .arguments(GenericArguments.optional(GenericArguments.bool(Text.of("toggle"))))
+                .executor((src, args) -> {
+                    final Optional<Boolean> toggleOpt = args.getOne(Text.of("toggle"));
+                    if (!toggleOpt.isPresent()) {
+                        if (ChangeBlockDebugHandler.CHANGEBLOCK_CANCELLED == Tristate.UNDEFINED) {
+                            ChangeBlockDebugHandler.CHANGEBLOCK_ENABLED = false;
+                        } else {
+                            ChangeBlockDebugHandler.CHANGEBLOCK_CANCELLED = Tristate.UNDEFINED;
+                        }
+                    } else {
+                        ChangeBlockDebugHandler.CHANGEBLOCK_ENABLED = true;
+                        ChangeBlockDebugHandler.CHANGEBLOCK_CANCELLED = Tristate.fromBoolean(toggleOpt.get());
+                    }
+                    return CommandResult.success();
+                })
+                .permission(Metropolis.ID + ".commands.debug")
+                .build();
+        Sponge.getCommandManager().register(this.container, debug, "mpdebug"); //TODO pls no
     }
 
     private void registerConfigService() throws IOException, ObjectMappingException {

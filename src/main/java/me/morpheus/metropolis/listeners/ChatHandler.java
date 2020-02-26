@@ -9,15 +9,16 @@ import me.morpheus.metropolis.api.town.TownService;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.filter.cause.Root;
 import org.spongepowered.api.event.message.MessageChannelEvent;
 import org.spongepowered.api.text.Text;
 
 import java.util.Optional;
 
-public class ChatHandler {
+public final class ChatHandler {
 
-    @Listener(beforeModifications = true)
+    @Listener(order = Order.FIRST, beforeModifications = true)
     public void onChat(MessageChannelEvent.Chat event, @Root Player player) {
         final Optional<CitizenData> cdOpt = player.get(CitizenData.class);
 

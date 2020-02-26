@@ -65,11 +65,6 @@ class ClaimCommand extends AbstractCitizenCommand {
             return CommandResult.empty();
         }
 
-        if (!type.canClaim(t, source.getLocation())) {
-            source.sendMessage(TextUtil.watermark(TextColors.RED, "You can't claim a ", type.getName(), " here"));
-            return CommandResult.empty();
-        }
-
         final GlobalConfig global = Sponge.getServiceManager().provideUnchecked(ConfigService.class).getGlobal();
         if (global.getEconomyCategory().isEnabled()) {
             final Optional<Account> accOpt = t.getBank();

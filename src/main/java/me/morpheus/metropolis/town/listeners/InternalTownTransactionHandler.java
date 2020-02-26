@@ -6,7 +6,7 @@ import me.morpheus.metropolis.api.event.town.TownTransactionEvent;
 import me.morpheus.metropolis.town.MPTown;
 import org.spongepowered.api.event.Listener;
 
-public class InternalTownHandler {
+public class InternalTownTransactionHandler {
 
     @Listener(beforeModifications = true)
     public void onUpkeep(TownTransactionEvent.Upkeep event) {

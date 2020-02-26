@@ -1,13 +1,13 @@
-package me.morpheus.metropolis.listeners;
+package me.morpheus.metropolis.plot.listeners;
 
 import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.flag.Flags;
 import me.morpheus.metropolis.api.plot.PlotService;
-
-import org.spongepowered.api.Sponge;
+import me.morpheus.metropolis.util.EventUtil;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.block.NotifyNeighborBlockEvent;
 import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.world.LocatableBlock;
@@ -16,9 +16,15 @@ import org.spongepowered.api.world.World;
 
 import java.util.Optional;
 
-public class NotifyHandler extends AbstractMPHandler {
+public final class InternalNotifyHandler {
 
-    @Listener(beforeModifications = true)
+    private final PlotService ps;
+
+    public InternalNotifyHandler(PlotService ps) {
+        this.ps = ps;
+    }
+
+    @Listener(order = Order.FIRST, beforeModifications = true)
     public void onNotify(NotifyNeighborBlockEvent event) {
         final LocatableBlock locatable = event.getCause().first(LocatableBlock.class).get();
         final User source = event.getCause().first(User.class)
@@ -30,8 +36,6 @@ public class NotifyHandler extends AbstractMPHandler {
             return;
         }
 
-        final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-
         event.getNeighbors().entrySet().removeIf(entry -> {
 
             if (entry.getValue().getType() == BlockTypes.AIR) {
@@ -39,9 +43,9 @@ public class NotifyHandler extends AbstractMPHandler {
             }
 
             final Location<World> loc = locatable.getLocation().add(entry.getKey().asOffset());
-            final Optional<PlotData> pdOpt = ps.get(loc);
+            final Optional<PlotData> pdOpt = this.ps.get(loc);
 
-            return pdOpt.isPresent() && !hasPermission(source, pdOpt.get(), Flags.BLOCK_CHANGE);
+            return pdOpt.isPresent() && !EventUtil.hasPermission(source, pdOpt.get(), Flags.BLOCK_CHANGE);
         });
 
     }

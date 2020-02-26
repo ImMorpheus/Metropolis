@@ -29,4 +29,6 @@ public interface TownService {
 
     Town from(DataView view);
 
+    void registerListeners();
+
 }

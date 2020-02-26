@@ -9,7 +9,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.world.SaveWorldEvent;
 
-public class SaveHandler {
+public final class SaveHandler {
 
     private long last = 0;
 

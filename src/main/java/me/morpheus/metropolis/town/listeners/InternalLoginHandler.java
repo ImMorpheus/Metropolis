@@ -1,4 +1,4 @@
-package me.morpheus.metropolis.listeners;
+package me.morpheus.metropolis.town.listeners;
 
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.town.TownService;
@@ -12,7 +12,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-public class LoginHandler {
+public class InternalLoginHandler {
 
     @Listener(beforeModifications = true)
     public void onLogin(ClientConnectionEvent.Join event) {
