@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.listeners;
 
 import me.morpheus.metropolis.api.data.plot.PlotData;
+import me.morpheus.metropolis.api.event.entity.DamageEntityTownEvent;
 import me.morpheus.metropolis.api.flag.Flags;
 import me.morpheus.metropolis.api.plot.PlotService;
 import me.morpheus.metropolis.api.town.Town;
@@ -17,10 +18,10 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-public final class DamageEntityHandler {
+public final class DamageEntityTownHandler {
 
     @Listener(beforeModifications = true)
-    public void onDamage(DamageEntityEvent event) {
+    public void onDamage(DamageEntityTownEvent event) {
         final Entity target = event.getTargetEntity();
 
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);

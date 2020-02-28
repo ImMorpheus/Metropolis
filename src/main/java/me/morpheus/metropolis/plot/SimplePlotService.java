@@ -10,6 +10,7 @@ import me.morpheus.metropolis.api.plot.PlotService;
 import me.morpheus.metropolis.config.ConfigUtil;
 import me.morpheus.metropolis.plot.listeners.InternalChangeBlockHandler;
 import me.morpheus.metropolis.plot.listeners.InternalClaimHandler;
+import me.morpheus.metropolis.plot.listeners.InternalDamageEntityHandler;
 import me.morpheus.metropolis.plot.listeners.InternalExplosionTownHandler;
 import me.morpheus.metropolis.plot.listeners.InternalInteractHandler;
 import me.morpheus.metropolis.plot.listeners.InternalMoveEntityHandler;
@@ -242,6 +243,7 @@ public class SimplePlotService implements PlotService {
         final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
         Sponge.getEventManager().registerListeners(plugin, new InternalChangeBlockHandler(this));
         Sponge.getEventManager().registerListeners(plugin, new InternalClaimHandler(this));
+        Sponge.getEventManager().registerListeners(plugin, new InternalDamageEntityHandler(this));
         Sponge.getEventManager().registerListeners(plugin, new InternalExplosionTownHandler(this));
         Sponge.getEventManager().registerListeners(plugin, new InternalInteractHandler(this));
         Sponge.getEventManager().registerListeners(plugin, new InternalMoveEntityHandler(this));
