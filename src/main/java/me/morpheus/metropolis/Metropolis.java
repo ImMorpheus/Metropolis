@@ -58,7 +58,7 @@ import me.morpheus.metropolis.health.MPreconditions;
 import me.morpheus.metropolis.health.SimpleIncidentService;
 import me.morpheus.metropolis.listeners.ChangeBlockTownHandler;
 import me.morpheus.metropolis.listeners.ChatHandler;
-import me.morpheus.metropolis.listeners.DamageEntityHandler;
+import me.morpheus.metropolis.listeners.DamageEntityTownHandler;
 import me.morpheus.metropolis.listeners.debug.ChangeBlockDebugHandler;
 import me.morpheus.metropolis.listeners.ExplosionTownHandler;
 import me.morpheus.metropolis.listeners.InteractTownHandler;
@@ -149,7 +149,7 @@ public class Metropolis {
         Sponge.getServiceManager().provideUnchecked(PlotService.class).registerListeners();
 
         Sponge.getEventManager().registerListeners(this.container, new ChangeBlockTownHandler());
-        Sponge.getEventManager().registerListeners(this.container, new DamageEntityHandler());
+        Sponge.getEventManager().registerListeners(this.container, new DamageEntityTownHandler());
         Sponge.getEventManager().registerListeners(this.container, new ExplosionTownHandler());
         Sponge.getEventManager().registerListeners(this.container, new InteractTownHandler());
         Sponge.getEventManager().registerListeners(this.container, new ReloadHandler());
@@ -334,22 +334,18 @@ public class Metropolis {
         mpadmin.registerDefaults();
         Sponge.getCommandManager().register(this.container, mpadmin, "mpadmin");
 
-        final CommandSpec debug = CommandSpec.builder()
+        final CommandSpec changeblock = CommandSpec.builder()
                 .arguments(GenericArguments.optional(GenericArguments.bool(Text.of("toggle"))))
                 .executor((src, args) -> {
                     final Optional<Boolean> toggleOpt = args.getOne(Text.of("toggle"));
-                    if (!toggleOpt.isPresent()) {
-                        if (ChangeBlockDebugHandler.changeblockCancelled == Tristate.UNDEFINED) {
-                            ChangeBlockDebugHandler.changeblockEnabled = false;
-                        } else {
-                            ChangeBlockDebugHandler.changeblockCancelled = Tristate.UNDEFINED;
-                        }
-                    } else {
-                        ChangeBlockDebugHandler.changeblockEnabled = true;
-                        ChangeBlockDebugHandler.changeblockCancelled = Tristate.fromBoolean(toggleOpt.get());
-                    }
+                    ChangeBlockDebugHandler.enabled = toggleOpt.isPresent() || ChangeBlockDebugHandler.cancelled != Tristate.UNDEFINED;
+                    ChangeBlockDebugHandler.cancelled = toggleOpt.map(Tristate::fromBoolean).orElse(Tristate.UNDEFINED);
                     return CommandResult.success();
                 })
+                .permission(Metropolis.ID + ".commands.debug")
+                .build();
+        final CommandSpec debug = CommandSpec.builder()
+                .child(changeblock, "changeblock")
                 .permission(Metropolis.ID + ".commands.debug")
                 .build();
         Sponge.getCommandManager().register(this.container, debug, "mpdebug"); //TODO pls no
