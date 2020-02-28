@@ -65,6 +65,7 @@ import me.morpheus.metropolis.listeners.InteractTownHandler;
 import me.morpheus.metropolis.listeners.MoveEntityTownHandler;
 import me.morpheus.metropolis.listeners.ReloadHandler;
 import me.morpheus.metropolis.listeners.SaveHandler;
+import me.morpheus.metropolis.listeners.debug.DamageEntityDebugHandler;
 import me.morpheus.metropolis.plot.PlotTypeRegistryModule;
 import me.morpheus.metropolis.plot.SimplePlotService;
 import me.morpheus.metropolis.rank.RankRegistryModule;
@@ -163,6 +164,7 @@ public class Metropolis {
         }
 
         Sponge.getEventManager().registerListeners(this.container, new ChangeBlockDebugHandler()); //TODO
+        Sponge.getEventManager().registerListeners(this.container, new DamageEntityDebugHandler()); //TODO
     }
 
     @Listener
@@ -344,8 +346,19 @@ public class Metropolis {
                 })
                 .permission(Metropolis.ID + ".commands.debug")
                 .build();
+        final CommandSpec damage = CommandSpec.builder()
+                .arguments(GenericArguments.optional(GenericArguments.bool(Text.of("toggle"))))
+                .executor((src, args) -> {
+                    final Optional<Boolean> toggleOpt = args.getOne(Text.of("toggle"));
+                    DamageEntityDebugHandler.enabled = toggleOpt.isPresent() || DamageEntityDebugHandler.cancelled != Tristate.UNDEFINED;
+                    DamageEntityDebugHandler.cancelled = toggleOpt.map(Tristate::fromBoolean).orElse(Tristate.UNDEFINED);
+                    return CommandResult.success();
+                })
+                .permission(Metropolis.ID + ".commands.debug")
+                .build();
         final CommandSpec debug = CommandSpec.builder()
                 .child(changeblock, "changeblock")
+                .child(damage, "damage")
                 .permission(Metropolis.ID + ".commands.debug")
                 .build();
         Sponge.getCommandManager().register(this.container, debug, "mpdebug"); //TODO pls no
