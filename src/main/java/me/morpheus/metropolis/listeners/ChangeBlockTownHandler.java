@@ -37,7 +37,7 @@ public final class ChangeBlockTownHandler {
         if (notAllowed) {
             event.setCancelled(true);
             if (source != null) {
-                source.getPlayer().ifPresent(this::sendMessage);
+                source.getPlayer().ifPresent(EventUtil::sendNoPermissionMessage);
             }
         }
     }
@@ -66,7 +66,7 @@ public final class ChangeBlockTownHandler {
         if (notAllowed) {
             event.setCancelled(true);
             if (source != null) {
-                source.getPlayer().ifPresent(this::sendMessage);
+                source.getPlayer().ifPresent(EventUtil::sendNoPermissionMessage);
             }
         }
     }
@@ -95,12 +95,8 @@ public final class ChangeBlockTownHandler {
         if (notAllowed) {
             event.setCancelled(true);
             if (source != null) {
-                source.getPlayer().ifPresent(this::sendMessage);
+                source.getPlayer().ifPresent(EventUtil::sendNoPermissionMessage);
             }
         }
-    }
-
-    private void sendMessage(Player player) {
-        player.sendMessage(Text.of(TextColors.RED, TextStyles.BOLD, "You don't have permission to do this"));
     }
 }

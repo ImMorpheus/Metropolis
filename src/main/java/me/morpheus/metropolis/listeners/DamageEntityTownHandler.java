@@ -48,14 +48,14 @@ public final class DamageEntityTownHandler {
             final Town t = ts.get(pdOpt.get().town().get().intValue()).get();
             if (!t.getPvP().canDamage((Player) source, (Player) target)) {
                 event.setCancelled(true);
-                ((Player) source).sendMessage(TextUtil.watermark(TextColors.RED, "You don't have permission to do this"));
+                EventUtil.sendNoPermissionMessage((Player) source);
             }
             return;
         }
 
         if (!EventUtil.hasPermission((Player) source, pdOpt.get(), Flags.DAMAGE)) {
             event.setCancelled(true);
-            ((Player) source).sendMessage(TextUtil.watermark(TextColors.RED, "You don't have permission to do this"));
+            EventUtil.sendNoPermissionMessage((Player) source);
         }
     }
 
@@ -86,14 +86,14 @@ public final class DamageEntityTownHandler {
             final Town t = ts.get(pdOpt.get().town().get().intValue()).get();
             if (!t.getPvP().canDamage((Player) source, (Player) target)) {
                 event.setCancelled(true);
-                ((Player) source).sendMessage(TextUtil.watermark(TextColors.RED, "You don't have permission to do this"));
+                EventUtil.sendNoPermissionMessage((Player) source);
             }
             return;
         }
 
         if (!EventUtil.hasPermission((Player) source, pdOpt.get(), Flags.DAMAGE)) {
             event.setCancelled(true);
-            ((Player) source).sendMessage(TextUtil.watermark(TextColors.RED, "You don't have permission to do this"));
+            EventUtil.sendNoPermissionMessage((Player) source);
         }
     }
 }

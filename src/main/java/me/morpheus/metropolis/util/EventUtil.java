@@ -7,6 +7,7 @@ import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.flag.Flag;
 import me.morpheus.metropolis.api.rank.Rank;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.cause.EventContextKeys;
@@ -14,6 +15,9 @@ import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource
 import org.spongepowered.api.event.cause.entity.damage.source.IndirectEntityDamageSource;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.service.user.UserStorageService;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -91,6 +95,10 @@ public final class EventUtil {
         }
 
         return perm > optOwnerData.get().rank().get().getPermission(flag);
+    }
+
+    public static void sendNoPermissionMessage(Player player) {
+        player.sendMessage(TextUtil.watermark(TextColors.RED, "You don't have permission to do this"));
     }
 
     private EventUtil() {}

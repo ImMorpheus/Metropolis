@@ -48,7 +48,7 @@ public final class InteractTownHandler {
 
         if (!EventUtil.hasPermission((Player) root, pdOpt.get(), Flags.INTERACT_BLOCK)) {
             event.setCancelled(true);
-            ((Player) root).sendMessage(Text.of(TextColors.RED, TextStyles.BOLD, "You don't have permission to do this"));
+            EventUtil.sendNoPermissionMessage((Player) root);
         }
     }
 
@@ -72,7 +72,7 @@ public final class InteractTownHandler {
 
         if (!EventUtil.hasPermission((Player) root, pdOpt.get(), Flags.INTERACT_BLOCK)) {
             event.setCancelled(true);
-            ((Player) root).sendMessage(Text.of(TextColors.RED, TextStyles.BOLD, "You don't have permission to do this"));
+            EventUtil.sendNoPermissionMessage((Player) root);
         }
     }
 
@@ -105,7 +105,7 @@ public final class InteractTownHandler {
 
         if (!EventUtil.hasPermission((Player) root, pdOpt.get(), Flags.INTERACT_ENTITY)) {
             event.setCancelled(true);
-            ((Player) root).sendMessage(Text.of(TextColors.RED, TextStyles.BOLD, "You don't have permission to do this"));
+            EventUtil.sendNoPermissionMessage((Player) root);
         }
     }
 
