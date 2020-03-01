@@ -4,6 +4,8 @@ import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.GlobalConfig;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.plot.PlotData;
+import me.morpheus.metropolis.api.event.entity.AttackEntityTownEvent;
+import me.morpheus.metropolis.api.event.entity.DamageEntityTownEvent;
 import me.morpheus.metropolis.api.flag.Flag;
 import me.morpheus.metropolis.api.rank.Rank;
 import org.spongepowered.api.Sponge;
@@ -13,6 +15,7 @@ import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.IndirectEntityDamageSource;
+import org.spongepowered.api.event.entity.AttackEntityEvent;
 import org.spongepowered.api.event.entity.DamageEntityEvent;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
@@ -40,7 +43,21 @@ public final class EventUtil {
         return null;
     }
 
-    public static Object getSource(DamageEntityEvent event) {
+    public static Object getDamageSource(DamageEntityTownEvent event) {
+        final Object root = event.getCause().root();
+
+        if (root instanceof IndirectEntityDamageSource) {
+            return ((IndirectEntityDamageSource) root).getIndirectSource();
+        }
+
+        if (root instanceof EntityDamageSource) {
+            return ((EntityDamageSource) root).getSource();
+        }
+
+        return root;
+    }
+
+    public static Object getDamageSource(AttackEntityTownEvent event) {
         final Object root = event.getCause().root();
 
         if (root instanceof IndirectEntityDamageSource) {
