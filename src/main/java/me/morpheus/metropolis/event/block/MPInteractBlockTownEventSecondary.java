@@ -8,7 +8,7 @@ import org.spongepowered.api.event.cause.Cause;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public final class MPInteractBlockTownEventSecondary implements InteractBlockTownEvent.Primary {
+public final class MPInteractBlockTownEventSecondary implements InteractBlockTownEvent.Secondary {
 
     private final Cause cause;
     private final Vector3d hit;
