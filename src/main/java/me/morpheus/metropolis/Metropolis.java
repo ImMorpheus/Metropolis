@@ -151,7 +151,7 @@ public class Metropolis {
 
         Sponge.getEventManager().registerListeners(this.container, new ChangeBlockTownHandler());
         Sponge.getEventManager().registerListeners(this.container, new DamageEntityTownHandler());
-        Sponge.getEventManager().registerListeners(this.container, new ExplosionTownHandler());
+        // Sponge.getEventManager().registerListeners(this.container, new ExplosionTownHandler()); //TODO
         Sponge.getEventManager().registerListeners(this.container, new InteractTownHandler());
         Sponge.getEventManager().registerListeners(this.container, new ReloadHandler());
         Sponge.getEventManager().registerListeners(this.container, new ChatHandler());

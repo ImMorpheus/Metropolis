@@ -47,11 +47,7 @@ public final class InternalExplosionTownHandler {
         if (nw.equals(se)) {
             final Optional<PlotData> pdOpt = this.ps.get(loc);
             if (pdOpt.isPresent()) {
-                final List<PlotData> plots = Collections.singletonList(pdOpt.get());
-                ExplosionTownEvent.Pre townEvent = new MPExplosionTownEventPre(event.getCause(), explosion, plots);
-                if (Sponge.getEventManager().post(townEvent)) {
-                    event.setCancelled(true);
-                }
+                event.setCancelled(true);
             }
             return;
         }
@@ -59,16 +55,7 @@ public final class InternalExplosionTownHandler {
         if (Stream.iterate(nw, v -> v.getX() < se.getX() ? v.add(Vector2i.UNIT_X) : Vector2i.from(nw.getX(), v.getY() + 1))
                 .limit((se.getX() - nw.getX()) * (se.getY() * nw.getY()))
                 .anyMatch(cp -> this.ps.get(world, cp) != null)) {
-            final List<PlotData> plots =
-                    Stream.iterate(nw, v -> v.getX() < se.getX() ? v.add(Vector2i.UNIT_X) : Vector2i.from(nw.getX(), v.getY() + 1))
-                            .limit((se.getX() - nw.getX()) * (se.getY() * nw.getY()))
-                            .filter(cp -> this.ps.get(world, cp) != null)
-                            .map(cp -> this.ps.get(world, cp))
-                            .collect(Collectors.toList());
-            ExplosionTownEvent.Pre townEvent = new MPExplosionTownEventPre(event.getCause(), explosion, plots);
-            if (Sponge.getEventManager().post(townEvent)) {
                 event.setCancelled(true);
-            }
         }
     }
 
