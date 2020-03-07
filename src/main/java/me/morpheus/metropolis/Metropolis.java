@@ -27,6 +27,7 @@ import me.morpheus.metropolis.api.plot.PlotType;
 import me.morpheus.metropolis.api.rank.Rank;
 import me.morpheus.metropolis.api.town.TownService;
 import me.morpheus.metropolis.api.town.TownType;
+import me.morpheus.metropolis.api.town.Upgrade;
 import me.morpheus.metropolis.api.town.invitation.InvitationService;
 import me.morpheus.metropolis.api.town.pvp.PvPOption;
 import me.morpheus.metropolis.api.town.visibility.Visibility;
@@ -74,6 +75,7 @@ import me.morpheus.metropolis.town.economy.AsyncTaxCollectionTask;
 import me.morpheus.metropolis.town.invitation.SimpleInvitationService;
 import me.morpheus.metropolis.town.pvp.PvPOptionRegistryModule;
 import me.morpheus.metropolis.town.type.TownTypeRegistryModule;
+import me.morpheus.metropolis.town.upgrade.UpgradeRegistryModule;
 import me.morpheus.metropolis.town.visibility.VisibilityRegistryModule;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
@@ -124,6 +126,7 @@ public class Metropolis {
         Sponge.getRegistry().registerModule(Rank.class, new RankRegistryModule());
         Sponge.getRegistry().registerModule(PvPOption.class, new PvPOptionRegistryModule());
         Sponge.getRegistry().registerModule(Visibility.class, new VisibilityRegistryModule());
+        Sponge.getRegistry().registerModule(Upgrade.class, new UpgradeRegistryModule());
 
         Sponge.getServiceManager().setProvider(this.container, TownService.class, new SimpleTownService());
         Sponge.getServiceManager().setProvider(this.container, PlotService.class, new SimplePlotService());

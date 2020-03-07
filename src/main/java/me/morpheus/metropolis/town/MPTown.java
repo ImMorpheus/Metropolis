@@ -33,6 +33,7 @@ import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.data.plot.PlotKeys;
 import me.morpheus.metropolis.api.data.town.TownKeys;
 import me.morpheus.metropolis.api.data.town.outpost.OutpostData;
+import me.morpheus.metropolis.api.event.town.UpgradeTownEvent;
 import me.morpheus.metropolis.api.plot.PlotService;
 import me.morpheus.metropolis.api.plot.PlotType;
 import me.morpheus.metropolis.api.plot.PlotTypes;
@@ -40,11 +41,15 @@ import me.morpheus.metropolis.api.rank.Rank;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.town.TownService;
 import me.morpheus.metropolis.api.town.TownType;
+import me.morpheus.metropolis.api.town.Upgrade;
 import me.morpheus.metropolis.api.town.pvp.PvPOption;
 import me.morpheus.metropolis.api.town.pvp.PvPOptions;
 import me.morpheus.metropolis.api.town.visibility.Visibility;
 import me.morpheus.metropolis.data.DataVersions;
+import me.morpheus.metropolis.event.town.MPUpgradeTownEventPost;
+import me.morpheus.metropolis.event.town.MPUpgradeTownEventPre;
 import me.morpheus.metropolis.town.chat.TownMessageChannel;
+import me.morpheus.metropolis.util.EconomyUtil;
 import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
@@ -68,6 +73,7 @@ import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.CauseStackManager;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
+import org.spongepowered.api.service.economy.transaction.ResultType;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
@@ -172,6 +178,46 @@ public class MPTown implements Town {
     public void setType(TownType type) {
         this.type = type;
         setDirty(true);
+    }
+
+    @Override
+    public boolean upgrade(Upgrade upgrade) {
+        Set<TownType> requiredTownTypes = upgrade.getRequiredTownTypes();
+        if (!requiredTownTypes.contains(this.type)) {
+            return false;
+        }
+        int requiredCitizens = upgrade.getRequiredCitizens();
+        if (this.citizens < requiredCitizens) {
+            return false;
+        }
+        int requiredPlots = upgrade.getRequiredPlots();
+        if (this.plots.getInt(PlotTypes.PLOT) < requiredPlots) {
+            return false;
+        }
+        try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            UpgradeTownEvent.Pre event = new MPUpgradeTownEventPre(frame.getCurrentCause(), this, upgrade);
+            if (Sponge.getEventManager().post(event)) {
+                return false;
+            }
+        }
+        double cost = upgrade.getCost();
+        if (cost != 0) {
+            Optional<Account> bankOpt = getBank();
+            if (!bankOpt.isPresent()) {
+                return false;
+            }
+            final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
+            final ResultType result = EconomyUtil.withdraw(bankOpt.get(), es.getDefaultCurrency(), BigDecimal.valueOf(cost));
+            if (result != ResultType.SUCCESS) {
+                return false;
+            }
+        }
+        this.type = upgrade.getTarget();
+        try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            UpgradeTownEvent.Post event = new MPUpgradeTownEventPost(frame.getCurrentCause(), this, upgrade);
+            Sponge.getEventManager().post(event);
+        }
+        return true;
     }
 
     @Override

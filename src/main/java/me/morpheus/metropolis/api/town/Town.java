@@ -32,6 +32,8 @@ public interface Town extends DataHolder, MessageReceiver {
 
     void setType(TownType type);
 
+    boolean upgrade(Upgrade upgrade);
+
     Text getTag();
 
     void setTag(Text tag);

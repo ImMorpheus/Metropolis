@@ -4,6 +4,7 @@ import me.morpheus.metropolis.api.custom.CustomResourceLoader;
 import me.morpheus.metropolis.api.custom.CustomResourceLoaders;
 import me.morpheus.metropolis.rank.RankLoader;
 import me.morpheus.metropolis.town.type.TownTypeLoader;
+import me.morpheus.metropolis.town.upgrade.UpgradeLoader;
 import org.spongepowered.api.registry.AdditionalCatalogRegistryModule;
 import org.spongepowered.api.registry.util.RegisterCatalog;
 
@@ -22,6 +23,7 @@ public final class CustomResourceLoaderRegistryModule implements AdditionalCatal
     public void registerDefaults() {
         register(new RankLoader());
         register(new TownTypeLoader());
+        register(new UpgradeLoader());
     }
 
     private void register(CustomResourceLoader loader) {
