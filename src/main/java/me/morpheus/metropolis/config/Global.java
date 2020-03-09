@@ -37,9 +37,6 @@ public class Global implements GlobalConfig {
     @Setting(value = "enable-plot-message", comment = "")
     private boolean plotMessage = true;
 
-    @Setting(value = "users-per-tick", comment = "")
-    private int userspertick = 100;
-
     @Setting(value = "save-interval", comment = "")
     private Duration saveInterval = Duration.ofMinutes(30L);
 
@@ -61,11 +58,6 @@ public class Global implements GlobalConfig {
     @Override
     public boolean isPlotMessageEnabled() {
         return this.plotMessage;
-    }
-
-    @Override
-    public int getUserspertick() {
-        return this.userspertick;
     }
 
     @Override

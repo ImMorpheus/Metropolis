@@ -31,6 +31,7 @@ import java.util.function.Consumer;
 
 public class TaxCollectionTask implements Consumer<Task> {
 
+    private static final int MAX_USERS_PER_TICK = 100;
     private final Iterator<GameProfile> profiles;
     private Iterator<PlotData> plots;
     private Iterator<Town> towns;
@@ -52,7 +53,7 @@ public class TaxCollectionTask implements Consumer<Task> {
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
 
         int i = 0;
-        while (i++ < global.getUserspertick() && this.profiles.hasNext()) {
+        while (i++ < TaxCollectionTask.MAX_USERS_PER_TICK && this.profiles.hasNext()) {
             final GameProfile user = this.profiles.next();
             final Optional<User> uOpt = uss.get(user);
             if (uOpt.isPresent()) {
@@ -103,7 +104,7 @@ public class TaxCollectionTask implements Consumer<Task> {
                         }).iterator();
             } else {
                 int j = 0;
-                while (j++ < global.getUserspertick() && this.plots.hasNext()) {
+                while (j++ < TaxCollectionTask.MAX_USERS_PER_TICK && this.plots.hasNext()) {
                     final PlotData pd = this.plots.next();
                     final User user = uss.get(pd.owner().get().get()).get();
                     final Optional<Town> tOpt = ts.get(pd.town().get().intValue());
@@ -128,7 +129,7 @@ public class TaxCollectionTask implements Consumer<Task> {
                             .iterator();
                 } else {
                     int j = 0;
-                    while (j++ < global.getUserspertick() && this.towns.hasNext()) {
+                    while (j++ < TaxCollectionTask.MAX_USERS_PER_TICK && this.towns.hasNext()) {
                         final Town town = this.towns.next();
                         final BigDecimal upkeep = town.getUpkeep();
                         if (town.getBank().isPresent()) {
