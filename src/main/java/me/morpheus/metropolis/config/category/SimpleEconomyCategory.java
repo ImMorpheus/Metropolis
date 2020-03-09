@@ -10,10 +10,10 @@ public class SimpleEconomyCategory implements EconomyCategory {
     @Setting(comment = "Enable economy integration")
     private boolean enabled = true;
 
-    @Setting(value = "town-creation", comment = "The price for creating a new town")
+    @Setting(value = "town-creation", comment = "")
     private double creation = 100.0;
 
-    @Setting(value = "tax-hour", comment = "What time should the plugin collect the taxes?")
+    @Setting(value = "tax-hour", comment = "")
     private int hour = 12;
 
     @Override

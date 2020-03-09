@@ -12,7 +12,7 @@ public class SimpleChatCategory implements ChatCategory {
     @Setting(comment = "Enable chat integration")
     private boolean enabled = true;
 
-    @Setting(comment = "prefix")
+    @Setting(comment = "")
     private TextTemplate prefix = TextTemplate.of(
             TextColors.AQUA,
             "[", TextTemplate.arg("tag"), "] ",

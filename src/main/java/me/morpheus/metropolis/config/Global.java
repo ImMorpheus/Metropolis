@@ -34,13 +34,13 @@ public class Global implements GlobalConfig {
     )
     private SimpleEconomyCategory economy = new SimpleEconomyCategory();
 
-    @Setting(value = "enable-plot-message", comment = "show town name when entering a plot. Disable by default for performance reason")
+    @Setting(value = "enable-plot-message", comment = "")
     private boolean plotMessage = true;
 
-    @Setting(value = "users-per-tick", comment = "show town name when entering a plot. Disable by default for performance reason")
+    @Setting(value = "users-per-tick", comment = "")
     private int userspertick = 100;
 
-    @Setting(value = "save-interval", comment = "show town name when entering a plot. Disable by default for performance reason")
+    @Setting(value = "save-interval", comment = "")
     private Duration saveInterval = Duration.ofMinutes(30L);
 
     @Override
