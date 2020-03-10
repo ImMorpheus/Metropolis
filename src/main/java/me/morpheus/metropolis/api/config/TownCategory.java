@@ -18,7 +18,7 @@ public interface TownCategory {
 
     Duration getFoundationGracePeriod();
 
-    Duration getInactiveDays();
+    Duration getKickForInactivity();
 
     Duration getInvitationDuration();
 

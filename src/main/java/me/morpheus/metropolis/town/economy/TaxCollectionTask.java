@@ -59,7 +59,7 @@ public class TaxCollectionTask implements Consumer<Task> {
             if (uOpt.isPresent()) {
                 final Optional<CitizenData> cdOpt = uOpt.get().get(CitizenData.class);
                 if (cdOpt.isPresent()) {
-                    final Instant inactive = cdOpt.get().joined().get().plus(global.getTownCategory().getInactiveDays());
+                    final Instant inactive = cdOpt.get().joined().get().plus(global.getTownCategory().getKickForInactivity());
                     final Optional<Town> tOpt = ts.get(cdOpt.get().town().get().intValue());
                     if (Instant.now().isAfter(inactive) && cdOpt.get().rank().get().canBeKickedForInactivity()) {
                         tOpt.ifPresent(town -> town.kick(user.getUniqueId()));

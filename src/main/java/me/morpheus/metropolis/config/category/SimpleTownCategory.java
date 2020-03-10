@@ -18,7 +18,7 @@ public class SimpleTownCategory implements TownCategory {
     @Setting(value = "name-min-length") private int nameMinLength = 3;
     @Setting(value = "name-max-length") private int nameMaxLength = 20;
     @Setting(value = "foundation-grace-period") private Duration foundationGracePeriod = Duration.ofDays(3);
-    @Setting(value = "inactive-days") private Duration inactiveDays = Duration.ofDays(30);
+    @Setting(value = "kick-for-inactivity") private Duration kickForInactivity = Duration.ofDays(30);
     @Setting(value = "invitation-duration") private Duration invitationDuration = Duration.ofMinutes(5);
 
     @Override
@@ -57,8 +57,8 @@ public class SimpleTownCategory implements TownCategory {
     }
 
     @Override
-    public Duration getInactiveDays() {
-        return this.inactiveDays;
+    public Duration getKickForInactivity() {
+        return this.kickForInactivity;
     }
 
     @Override
