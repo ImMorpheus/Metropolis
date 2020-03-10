@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.GlobalConfig;
+import me.morpheus.metropolis.config.category.SimplePlotCategory;
 import me.morpheus.metropolis.configurate.serialize.Object2IntSerializer;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
@@ -60,6 +61,7 @@ public final class SimpleConfigService implements ConfigService {
             try {
                 CommentedConfigurationNode node = this.loader.load();
                 this.mapper.populate(node);
+                ((SimplePlotCategory) getGlobal().getTownCategory().getPlotCategory()).getUnowned().defaultReturnValue(Integer.MIN_VALUE);
             } catch (Exception e) {
                 throw new CompletionException(e);
             }
@@ -72,6 +74,7 @@ public final class SimpleConfigService implements ConfigService {
         }
         CommentedConfigurationNode node = this.loader.load();
         this.mapper.populate(node);
+        ((SimplePlotCategory) getGlobal().getTownCategory().getPlotCategory()).getUnowned().defaultReturnValue(Integer.MIN_VALUE);
     }
 
     @Override

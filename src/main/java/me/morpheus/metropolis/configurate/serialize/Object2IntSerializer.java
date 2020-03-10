@@ -35,9 +35,6 @@ public class Object2IntSerializer implements TypeSerializer<Object2IntMap> {
         for (Map.Entry<Object, ? extends ConfigurationNode> ent : value.getChildrenMap().entrySet()) {
             final Object keyValue = keySerial.deserialize(key, SimpleConfigurationNode.root().setValue(ent.getKey()));
             final int valueValue = ent.getValue().getInt();
-            if (valueValue == Integer.MIN_VALUE) {
-                throw new ObjectMappingException("Cannot use Integer.MIN_VALUE for value");
-            }
             if (keyValue != null) {
                 map.put(keyValue, valueValue);
             }

@@ -63,6 +63,10 @@ class MPTownType implements TownType {
         return this.prices.getDouble(type);
     }
 
+    public Reference2DoubleMap<PlotType> getPrices() {
+        return this.prices;
+    }
+
     @Override
     public int getMaxCitizens() {
         return this.maxCitizens;
@@ -71,6 +75,10 @@ class MPTownType implements TownType {
     @Override
     public int getMaxPlots(PlotType type) {
         return this.maxPlots.getInt(type);
+    }
+
+    public Reference2IntMap<PlotType> getMaxPlots() {
+        return this.maxPlots;
     }
 
     @Override

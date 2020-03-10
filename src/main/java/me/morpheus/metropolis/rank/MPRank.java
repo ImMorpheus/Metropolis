@@ -25,6 +25,7 @@ class MPRank implements Rank {
         this.canBeKickedForInactivity = canBeKickedForInactivity;
         this.canLeave = canLeave;
         this.permissions.putAll(permissions);
+        this.permissions.defaultReturnValue(Integer.MIN_VALUE);
     }
 
     private MPRank() {
@@ -63,6 +64,10 @@ class MPRank implements Rank {
     @Override
     public int getPermission(Flag flag) {
         return this.permissions.getInt(flag);
+    }
+
+    public Object2IntMap<Flag> getPermissions() {
+        return this.permissions;
     }
 
     @Override

@@ -87,15 +87,17 @@ public class RankLoader implements CustomResourceLoader<Rank> {
                 .setPath(path)
                 .build();
 
-        ObjectMapper.BoundInstance mapper = ObjectMapper.forClass(MPRank.class).bindToNew();
+        ObjectMapper<MPRank>.BoundInstance mapper = ObjectMapper.forClass(MPRank.class).bindToNew();
         CommentedConfigurationNode node = loader.load();
         mapper.populate(node);
 
         SimpleCommentedConfigurationNode n = SimpleCommentedConfigurationNode.root();
         mapper.serialize(n);
         loader.save(n);
+        MPRank rank = mapper.getInstance();
+        rank.getPermissions().defaultReturnValue(Integer.MIN_VALUE);
 
-        return (Rank) mapper.getInstance();
+        return rank;
     }
 
     @Override
@@ -141,7 +143,7 @@ public class RankLoader implements CustomResourceLoader<Rank> {
     private Object2IntMap<Flag> getMayorDefaultPermissions() {
         Object2IntMap<Flag> map = new Object2IntOpenHashMap<>();
         for (Flag flag : Sponge.getRegistry().getAllOf(Flag.class)) {
-            map.put(flag, 250);
+            map.put(flag, 127);
         }
         return map;
     }

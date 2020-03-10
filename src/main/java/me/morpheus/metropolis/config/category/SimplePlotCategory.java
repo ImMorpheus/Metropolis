@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.config.category;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import me.morpheus.metropolis.api.config.PlotCategory;
 import me.morpheus.metropolis.api.flag.Flag;
@@ -23,4 +24,7 @@ public class SimplePlotCategory implements PlotCategory {
         return this.unowned.getInt(flag);
     }
 
+    public Object2IntMap<Flag> getUnowned() {
+        return this.unowned;
+    }
 }
