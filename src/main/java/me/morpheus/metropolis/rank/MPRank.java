@@ -14,8 +14,8 @@ class MPRank implements Rank {
     @Setting private String id;
     @Setting private String name;
     @Setting(value = "tax-exempt") private boolean isTaxExempt;
-    @Setting private boolean canBeKickedForInactivity;
-    @Setting private boolean canLeave;
+    @Setting(value = "can-be-kicked-for-inactivity") private boolean canBeKickedForInactivity;
+    @Setting(value = "can-leave") private boolean canLeave;
     @Setting(value = "default-perm") private int defPerm;
     @Setting private Object2IntMap<Flag> permissions = new Object2IntOpenHashMap<>();
 
