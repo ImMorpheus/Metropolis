@@ -13,8 +13,8 @@ public interface TownType extends CatalogType {
 
     double getClaimPrice(PlotType type);
 
-    int getMaxCitizens();
+    short getMaxCitizens();
 
-    int getMaxPlots(PlotType type);
+    short getMaxPlots(PlotType type);
 
 }

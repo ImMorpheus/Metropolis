@@ -71,14 +71,7 @@ public class UpgradeLoader implements CustomResourceLoader<Upgrade> {
 
     @Override
     public Upgrade load(Path path) throws IOException, ObjectMappingException {
-        TypeSerializerCollection serializers = TypeSerializers.getDefaultSerializers().newChild();
-        serializers.registerType(TypeToken.of(Object2IntMap.class), new Object2IntSerializer());
-        serializers.registerType(TypeToken.of(Reference2IntMap.class), new Reference2IntSerializer());
-        serializers.registerType(TypeToken.of(Reference2DoubleMap.class), new Reference2DoubleSerializer());
-
-        ConfigurationOptions options = ConfigurationOptions.defaults().setSerializers(serializers);
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder()
-                .setDefaultOptions(options)
                 .setPath(path)
                 .build();
 

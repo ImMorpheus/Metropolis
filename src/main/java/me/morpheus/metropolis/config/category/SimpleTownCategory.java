@@ -13,10 +13,10 @@ public class SimpleTownCategory implements TownCategory {
 
     @Setting(comment = "+--------------- Plot ") private SimplePlotCategory plot = new SimplePlotCategory();
     @Setting(comment = "+--------------- Defaults ") private SimpleDefaultsCategory defaults = new SimpleDefaultsCategory();
-    @Setting(value = "tag-min-length") private int tagMinLength = 3;
-    @Setting(value = "tag-max-length") private int tagMaxLength = 3;
-    @Setting(value = "name-min-length") private int nameMinLength = 3;
-    @Setting(value = "name-max-length") private int nameMaxLength = 20;
+    @Setting(value = "tag-min-length") private byte tagMinLength = 3;
+    @Setting(value = "tag-max-length") private byte tagMaxLength = 3;
+    @Setting(value = "name-min-length") private byte nameMinLength = 3;
+    @Setting(value = "name-max-length") private byte nameMaxLength = 20;
     @Setting(value = "foundation-grace-period") private Duration foundationGracePeriod = Duration.ofDays(3);
     @Setting(value = "kick-for-inactivity") private Duration kickForInactivity = Duration.ofDays(30);
     @Setting(value = "invitation-duration") private Duration invitationDuration = Duration.ofMinutes(5);
@@ -32,22 +32,22 @@ public class SimpleTownCategory implements TownCategory {
     }
 
     @Override
-    public int getTagMinLength() {
+    public byte getTagMinLength() {
         return this.tagMinLength;
     }
 
     @Override
-    public int getTagMaxLength() {
+    public byte getTagMaxLength() {
         return this.tagMaxLength;
     }
 
     @Override
-    public int getNameMinLength() {
+    public byte getNameMinLength() {
         return this.nameMinLength;
     }
 
     @Override
-    public int getNameMaxLength() {
+    public byte getNameMaxLength() {
         return this.nameMaxLength;
     }
 

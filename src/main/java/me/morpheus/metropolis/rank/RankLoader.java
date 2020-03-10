@@ -4,6 +4,8 @@ import com.google.common.reflect.TypeToken;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ByteMap;
+import it.unimi.dsi.fastutil.objects.Reference2ByteOpenHashMap;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.api.custom.CustomResourceLoader;
 import me.morpheus.metropolis.api.flag.Flag;
@@ -11,6 +13,7 @@ import me.morpheus.metropolis.api.health.IncidentService;
 import me.morpheus.metropolis.api.rank.Rank;
 import me.morpheus.metropolis.config.ConfigUtil;
 import me.morpheus.metropolis.configurate.serialize.Object2IntSerializer;
+import me.morpheus.metropolis.configurate.serialize.Reference2ByteSerializer;
 import me.morpheus.metropolis.error.MPGenericErrors;
 import me.morpheus.metropolis.health.MPIncident;
 import ninja.leaping.configurate.ConfigurationOptions;
@@ -79,7 +82,7 @@ public class RankLoader implements CustomResourceLoader<Rank> {
     @Override
     public Rank load(Path path) throws IOException, ObjectMappingException {
         TypeSerializerCollection serializers = TypeSerializers.getDefaultSerializers().newChild();
-        serializers.registerType(TypeToken.of(Object2IntMap.class), new Object2IntSerializer());
+        serializers.registerType(TypeToken.of(Reference2ByteMap.class), new Reference2ByteSerializer());
 
         ConfigurationOptions options = ConfigurationOptions.defaults().setSerializers(serializers);
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder()
@@ -95,7 +98,7 @@ public class RankLoader implements CustomResourceLoader<Rank> {
         mapper.serialize(n);
         loader.save(n);
         MPRank rank = mapper.getInstance();
-        rank.getPermissions().defaultReturnValue(Integer.MIN_VALUE);
+        rank.getPermissions().defaultReturnValue(Byte.MIN_VALUE);
 
         return rank;
     }
@@ -132,18 +135,18 @@ public class RankLoader implements CustomResourceLoader<Rank> {
         });
     }
 
-    private Object2IntMap<Flag> getCitizenDefaultPermissions() {
-        Object2IntMap<Flag> map = new Object2IntOpenHashMap<>();
+    private Reference2ByteMap<Flag> getCitizenDefaultPermissions() {
+        Reference2ByteMap<Flag> map = new Reference2ByteOpenHashMap<>();
         for (Flag flag : Sponge.getRegistry().getAllOf(Flag.class)) {
-            map.put(flag, 0);
+            map.put(flag, (byte) 0);
         }
         return map;
     }
 
-    private Object2IntMap<Flag> getMayorDefaultPermissions() {
-        Object2IntMap<Flag> map = new Object2IntOpenHashMap<>();
+    private Reference2ByteMap<Flag> getMayorDefaultPermissions() {
+        Reference2ByteMap<Flag> map = new Reference2ByteOpenHashMap<>();
         for (Flag flag : Sponge.getRegistry().getAllOf(Flag.class)) {
-            map.put(flag, 127);
+            map.put(flag, Byte.MAX_VALUE);
         }
         return map;
     }

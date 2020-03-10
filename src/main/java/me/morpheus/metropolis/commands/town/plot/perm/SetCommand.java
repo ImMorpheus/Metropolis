@@ -36,7 +36,7 @@ class SetCommand extends AbstractHomeTownCommand {
     @Override
     protected CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, PlotData pd) throws CommandException {
         final Flag flag = context.requireOne("flag");
-        final int value = context.requireOne("value");
+        final byte value = context.requireOne("value");
 
         pd.addPermission(flag, value);
 

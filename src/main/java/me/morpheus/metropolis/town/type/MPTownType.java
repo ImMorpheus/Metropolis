@@ -3,6 +3,7 @@ package me.morpheus.metropolis.town.type;
 import com.google.common.base.MoreObjects;
 import it.unimi.dsi.fastutil.objects.Reference2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2ShortMap;
 import me.morpheus.metropolis.api.plot.PlotType;
 import me.morpheus.metropolis.api.town.TownType;
 import ninja.leaping.configurate.objectmapping.Setting;
@@ -16,11 +17,11 @@ class MPTownType implements TownType {
     @Setting(value = "tax-function") private String taxFunction;
     @Setting(value = "spawn-price") private double spawnPrice;
     @Setting(value = "claim-prices") private Reference2DoubleMap<PlotType> prices;
-    @Setting(value = "max-citizens") private int maxCitizens;
-    @Setting(value = "max-plots") private Reference2IntMap<PlotType> maxPlots;
+    @Setting(value = "max-citizens") private short maxCitizens;
+    @Setting(value = "max-plots") private Reference2ShortMap<PlotType> maxPlots;
 
-    MPTownType(String id, String name, String taxFunction, double spawnPrice, int maxCitizens,
-               Reference2DoubleMap<PlotType> prices, Reference2IntMap<PlotType> maxPlots) {
+    MPTownType(String id, String name, String taxFunction, double spawnPrice, short maxCitizens,
+               Reference2DoubleMap<PlotType> prices, Reference2ShortMap<PlotType> maxPlots) {
         this.id = id;
         this.name = name;
         this.taxFunction = taxFunction;
@@ -29,7 +30,7 @@ class MPTownType implements TownType {
         this.prices = prices;
         this.prices.defaultReturnValue(Double.MAX_VALUE);
         this.maxPlots = maxPlots;
-        this.maxPlots.defaultReturnValue(0);
+        this.maxPlots.defaultReturnValue((short) 0);
     }
 
     private MPTownType() {
@@ -68,16 +69,16 @@ class MPTownType implements TownType {
     }
 
     @Override
-    public int getMaxCitizens() {
+    public short getMaxCitizens() {
         return this.maxCitizens;
     }
 
     @Override
-    public int getMaxPlots(PlotType type) {
-        return this.maxPlots.getInt(type);
+    public short getMaxPlots(PlotType type) {
+        return this.maxPlots.getShort(type);
     }
 
-    public Reference2IntMap<PlotType> getMaxPlots() {
+    public Reference2ShortMap<PlotType> getMaxPlots() {
         return this.maxPlots;
     }
 

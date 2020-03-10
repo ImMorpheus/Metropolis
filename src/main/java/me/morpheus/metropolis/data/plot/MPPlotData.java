@@ -2,6 +2,8 @@ package me.morpheus.metropolis.data.plot;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ByteMap;
+import it.unimi.dsi.fastutil.objects.Reference2ByteOpenHashMap;
 import me.morpheus.metropolis.api.data.plot.ImmutablePlotData;
 import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.data.plot.PlotKeys;
@@ -32,13 +34,13 @@ public class MPPlotData extends AbstractData<PlotData, ImmutablePlotData> implem
     private double rent;
     private boolean forSale;
     private PlotType type;
-    @Nullable private Object2IntMap<Flag> permissions;
+    @Nullable private Reference2ByteMap<Flag> permissions;
 
     MPPlotData() {
         this(Integer.MIN_VALUE, null, null, 0, 0, false, PlotTypes.PLOT, null);
     }
 
-    MPPlotData(int town, @Nullable Text name, @Nullable UUID owner, double price, double rent, boolean forSale, PlotType type, @Nullable Object2IntMap<Flag> permissions) {
+    MPPlotData(int town, @Nullable Text name, @Nullable UUID owner, double price, double rent, boolean forSale, PlotType type, @Nullable Reference2ByteMap<Flag> permissions) {
         this.town = town;
         this.name = name;
         this.owner = owner;
@@ -104,7 +106,7 @@ public class MPPlotData extends AbstractData<PlotData, ImmutablePlotData> implem
         Optional<Double> rent = container.getDouble(PlotKeys.RENT.getQuery());
         Optional<Boolean> forSale = container.getBoolean(PlotKeys.FORSALE.getQuery());
         Optional<PlotType> type = container.getCatalogType(PlotKeys.TYPE.getQuery(), PlotType.class);
-        Optional<Object2IntOpenHashMap<Flag>> permissions = (Optional<Object2IntOpenHashMap<Flag>>) container.getMap(DataQuery.of("permissions"));
+        Optional<Reference2ByteMap<Flag>> permissions = (Optional<Reference2ByteMap<Flag>>) container.getMap(DataQuery.of("permissions"));
 
         this.town = town.get();
         this.name = name.orElse(null);
@@ -193,18 +195,18 @@ public class MPPlotData extends AbstractData<PlotData, ImmutablePlotData> implem
     }
 
     @Override
-    public int getPermission(Flag flag) {
+    public byte getPermission(Flag flag) {
         if (this.permissions == null) {
-            return Integer.MIN_VALUE;
+            return Byte.MIN_VALUE;
         }
-        return this.permissions.getInt(flag);
+        return this.permissions.getByte(flag);
     }
 
     @Override
-    public void addPermission(Flag flag, int value) {
+    public void addPermission(Flag flag, byte value) {
         if (this.permissions == null) {
-            this.permissions = new Object2IntOpenHashMap<>();
-            this.permissions.defaultReturnValue(Integer.MIN_VALUE);
+            this.permissions = new Reference2ByteOpenHashMap<>();
+            this.permissions.defaultReturnValue(Byte.MIN_VALUE);
         }
         this.permissions.put(flag, value);
     }

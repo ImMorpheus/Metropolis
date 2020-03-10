@@ -8,13 +8,13 @@ public interface TownCategory {
 
     DefaultsCategory getDefaultsCategory();
 
-    int getTagMinLength();
+    byte getTagMinLength();
 
-    int getTagMaxLength();
+    byte getTagMaxLength();
 
-    int getNameMinLength();
+    byte getNameMinLength();
 
-    int getNameMaxLength();
+    byte getNameMaxLength();
 
     Duration getFoundationGracePeriod();
 

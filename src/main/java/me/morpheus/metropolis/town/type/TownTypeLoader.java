@@ -6,6 +6,8 @@ import it.unimi.dsi.fastutil.objects.Reference2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Reference2DoubleOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ShortMap;
+import it.unimi.dsi.fastutil.objects.Reference2ShortOpenHashMap;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.api.custom.CustomResourceLoader;
 import me.morpheus.metropolis.api.data.plot.PlotKeys;
@@ -17,6 +19,7 @@ import me.morpheus.metropolis.config.ConfigUtil;
 import me.morpheus.metropolis.configurate.serialize.Object2IntSerializer;
 import me.morpheus.metropolis.configurate.serialize.Reference2DoubleSerializer;
 import me.morpheus.metropolis.configurate.serialize.Reference2IntSerializer;
+import me.morpheus.metropolis.configurate.serialize.Reference2ShortSerializer;
 import me.morpheus.metropolis.error.MPGenericErrors;
 import me.morpheus.metropolis.health.MPIncident;
 import ninja.leaping.configurate.ConfigurationOptions;
@@ -79,21 +82,20 @@ public class TownTypeLoader implements CustomResourceLoader<TownType> {
         prices.put(PlotTypes.PLOT, 10);
         prices.put(PlotTypes.OUTPOST, 100);
 
-        final Reference2IntMap<PlotType> caps = new Reference2IntOpenHashMap<>();
-        caps.put(PlotTypes.HOMEBLOCK, 1);
-        caps.put(PlotTypes.PLOT, 100);
-        caps.put(PlotTypes.OUTPOST, 5);
+        final Reference2ShortMap<PlotType> caps = new Reference2ShortOpenHashMap<>();
+        caps.put(PlotTypes.HOMEBLOCK, (short) 1);
+        caps.put(PlotTypes.PLOT, (short) 100);
+        caps.put(PlotTypes.OUTPOST, (short) 5);
 
         return Collections.singletonList(
-                new MPTownType("settlement", "Settlement", "", 1, 20, prices, caps)
+                new MPTownType("settlement", "Settlement", "", 1, (short) 20, prices, caps)
         );
     }
 
     @Override
     public TownType load(Path path) throws IOException, ObjectMappingException {
         TypeSerializerCollection serializers = TypeSerializers.getDefaultSerializers().newChild();
-        serializers.registerType(TypeToken.of(Object2IntMap.class), new Object2IntSerializer());
-        serializers.registerType(TypeToken.of(Reference2IntMap.class), new Reference2IntSerializer());
+        serializers.registerType(TypeToken.of(Reference2ShortMap.class), new Reference2ShortSerializer());
         serializers.registerType(TypeToken.of(Reference2DoubleMap.class), new Reference2DoubleSerializer());
 
         ConfigurationOptions options = ConfigurationOptions.defaults().setSerializers(serializers);
@@ -111,7 +113,7 @@ public class TownTypeLoader implements CustomResourceLoader<TownType> {
         loader.save(n);
         MPTownType type = mapper.getInstance();
         type.getPrices().defaultReturnValue(Double.MAX_VALUE);
-        type.getMaxPlots().defaultReturnValue(0);
+        type.getMaxPlots().defaultReturnValue((short) 0);
 
         return type;
     }

@@ -25,8 +25,8 @@ public interface PlotData extends DataManipulator<PlotData, ImmutablePlotData> {
 
     Value<PlotType> type();
 
-    int getPermission(Flag flag);
+    byte getPermission(Flag flag);
 
-    void addPermission(Flag flag, int value);
+    void addPermission(Flag flag, byte value);
 
 }

@@ -2,11 +2,13 @@ package me.morpheus.metropolis.config;
 
 import com.google.common.reflect.TypeToken;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2ByteMap;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.GlobalConfig;
 import me.morpheus.metropolis.config.category.SimplePlotCategory;
 import me.morpheus.metropolis.configurate.serialize.Object2IntSerializer;
+import me.morpheus.metropolis.configurate.serialize.Reference2ByteSerializer;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.commented.SimpleCommentedConfigurationNode;
@@ -29,7 +31,7 @@ public final class SimpleConfigService implements ConfigService {
 
     public SimpleConfigService() {
         TypeSerializerCollection serializers = TypeSerializers.getDefaultSerializers().newChild();
-        serializers.registerType(TypeToken.of(Object2IntMap.class), new Object2IntSerializer());
+        serializers.registerType(TypeToken.of(Reference2ByteMap.class), new Reference2ByteSerializer());
 
         ConfigurationOptions options = ConfigurationOptions.defaults().setSerializers(serializers);
 
@@ -61,7 +63,7 @@ public final class SimpleConfigService implements ConfigService {
             try {
                 CommentedConfigurationNode node = this.loader.load();
                 this.mapper.populate(node);
-                ((SimplePlotCategory) getGlobal().getTownCategory().getPlotCategory()).getUnowned().defaultReturnValue(Integer.MIN_VALUE);
+                ((SimplePlotCategory) getGlobal().getTownCategory().getPlotCategory()).getUnowned().defaultReturnValue(Byte.MIN_VALUE);
             } catch (Exception e) {
                 throw new CompletionException(e);
             }
@@ -74,7 +76,7 @@ public final class SimpleConfigService implements ConfigService {
         }
         CommentedConfigurationNode node = this.loader.load();
         this.mapper.populate(node);
-        ((SimplePlotCategory) getGlobal().getTownCategory().getPlotCategory()).getUnowned().defaultReturnValue(Integer.MIN_VALUE);
+        ((SimplePlotCategory) getGlobal().getTownCategory().getPlotCategory()).getUnowned().defaultReturnValue(Byte.MIN_VALUE);
     }
 
     @Override

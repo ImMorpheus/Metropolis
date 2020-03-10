@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.data.plot;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2ByteMap;
 import me.morpheus.metropolis.api.data.plot.ImmutablePlotData;
 import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.data.plot.PlotKeys;
@@ -27,9 +28,9 @@ public class ImmutableMPPlotData extends AbstractImmutableData<ImmutablePlotData
     private final double rent;
     private final boolean forSale;
     private final PlotType type;
-    @Nullable private final Object2IntMap<Flag> permissions;
+    @Nullable private final Reference2ByteMap<Flag> permissions;
 
-    ImmutableMPPlotData(int town, @Nullable Text name, @Nullable UUID owner, double price, double rent, boolean forSale, PlotType type, @Nullable Object2IntMap<Flag> permissions) {
+    ImmutableMPPlotData(int town, @Nullable Text name, @Nullable UUID owner, double price, double rent, boolean forSale, PlotType type, @Nullable Reference2ByteMap<Flag> permissions) {
         this.town = town;
         this.name = name;
         this.owner = owner;
@@ -130,11 +131,11 @@ public class ImmutableMPPlotData extends AbstractImmutableData<ImmutablePlotData
     }
 
     @Override
-    public int getPermission(Flag flag) {
+    public byte getPermission(Flag flag) {
         if (this.permissions == null) {
-            return Integer.MIN_VALUE;
+            return Byte.MIN_VALUE;
         }
-        return this.permissions.getInt(flag);
+        return this.permissions.getByte(flag);
     }
 
     private int getTown() {

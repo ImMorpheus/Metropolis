@@ -13,7 +13,7 @@ public interface Rank extends CatalogType {
 
     boolean canLeave();
 
-    int getPermission(Flag flag);
+    byte getPermission(Flag flag);
 
 }
 

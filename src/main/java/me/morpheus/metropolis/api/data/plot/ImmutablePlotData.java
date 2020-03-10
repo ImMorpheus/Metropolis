@@ -25,6 +25,6 @@ public interface ImmutablePlotData extends ImmutableDataManipulator<ImmutablePlo
 
     ImmutableValue<PlotType> type();
 
-    int getPermission(Flag flag);
+    byte getPermission(Flag flag);
 
 }
