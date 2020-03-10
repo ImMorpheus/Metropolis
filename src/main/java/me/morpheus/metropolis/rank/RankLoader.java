@@ -3,8 +3,10 @@ package me.morpheus.metropolis.rank;
 import com.google.common.reflect.TypeToken;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.api.custom.CustomResourceLoader;
+import me.morpheus.metropolis.api.flag.Flag;
 import me.morpheus.metropolis.api.health.IncidentService;
 import me.morpheus.metropolis.api.rank.Rank;
 import me.morpheus.metropolis.config.ConfigUtil;
@@ -69,8 +71,8 @@ public class RankLoader implements CustomResourceLoader<Rank> {
         }
 
         return Arrays.asList(
-                new MPRank("citizen", "Citizen", false, true, true, 0, Object2IntMaps.emptyMap()),
-                new MPRank("mayor", "Mayor", true, false, false, 250, Object2IntMaps.emptyMap())
+                new MPRank("citizen", "Citizen", false, true, true, getCitizenDefaultPermissions()),
+                new MPRank("mayor", "Mayor", true, false, false, getMayorDefaultPermissions())
         );
     }
 
@@ -126,5 +128,21 @@ public class RankLoader implements CustomResourceLoader<Rank> {
                 }
             }
         });
+    }
+
+    private Object2IntMap<Flag> getCitizenDefaultPermissions() {
+        Object2IntMap<Flag> map = new Object2IntOpenHashMap<>();
+        for (Flag flag : Sponge.getRegistry().getAllOf(Flag.class)) {
+            map.put(flag, 0);
+        }
+        return map;
+    }
+
+    private Object2IntMap<Flag> getMayorDefaultPermissions() {
+        Object2IntMap<Flag> map = new Object2IntOpenHashMap<>();
+        for (Flag flag : Sponge.getRegistry().getAllOf(Flag.class)) {
+            map.put(flag, 250);
+        }
+        return map;
     }
 }
