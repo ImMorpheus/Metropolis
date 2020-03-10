@@ -210,8 +210,8 @@ public class SimpleTownService implements TownService {
             }
         }
         final Reference2ShortMap<PlotType> plots = new Reference2ShortOpenHashMap<>();
-        final Map<String, Short> map = (Map<String, Short>) view.getMap(DataQuery.of("plots")).get();
-        for (Map.Entry<String, Short> entry : map.entrySet()) {
+        final Map<String, Integer> map = (Map<String, Integer>) view.getMap(DataQuery.of("plots")).get();
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
             final PlotType plotType = Sponge.getRegistry().getType(PlotType.class, entry.getKey()).get();
             plots.put(plotType, entry.getValue().shortValue());
         }
