@@ -327,9 +327,9 @@ public class MPTown implements Town {
         }
         list.add(Text.of(TextColors.DARK_GREEN, "Citizens: ", TextColors.GREEN, "[", this.citizens, "/", this.type.getMaxCitizens(), "]"));
         final Text.Builder hoverBuilder = Text.builder();
-        for (Reference2IntMap.Entry<PlotType> entry : this.plots.reference2IntEntrySet()) {
+        for (Reference2ShortMap.Entry<PlotType> entry : this.plots.reference2ShortEntrySet()) {
             hoverBuilder
-                    .append(Text.of(TextColors.DARK_GREEN, entry.getKey().getName(), ":", TextColors.GREEN, " [", entry.getIntValue(), "/", this.type.getMaxPlots(entry.getKey()), "]"))
+                    .append(Text.of(TextColors.DARK_GREEN, entry.getKey().getName(), ":", TextColors.GREEN, " [", entry.getShortValue(), "/", this.type.getMaxPlots(entry.getKey()), "]"))
                     .append(Text.NEW_LINE);
         }
         final Text plots = Text.builder()
@@ -623,8 +623,8 @@ public class MPTown implements Town {
                 .set(DataQuery.of("visibility"), this.visibility)
                 .set(DataQuery.of("citizens"), this.citizens);
         final DataContainer plots = DataContainer.createNew();
-        for (Reference2IntMap.Entry<PlotType> entry : this.plots.reference2IntEntrySet()) {
-            plots.set(DataQuery.of(entry.getKey().getId()), entry.getIntValue());
+        for (Reference2ShortMap.Entry<PlotType> entry : this.plots.reference2ShortEntrySet()) {
+            plots.set(DataQuery.of(entry.getKey().getId()), entry.getShortValue());
         }
         data.set(DataQuery.of("plots"), plots);
         final Collection<DataManipulator> manipulators = this.manipulators.values();
