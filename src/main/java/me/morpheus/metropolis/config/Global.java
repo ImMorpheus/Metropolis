@@ -37,9 +37,6 @@ public class Global implements GlobalConfig {
     @Setting(value = "enable-plot-message", comment = "")
     private boolean plotMessage = true;
 
-    @Setting(value = "save-interval", comment = "")
-    private Duration saveInterval = Duration.ofMinutes(30L);
-
     @Override
     public TownCategory getTownCategory() {
         return this.town;
@@ -58,10 +55,5 @@ public class Global implements GlobalConfig {
     @Override
     public boolean isPlotMessageEnabled() {
         return this.plotMessage;
-    }
-
-    @Override
-    public Duration getSaveInterval() {
-        return this.saveInterval;
     }
 }

@@ -12,6 +12,4 @@ public interface GlobalConfig {
 
     boolean isPlotMessageEnabled();
 
-    Duration getSaveInterval(); //TODO
-
 }

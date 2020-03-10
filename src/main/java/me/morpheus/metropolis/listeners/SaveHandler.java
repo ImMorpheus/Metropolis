@@ -15,10 +15,9 @@ public final class SaveHandler {
 
     @Listener
     public void onReload(SaveWorldEvent.Pre event) {
-        GlobalConfig global = Sponge.getServiceManager().provideUnchecked(ConfigService.class).getGlobal();
 
         long now = System.currentTimeMillis();
-        if (now - this.last < global.getSaveInterval().toMillis()) {
+        if (now - this.last < 10000) {
             return;
         }
         this.last = now;
