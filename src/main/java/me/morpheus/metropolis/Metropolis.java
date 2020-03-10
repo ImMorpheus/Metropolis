@@ -220,7 +220,7 @@ public class Metropolis {
         final EconomyCategory ec = Sponge.getServiceManager().provideUnchecked(ConfigService.class).getGlobal().getEconomyCategory();
         if (ec.isEnabled()) {
             final LocalDateTime now = LocalDateTime.now();
-            final long delay = now.until(now.withHour(ec.getTaxHour()).plusDays(1L), ChronoUnit.NANOS);
+            final long delay = now.until(now.withHour(12).plusDays(1L), ChronoUnit.NANOS);
 
             Sponge.getScheduler().createTaskBuilder()
                     .async()

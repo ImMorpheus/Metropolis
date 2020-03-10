@@ -6,6 +6,4 @@ public interface EconomyCategory {
 
     double getTownCreationPrice(); //TODO
 
-    int getTaxHour(); //TODO
-
 }

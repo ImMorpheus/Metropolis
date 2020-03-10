@@ -13,9 +13,6 @@ public class SimpleEconomyCategory implements EconomyCategory {
     @Setting(value = "town-creation", comment = "")
     private double creation = 100.0;
 
-    @Setting(value = "tax-hour", comment = "")
-    private int hour = 12;
-
     @Override
     public boolean isEnabled() {
         return this.enabled;
@@ -24,10 +21,5 @@ public class SimpleEconomyCategory implements EconomyCategory {
     @Override
     public double getTownCreationPrice() {
         return this.creation;
-    }
-
-    @Override
-    public int getTaxHour() {
-        return this.hour;
     }
 }
