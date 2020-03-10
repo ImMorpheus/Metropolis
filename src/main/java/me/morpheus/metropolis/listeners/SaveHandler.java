@@ -17,7 +17,7 @@ public final class SaveHandler {
     public void onReload(SaveWorldEvent.Pre event) {
 
         long now = System.currentTimeMillis();
-        if (now - this.last < 60000) {
+        if (now - this.last < 300000) {
             return;
         }
         this.last = now;
