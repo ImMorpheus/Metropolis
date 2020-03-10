@@ -7,6 +7,8 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ShortMap;
+import it.unimi.dsi.fastutil.objects.Reference2ShortOpenHashMap;
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.plot.PlotType;
 import me.morpheus.metropolis.api.town.TownTypes;
@@ -207,14 +209,14 @@ public class SimpleTownService implements TownService {
                 town.offer(manipulator);
             }
         }
-        final Reference2IntMap<PlotType> plots = new Reference2IntOpenHashMap<>();
-        final Map<String, Integer> map = (Map<String, Integer>) view.getMap(DataQuery.of("plots")).get();
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+        final Reference2ShortMap<PlotType> plots = new Reference2ShortOpenHashMap<>();
+        final Map<String, Short> map = (Map<String, Short>) view.getMap(DataQuery.of("plots")).get();
+        for (Map.Entry<String, Short> entry : map.entrySet()) {
             final PlotType plotType = Sponge.getRegistry().getType(PlotType.class, entry.getKey()).get();
-            plots.put(plotType, entry.getValue().intValue());
+            plots.put(plotType, entry.getValue().shortValue());
         }
         town.setPlots(plots);
-        town.setCitizens(view.getInt(DataQuery.of("citizens")).get());
+        town.setCitizens(view.getShort(DataQuery.of("citizens")).get());
 
         return town;
     }

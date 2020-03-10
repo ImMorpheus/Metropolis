@@ -4,6 +4,8 @@ import com.google.common.base.MoreObjects;
 import com.udojava.evalex.Expression;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ShortMap;
+import it.unimi.dsi.fastutil.objects.Reference2ShortOpenHashMap;
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.town.TownData;
 import me.morpheus.metropolis.api.event.plot.ClaimPlotEvent;
@@ -119,8 +121,8 @@ public class MPTown implements Town {
 
     private boolean dirty;
 
-    private int citizens = 0;
-    private final Reference2IntMap<PlotType> plots = new Reference2IntOpenHashMap<>();
+    private short citizens = 0;
+    private final Reference2ShortMap<PlotType> plots = new Reference2ShortOpenHashMap<>();
 
     //Data
     private final Map<Class, DataManipulator> manipulators = new IdentityHashMap<>();
@@ -135,7 +137,7 @@ public class MPTown implements Town {
         this.name = name;
 
         final GlobalConfig global = Sponge.getServiceManager().provideUnchecked(ConfigService.class).getGlobal();
-        final int tagLimit = global.getTownCategory().getTagMaxLength();
+        final byte tagLimit = global.getTownCategory().getTagMaxLength();
 
         final String plain = name.toPlain();
         this.tag = plain.length() <= tagLimit ? name : Text.of(plain.substring(0, tagLimit));
@@ -186,12 +188,12 @@ public class MPTown implements Town {
         if (!requiredTownTypes.contains(this.type)) {
             return false;
         }
-        int requiredCitizens = upgrade.getRequiredCitizens();
+        short requiredCitizens = upgrade.getRequiredCitizens();
         if (this.citizens < requiredCitizens) {
             return false;
         }
-        int requiredPlots = upgrade.getRequiredPlots();
-        if (this.plots.getInt(PlotTypes.PLOT) < requiredPlots) {
+        short requiredPlots = upgrade.getRequiredPlots();
+        if (this.plots.getShort(PlotTypes.PLOT) < requiredPlots) {
             return false;
         }
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
@@ -430,7 +432,7 @@ public class MPTown implements Town {
 
     @Override
     public boolean claim(Location<World> location, PlotType type, @Nullable Text name) {
-        int current = this.plots.getInt(type);
+        short current = this.plots.getShort(type);
         if (current >= this.type.getMaxPlots(type)) {
             return false;
         }
@@ -492,7 +494,7 @@ public class MPTown implements Town {
             Optional<OutpostData> odOpt = get(OutpostData.class);
             odOpt.ifPresent(outpostData -> outpostData.outposts().remove(pdOpt.get().name().get().toPlain()));
         }
-        int current = this.plots.getInt(type);
+        short current = this.plots.getShort(type);
         this.plots.put(type, --current);
         setDirty(true);
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
@@ -574,19 +576,19 @@ public class MPTown implements Town {
         this.dirty = dirty;
     }
 
-    public int getCitizens() {
+    public short getCitizens() {
         return this.citizens;
     }
 
-    public void setCitizens(int citizens) {
+    public void setCitizens(short citizens) {
         this.citizens = citizens;
     }
 
-    public Reference2IntMap<PlotType> getPlots() {
+    public Reference2ShortMap<PlotType> getPlots() {
         return this.plots;
     }
 
-    public void setPlots(Reference2IntMap<PlotType> plots) {
+    public void setPlots(Reference2ShortMap<PlotType> plots) {
         this.plots.putAll(plots);
     }
 

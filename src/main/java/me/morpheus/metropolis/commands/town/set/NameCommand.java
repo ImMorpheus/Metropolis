@@ -39,13 +39,13 @@ class NameCommand extends AbstractCitizenCommand {
 
         final TownCategory townCategory = Sponge.getServiceManager().provideUnchecked(ConfigService.class).getGlobal().getTownCategory();
 
-        final int nameMaxLength = townCategory.getNameMaxLength();
+        final byte nameMaxLength = townCategory.getNameMaxLength();
         if (name.toPlain().length() > nameMaxLength) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Name can't be longer than ", nameMaxLength, " char"));
             return CommandResult.empty();
         }
 
-        final int nameMinLength = townCategory.getNameMinLength();
+        final byte nameMinLength = townCategory.getNameMinLength();
         if (name.toPlain().length() < nameMinLength) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Name can't be shorter than ", nameMinLength, " char"));
             return CommandResult.empty();

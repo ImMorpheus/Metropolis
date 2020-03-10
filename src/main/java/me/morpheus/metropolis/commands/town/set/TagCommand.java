@@ -38,13 +38,13 @@ class TagCommand extends AbstractCitizenCommand {
 
         final TownCategory townCategory = Sponge.getServiceManager().provideUnchecked(ConfigService.class).getGlobal().getTownCategory();
 
-        final int tagMaxLength = townCategory.getTagMaxLength();
+        final byte tagMaxLength = townCategory.getTagMaxLength();
         if (tag.length() > tagMaxLength) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Tag can't be longer than ", tagMaxLength, " char"));
             return CommandResult.empty();
         }
 
-        final int tagMinLength = townCategory.getTagMinLength();
+        final byte tagMinLength = townCategory.getTagMinLength();
         if (tag.length() < tagMinLength) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Tag can't be shorter than ", tagMinLength, " char"));
             return CommandResult.empty();

@@ -15,11 +15,11 @@ class MPUpgrade implements Upgrade {
     @Setting(value = "required-towntypes") private Set<TownType> requiredTownTypes;
     @Setting private TownType target;
     @Setting private double cost;
-    @Setting(value = "required-citizens") private int requiredCitizens;
-    @Setting(value = "required-plots") private int requiredPlots;
+    @Setting(value = "required-citizens") private short requiredCitizens;
+    @Setting(value = "required-plots") private short requiredPlots;
 
     public MPUpgrade(String id, String name, Set<TownType> requiredTownTypes, TownType target,
-                     double cost, int requiredCitizens, int requiredPlots) {
+                     double cost, short requiredCitizens, short requiredPlots) {
         this.id = id;
         this.name = name;
         this.requiredTownTypes = requiredTownTypes;
@@ -60,12 +60,12 @@ class MPUpgrade implements Upgrade {
     }
 
     @Override
-    public int getRequiredCitizens() {
+    public short getRequiredCitizens() {
         return this.requiredCitizens;
     }
 
     @Override
-    public int getRequiredPlots() {
+    public short getRequiredPlots() {
         return this.requiredPlots;
     }
 }

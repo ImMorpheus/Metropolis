@@ -83,13 +83,13 @@ public final class EventUtil {
 
         final Rank rank = cd.rank().get();
 
-        final int value = pd.getPermission(flag);
-        if (value != Integer.MIN_VALUE) {
+        final byte value = pd.getPermission(flag);
+        if (value != Byte.MIN_VALUE) {
             return rank.getPermission(flag) > value;
         }
 
         final GlobalConfig config = Sponge.getServiceManager().provideUnchecked(ConfigService.class).getGlobal();
-        final int perm = rank.getPermission(flag);
+        final byte perm = rank.getPermission(flag);
 
         if (!pd.owner().get().isPresent()) {
             return perm > config.getTownCategory().getPlotCategory().getUnownedPermission(flag);

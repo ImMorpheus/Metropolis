@@ -12,8 +12,8 @@ public interface Upgrade extends CatalogType {
 
     double getCost();
 
-    int getRequiredCitizens();
+    short getRequiredCitizens();
 
-    int getRequiredPlots();
+    short getRequiredPlots();
 
 }
