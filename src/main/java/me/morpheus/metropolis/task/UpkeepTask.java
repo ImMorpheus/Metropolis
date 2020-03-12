@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 
 public final class UpkeepTask implements Consumer<Task> {
 
-    private static final int MAX_UPKEEP_PER_TICK = 100;
+    public static final int MAX_UPKEEP_PER_TICK = 100;
 
     private final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
     private final Iterator<Town> towns;

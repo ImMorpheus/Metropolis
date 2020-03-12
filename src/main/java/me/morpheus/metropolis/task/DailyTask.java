@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.task;
 
 import me.morpheus.metropolis.Metropolis;
+import me.morpheus.metropolis.api.plot.PlotService;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.profile.GameProfile;
@@ -24,23 +25,26 @@ public final class DailyTask {
                 .execute(new InactiveCitizenTask(users))
                 .submit(plugin);
 
+        final long taxDelay = (users.size() / InactiveCitizenTask.MAX_INACTIVE_USER_KICK_PER_TICK) + 20;
         Sponge.getScheduler().createTaskBuilder()
                 .name(Metropolis.ID + "+tax")
-                .delayTicks(6000)
+                .delayTicks(taxDelay)
                 .intervalTicks(1L)
                 .execute(new TaxTask(users))
                 .submit(plugin);
 
+        final long rentDelay = taxDelay + (users.size() / TaxTask.MAX_TAX_PER_TICK) + 20;
         Sponge.getScheduler().createTaskBuilder()
                 .name(Metropolis.ID + "+rent")
-                .delayTicks(12000)
+                .delayTicks(rentDelay)
                 .intervalTicks(1L)
                 .execute(new RentTask())
                 .submit(plugin);
 
+        final long upkeepDelay = rentDelay + (Sponge.getServiceManager().provideUnchecked(PlotService.class).plots().count() / RentTask.MAX_RENT_PER_TICK) + 20;
         Sponge.getScheduler().createTaskBuilder()
                 .name(Metropolis.ID + "+upkeep")
-                .delayTicks(18000)
+                .delayTicks(upkeepDelay)
                 .intervalTicks(1L)
                 .execute(new UpkeepTask())
                 .submit(plugin);

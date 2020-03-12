@@ -23,7 +23,7 @@ import java.util.function.Consumer;
 
 public final class RentTask implements Consumer<Task> {
 
-    private static final int MAX_RENT_PER_TICK = 100;
+    public static final int MAX_RENT_PER_TICK = 100;
 
     private final UserStorageService uss = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
     private final TownService ts = Sponge.getServiceManager().provideUnchecked(TownService.class);
