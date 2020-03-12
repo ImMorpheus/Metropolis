@@ -294,9 +294,6 @@ public class MPTown implements Town {
 
     @Override
     public BigDecimal getUpkeep() {
-        if (this.type.getTaxFunction().isEmpty()) {
-            return BigDecimal.ZERO;
-        }
         Expression expression = new Expression(this.type.getTaxFunction());
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
             MPTownTransactionEventUpkeep event = new MPTownTransactionEventUpkeep(frame.getCurrentCause(), this);
