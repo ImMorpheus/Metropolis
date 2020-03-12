@@ -88,7 +88,7 @@ public class TownTypeLoader implements CustomResourceLoader<TownType> {
         caps.put(PlotTypes.OUTPOST, (short) 5);
 
         return Collections.singletonList(
-                new MPTownType("settlement", "Settlement", "", 1, (short) 20, prices, caps)
+                new MPTownType("settlement", "Settlement", "1+5*citizens+5*(plot+homeblock+outpost)", 1, (short) 20, prices, caps)
         );
     }
 
