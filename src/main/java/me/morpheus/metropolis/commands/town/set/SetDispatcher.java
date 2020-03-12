@@ -17,6 +17,7 @@ public final class SetDispatcher extends AbstractCommandDispatcher {
         register(new PvPCommand(), "pvp");
         register(new SpawnCommand(), "spawn");
         register(new TagCommand(), "tag");
+        register(new TaxCommand(), "tax");
     }
 
     @Override
