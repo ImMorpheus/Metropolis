@@ -16,6 +16,8 @@ public final class AdminDispatcher extends AbstractCommandDispatcher {
 
         registerManager(new TownDispatcher(), "town");
         registerManager(new PlotDispatcher(), "plot");
+
+        register(new ForceTaxCommand(), "forcetax");
     }
 
     @Override
