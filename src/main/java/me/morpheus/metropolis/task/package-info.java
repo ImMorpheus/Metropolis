@@ -1,2 +1,2 @@
 @org.spongepowered.api.util.annotation.NonnullByDefault
-package me.morpheus.metropolis.town.economy;
+package me.morpheus.metropolis.task;

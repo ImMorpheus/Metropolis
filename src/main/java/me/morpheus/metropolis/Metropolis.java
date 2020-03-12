@@ -70,8 +70,8 @@ import me.morpheus.metropolis.listeners.debug.DamageEntityDebugHandler;
 import me.morpheus.metropolis.plot.PlotTypeRegistryModule;
 import me.morpheus.metropolis.plot.SimplePlotService;
 import me.morpheus.metropolis.rank.RankRegistryModule;
+import me.morpheus.metropolis.task.DailyTask;
 import me.morpheus.metropolis.town.SimpleTownService;
-import me.morpheus.metropolis.town.economy.AsyncTaxCollectionTask;
 import me.morpheus.metropolis.town.invitation.SimpleInvitationService;
 import me.morpheus.metropolis.town.pvp.PvPOptionRegistryModule;
 import me.morpheus.metropolis.town.type.TownTypeRegistryModule;
@@ -223,11 +223,10 @@ public class Metropolis {
             final long delay = now.until(now.withHour(12).plusDays(1L), ChronoUnit.NANOS);
 
             Sponge.getScheduler().createTaskBuilder()
-                    .async()
                     .delay(delay, TimeUnit.NANOSECONDS)
                     .interval(1L, TimeUnit.DAYS)
-                    .name(Metropolis.ID + "+async-tax")
-                    .execute(AsyncTaxCollectionTask::run)
+                    .name(Metropolis.ID + "+daily")
+                    .execute(DailyTask::run)
                     .submit(this.container);
         }
     }
