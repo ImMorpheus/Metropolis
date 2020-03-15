@@ -24,7 +24,7 @@ public final class InternalSpawnEntityHandler {
     @Listener(order = Order.FIRST, beforeModifications = true)
     public void onSpawnEntity(SpawnEntityEvent event) {
         if (event.getEntities().stream().anyMatch(entity -> this.ps.get(entity.getLocation()).isPresent())) {
-            SpawnEntityTownEvent townEvent = new MPSpawnEntityTownEvent(event.getCause(), event.getEntities(), event.getEntitySnapshots());
+            final SpawnEntityTownEvent townEvent = new MPSpawnEntityTownEvent(event.getCause(), event.getEntities(), event.getEntitySnapshots());
             if (Sponge.getEventManager().post(townEvent)) {
                 event.setCancelled(true);
             }
