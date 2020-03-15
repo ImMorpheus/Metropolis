@@ -61,12 +61,12 @@ import me.morpheus.metropolis.listeners.ChangeBlockTownHandler;
 import me.morpheus.metropolis.listeners.ChatHandler;
 import me.morpheus.metropolis.listeners.DamageEntityTownHandler;
 import me.morpheus.metropolis.listeners.debug.ChangeBlockDebugHandler;
-import me.morpheus.metropolis.listeners.ExplosionTownHandler;
 import me.morpheus.metropolis.listeners.InteractTownHandler;
 import me.morpheus.metropolis.listeners.MoveEntityTownHandler;
 import me.morpheus.metropolis.listeners.ReloadHandler;
 import me.morpheus.metropolis.listeners.SaveHandler;
 import me.morpheus.metropolis.listeners.debug.DamageEntityDebugHandler;
+import me.morpheus.metropolis.listeners.SpawnEntityTownHandler;
 import me.morpheus.metropolis.plot.PlotTypeRegistryModule;
 import me.morpheus.metropolis.plot.SimplePlotService;
 import me.morpheus.metropolis.rank.RankRegistryModule;
@@ -156,6 +156,7 @@ public class Metropolis {
         Sponge.getEventManager().registerListeners(this.container, new DamageEntityTownHandler());
         // Sponge.getEventManager().registerListeners(this.container, new ExplosionTownHandler()); //TODO
         Sponge.getEventManager().registerListeners(this.container, new InteractTownHandler());
+        Sponge.getEventManager().registerListeners(this.container, new SpawnEntityTownHandler());
         Sponge.getEventManager().registerListeners(this.container, new ReloadHandler());
         Sponge.getEventManager().registerListeners(this.container, new ChatHandler());
         Sponge.getEventManager().registerListeners(this.container, new SaveHandler());
