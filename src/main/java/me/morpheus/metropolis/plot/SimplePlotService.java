@@ -1,7 +1,6 @@
 package me.morpheus.metropolis.plot;
 
 import com.flowpowered.math.vector.Vector2i;
-import com.flowpowered.math.vector.Vector3i;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.plot.ImmutablePlotData;
@@ -16,7 +15,7 @@ import me.morpheus.metropolis.plot.listeners.InternalInteractHandler;
 import me.morpheus.metropolis.plot.listeners.InternalLoginHandler;
 import me.morpheus.metropolis.plot.listeners.InternalMoveEntityHandler;
 import me.morpheus.metropolis.plot.listeners.InternalNotifyHandler;
-import me.morpheus.metropolis.plot.listeners.InternalMobSpawnHandler;
+import me.morpheus.metropolis.plot.listeners.InternalSpawnEntityHandler;
 import me.morpheus.metropolis.util.VectorUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
@@ -26,7 +25,6 @@ import org.spongepowered.api.data.persistence.InvalidDataException;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-import org.spongepowered.api.world.explosion.Explosion;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -37,11 +35,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -255,7 +251,7 @@ public class SimplePlotService implements PlotService {
         Sponge.getEventManager().registerListeners(plugin, new InternalMoveEntityHandler(this));
         Sponge.getEventManager().registerListeners(plugin, new InternalNotifyHandler(this));
         Sponge.getEventManager().registerListeners(plugin, new InternalLoginHandler(this));
-        Sponge.getEventManager().registerListeners(plugin, new InternalMobSpawnHandler(this));
+        Sponge.getEventManager().registerListeners(plugin, new InternalSpawnEntityHandler(this));
     }
 
     @Nullable
