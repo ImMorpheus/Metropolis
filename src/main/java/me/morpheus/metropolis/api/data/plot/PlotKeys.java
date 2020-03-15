@@ -62,5 +62,12 @@ public final class PlotKeys {
             .type(MPTypeTokens.PLOTTYPE_VALUE_TOKEN)
             .build();
 
+    public static final Key<Value<Boolean>> MOBSPAWN = Key.builder()
+            .id("mobspawn")
+            .name("MobSpawn")
+            .query(DataQuery.of("mobspawn"))
+            .type(TypeTokens.BOOLEAN_VALUE_TOKEN)
+            .build();
+
     private PlotKeys() {}
 }

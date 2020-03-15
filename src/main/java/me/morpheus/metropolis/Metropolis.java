@@ -269,6 +269,7 @@ public class Metropolis {
         event.register(PlotKeys.RENT);
         event.register(PlotKeys.FORSALE);
         event.register(PlotKeys.TYPE);
+        event.register(PlotKeys.MOBSPAWN);
 
         event.register(TownKeys.DESCRIPTION);
         event.register(TownKeys.MOTD);

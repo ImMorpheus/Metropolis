@@ -16,6 +16,7 @@ import me.morpheus.metropolis.plot.listeners.InternalInteractHandler;
 import me.morpheus.metropolis.plot.listeners.InternalLoginHandler;
 import me.morpheus.metropolis.plot.listeners.InternalMoveEntityHandler;
 import me.morpheus.metropolis.plot.listeners.InternalNotifyHandler;
+import me.morpheus.metropolis.plot.listeners.InternalMobSpawnHandler;
 import me.morpheus.metropolis.util.VectorUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
@@ -254,6 +255,7 @@ public class SimplePlotService implements PlotService {
         Sponge.getEventManager().registerListeners(plugin, new InternalMoveEntityHandler(this));
         Sponge.getEventManager().registerListeners(plugin, new InternalNotifyHandler(this));
         Sponge.getEventManager().registerListeners(plugin, new InternalLoginHandler(this));
+        Sponge.getEventManager().registerListeners(plugin, new InternalMobSpawnHandler(this));
     }
 
     @Nullable

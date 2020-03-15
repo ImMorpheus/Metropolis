@@ -25,6 +25,12 @@ public interface ImmutablePlotData extends ImmutableDataManipulator<ImmutablePlo
 
     ImmutableValue<PlotType> type();
 
+    /**
+     * Returns true if mob spawn is permitted.
+     * @return true if mob can spawn in plot, false otherwise.
+     */
+    ImmutableValue<Boolean> mobSpawn();
+
     byte getPermission(Flag flag);
 
 }

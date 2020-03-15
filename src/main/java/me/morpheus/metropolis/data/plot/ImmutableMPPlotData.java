@@ -28,9 +28,10 @@ public class ImmutableMPPlotData extends AbstractImmutableData<ImmutablePlotData
     private final double rent;
     private final boolean forSale;
     private final PlotType type;
+    private final boolean mobSpawn;
     @Nullable private final Reference2ByteMap<Flag> permissions;
 
-    ImmutableMPPlotData(int town, @Nullable Text name, @Nullable UUID owner, double price, double rent, boolean forSale, PlotType type, @Nullable Reference2ByteMap<Flag> permissions) {
+    ImmutableMPPlotData(int town, @Nullable Text name, @Nullable UUID owner, double price, double rent, boolean forSale, PlotType type, boolean mobSpawn, @Nullable Reference2ByteMap<Flag> permissions) {
         this.town = town;
         this.name = name;
         this.owner = owner;
@@ -39,6 +40,7 @@ public class ImmutableMPPlotData extends AbstractImmutableData<ImmutablePlotData
         this.forSale = forSale;
         this.type = type;
         this.permissions = permissions;
+        this.mobSpawn = mobSpawn;
         registerGetters();
     }
 
@@ -51,6 +53,7 @@ public class ImmutableMPPlotData extends AbstractImmutableData<ImmutablePlotData
         registerKeyValue(PlotKeys.RENT, this::rent);
         registerKeyValue(PlotKeys.FORSALE, this::forSale);
         registerKeyValue(PlotKeys.TYPE, this::type);
+        registerKeyValue(PlotKeys.MOBSPAWN, this::mobSpawn);
 
         registerFieldGetter(PlotKeys.TOWN, this::getTown);
         registerFieldGetter(PlotKeys.NAME, this::getName);
@@ -59,11 +62,12 @@ public class ImmutableMPPlotData extends AbstractImmutableData<ImmutablePlotData
         registerFieldGetter(PlotKeys.RENT, this::getRent);
         registerFieldGetter(PlotKeys.FORSALE, this::isForSale);
         registerFieldGetter(PlotKeys.TYPE, this::getType);
+        registerFieldGetter(PlotKeys.MOBSPAWN, this::hasMobSpawn);
     }
 
     @Override
     public PlotData asMutable() {
-        return new MPPlotData(this.town, this.name, this.owner, this.price, this.rent, this.forSale, this.type, this.permissions);
+        return new MPPlotData(this.town, this.name, this.owner, this.price, this.rent, this.forSale, this.type, this.mobSpawn, this.permissions);
     }
 
     @Override
@@ -85,6 +89,7 @@ public class ImmutableMPPlotData extends AbstractImmutableData<ImmutablePlotData
         container.set(PlotKeys.RENT.getQuery(), this.rent);
         container.set(PlotKeys.FORSALE.getQuery(), this.forSale);
         container.set(PlotKeys.TYPE.getQuery(), this.type);
+        container.set(PlotKeys.MOBSPAWN.getQuery(), this.mobSpawn);
         if (this.permissions != null && !this.permissions.isEmpty()) {
             container.set(DataQuery.of("permissions"), this.permissions);
         }
@@ -131,6 +136,11 @@ public class ImmutableMPPlotData extends AbstractImmutableData<ImmutablePlotData
     }
 
     @Override
+    public ImmutableValue<Boolean> mobSpawn() {
+        return Sponge.getRegistry().getValueFactory().createValue(PlotKeys.MOBSPAWN, this.mobSpawn).asImmutable();
+    }
+
+    @Override
     public byte getPermission(Flag flag) {
         if (this.permissions == null) {
             return Byte.MIN_VALUE;
@@ -166,5 +176,9 @@ public class ImmutableMPPlotData extends AbstractImmutableData<ImmutablePlotData
 
     private PlotType getType() {
         return this.type;
+    }
+
+    private boolean hasMobSpawn() {
+        return this.mobSpawn;
     }
 }
