@@ -61,7 +61,7 @@ class InfoCommand extends AbstractPlayerCommand {
                         Text.of(TextColors.DARK_GREEN, "Type: ", TextColors.GREEN, pd.type().get().getName()),
                         Text.of(TextColors.DARK_GREEN, "Price: ", TextColors.GREEN, pd.price().get()),
                         Text.of(TextColors.DARK_GREEN, "Rent: ", TextColors.GREEN, pd.rent().get()),
-                        Text.of(TextColors.DARK_GREEN, "Mobspawn: ", (pd.mobSpawn().get()? Text.of(TextColors.GREEN, "Enabled") : Text.of(TextColors.RED, "Disabled")))
+                        Text.of(TextColors.DARK_GREEN, "Mobspawn: ", (pd.mobSpawn().get() ? Text.of(TextColors.GREEN, "On") : Text.of(TextColors.RED, "Off")))
                 )
                 .padding(Text.of(TextColors.GOLD, "-"))
                 .sendTo(source);
