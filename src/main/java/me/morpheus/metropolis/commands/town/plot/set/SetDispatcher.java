@@ -6,7 +6,7 @@ import org.spongepowered.api.text.Text;
 
 import java.util.Optional;
 
-public class SetDispatcher extends AbstractCommandDispatcher {
+public final class SetDispatcher extends AbstractCommandDispatcher {
     @Override
     public void registerDefaults() {
         register(new MobSpawnCommand(), "mobspawn");
