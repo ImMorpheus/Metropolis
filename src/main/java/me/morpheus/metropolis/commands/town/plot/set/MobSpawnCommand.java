@@ -16,7 +16,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class MobSpawnCommand extends AbstractHomeTownCommand {
+class MobSpawnCommand extends AbstractHomeTownCommand {
 
     MobSpawnCommand() {
         super(
