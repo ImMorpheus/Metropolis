@@ -7,12 +7,14 @@ import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.data.plot.PlotKeys;
 import me.morpheus.metropolis.api.town.Town;
+import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 public class MobSpawnCommand extends AbstractHomeTownCommand {
 
@@ -21,7 +23,7 @@ public class MobSpawnCommand extends AbstractHomeTownCommand {
                 GenericArguments.onlyOne(GenericArguments.bool(Text.of("value"))),
                 MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.plot.set.mobspawn",
-                Text.of("Activates mob spawn in plot.")
+                Text.of("Turn on/off mobspawning in the plot.")
         );
     }
 
@@ -30,7 +32,7 @@ public class MobSpawnCommand extends AbstractHomeTownCommand {
         final boolean flag = context.requireOne("value");
 
         pd.set(PlotKeys.MOBSPAWN, flag);
-        source.sendMessage(Text.of("Mobspawn " + (flag ? "enabled" : "disabled") + "  in plot"));
+        source.sendMessage(TextUtil.watermark(TextColors.AQUA, "Mobspawn ", (flag ? "on" : "off"), " in plot"));
 
         return CommandResult.success();
     }
