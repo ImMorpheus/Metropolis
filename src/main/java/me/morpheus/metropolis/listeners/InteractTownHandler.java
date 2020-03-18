@@ -46,17 +46,17 @@ public final class InteractTownHandler {
             event.setCancelled(true);
             return;
         }
-
-        if (event.getContext().containsKey(EventContextKeys.PLAYER_PLACE)) {
-            if (!EventUtil.hasPermission((Player) root, pdOpt.get(), Flags.BLOCK_PLACE)) {
-                event.setCancelled(true);
-                EventUtil.sendNoPermissionMessage((Player) root);
-            }
-        } else {
+// TODO Sponge is broken
+//        if (event.getContext().containsKey(EventContextKeys.PLAYER_PLACE)) {
+//            if (!EventUtil.hasPermission((Player) root, pdOpt.get(), Flags.BLOCK_PLACE)) {
+//                event.setCancelled(true);
+//                EventUtil.sendNoPermissionMessage((Player) root);
+//            }
+//        } else {
             if (!EventUtil.hasPermission((Player) root, pdOpt.get(), Flags.INTERACT_BLOCK)) {
                 event.setCancelled(true);
                 EventUtil.sendNoPermissionMessage((Player) root);
-            }
+//            }
         }
     }
 
