@@ -1,6 +1,11 @@
 package me.morpheus.metropolis.util;
 
+import it.unimi.dsi.fastutil.objects.Reference2ByteMap;
+import it.unimi.dsi.fastutil.objects.Reference2ByteMaps;
+import it.unimi.dsi.fastutil.objects.Reference2ByteOpenHashMap;
 import me.morpheus.metropolis.api.data.town.TownKeys;
+import me.morpheus.metropolis.api.flag.Flag;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.DataView;
@@ -85,6 +90,29 @@ public final class Hacks {
             map.put(key, loc);
         }
         return map;
+    }
+
+    public static DataContainer toContainer(Reference2ByteMap<Flag> permissions) {
+        final DataContainer view = DataContainer.createNew();
+        for (Reference2ByteMap.Entry<Flag> e : permissions.reference2ByteEntrySet()) {
+            view.set(DataQuery.of(e.getKey().getId()), e.getByteValue());
+        }
+        return view;
+    }
+
+    public static Reference2ByteMap<Flag> permissionsFrom(DataContainer container) {
+        Optional<? extends Map<?, ?>> permissionsOpt = container.getMap(DataQuery.of("permissions"));
+        if (!permissionsOpt.isPresent()) {
+            return Reference2ByteMaps.emptyMap();
+        }
+        Reference2ByteMap<Flag> permissions = new Reference2ByteOpenHashMap<>(permissionsOpt.get().size());
+        for (Map.Entry<?, ?> entry : permissionsOpt.get().entrySet()) {
+            String key = (String) entry.getKey();
+            Flag flag = Sponge.getRegistry().getType(Flag.class, key).get();
+            byte value = ((Integer) entry.getValue()).byteValue();
+            permissions.put(flag, value);
+        }
+        return permissions;
     }
 
     private Hacks() {}
