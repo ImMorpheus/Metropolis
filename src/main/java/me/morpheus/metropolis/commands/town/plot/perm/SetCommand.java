@@ -7,6 +7,7 @@ import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.flag.Flag;
+import me.morpheus.metropolis.api.rank.Rank;
 import me.morpheus.metropolis.api.town.Town;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -25,9 +26,9 @@ class SetCommand extends AbstractHomeTownCommand {
         super(
                 GenericArguments.seq(
                         GenericArguments.onlyOne(MPGenericArguments.catalog(Flag.class, Text.of("flag"))),
-                        GenericArguments.onlyOne(GenericArguments.integer(Text.of("value")))
+                        GenericArguments.onlyOne(MPGenericArguments.catalog(Rank.class, Text.of("rank")))
                 ),
-                MinimalInputTokenizer.INSTANCE,
+                InputTokenizer.spaceSplitString(),
                 Metropolis.ID + ".commands.town.plot.perm.set",
                 Text.of()
         );
@@ -36,9 +37,9 @@ class SetCommand extends AbstractHomeTownCommand {
     @Override
     protected CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, PlotData pd) throws CommandException {
         final Flag flag = context.requireOne("flag");
-        final byte value = context.requireOne("value");
+        final Rank rank = context.requireOne("rank");
 
-        pd.addPermission(flag, value);
+        pd.addPermission(flag, rank.getPermission(flag));
 
         return CommandResult.success();
     }

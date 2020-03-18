@@ -5,7 +5,9 @@ import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
 import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.flag.Flag;
+import me.morpheus.metropolis.api.rank.Rank;
 import me.morpheus.metropolis.api.town.Town;
+import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -16,7 +18,11 @@ import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 class ListCommand extends AbstractHomeTownCommand {
 
@@ -29,14 +35,24 @@ class ListCommand extends AbstractHomeTownCommand {
 
     @Override
     protected CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, PlotData pd) throws CommandException {
-        final Text perms = Sponge.getRegistry().getAllOf(Flag.class).stream()
-                .map(f -> Text.of(f.getName(), ": ", pd.getPermission(f)))
-                .reduce(Text.EMPTY, (p1, p2) -> Text.NEW_LINE);
+        final Collection<Rank> ranks = Sponge.getRegistry().getAllOf(Rank.class);
+        final Collection<Flag> flags = Sponge.getRegistry().getAllOf(Flag.class);
 
+        final List<Text> perms = new ArrayList<>(flags.size());
+        for (Flag flag : flags) {
+            final int pp = pd.getPermission(flag);
+            if (pp != Byte.MIN_VALUE) {
+                final List<String> allowed = ranks.stream()
+                        .filter(rank -> rank.getPermission(flag) >= pp)
+                        .map(CatalogType::getName)
+                        .collect(Collectors.toList());
+                perms.add(Text.of(TextColors.AQUA, flag.getName(), ": ", allowed));
+            }
+        }
 
         PaginationList.builder()
                 .title(Text.of(TextColors.GOLD, "[", TextColors.YELLOW, "Perms", TextColors.GOLD, "]"))
-                .contents(Text.of(TextColors.AQUA, perms))
+                .contents(perms)
                 .padding(Text.of(TextColors.GOLD, "-"))
                 .sendTo(source);
 
