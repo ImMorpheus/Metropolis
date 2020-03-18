@@ -31,7 +31,7 @@ public final class InternalInteractHandler {
     }
 
     @Listener(order = Order.FIRST, beforeModifications = true)
-    public void onInteractBlock(InteractBlockEvent event) {
+    public void onInteractBlock(InteractBlockEvent.Secondary event) {
         if (!event.getTargetBlock().getLocation().isPresent()) {
             return;
         }
@@ -54,7 +54,7 @@ public final class InternalInteractHandler {
     }
 
     @Listener(order = Order.FIRST, beforeModifications = true)
-    public void onInteractItem(InteractItemEvent event) {
+    public void onInteractItem(InteractItemEvent.Secondary event) {
         if (!event.getInteractionPoint().isPresent()) {
             return;
         }
@@ -82,7 +82,7 @@ public final class InternalInteractHandler {
     }
 
     @Listener(order = Order.FIRST, beforeModifications = true)
-    public void onInteractEntity(InteractEntityEvent event) {
+    public void onInteractEntity(InteractEntityEvent.Secondary event) {
         final Entity entity = event.getTargetEntity();
         final Optional<PlotData> pdOpt = this.ps.get(entity.getLocation());
 

@@ -14,6 +14,7 @@ import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Hostile;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.cause.EventContextKey;
 import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.text.Text;
@@ -26,7 +27,7 @@ import java.util.Optional;
 public final class InteractTownHandler {
 
     @Listener(beforeModifications = true)
-    public void onInteractBlock(InteractBlockTownEvent event) {
+    public void onInteractBlock(InteractBlockTownEvent.Secondary event) {
         final Optional<ItemStackSnapshot> isOpt = event.getContext().get(EventContextKeys.USED_ITEM);
         if (isOpt.isPresent() && isOpt.get().getProperty(SaturationProperty.class).isPresent()) {
             return;
@@ -46,9 +47,16 @@ public final class InteractTownHandler {
             return;
         }
 
-        if (!EventUtil.hasPermission((Player) root, pdOpt.get(), Flags.INTERACT_BLOCK)) {
-            event.setCancelled(true);
-            EventUtil.sendNoPermissionMessage((Player) root);
+        if (event.getContext().containsKey(EventContextKeys.PLAYER_PLACE)) {
+            if (!EventUtil.hasPermission((Player) root, pdOpt.get(), Flags.BLOCK_PLACE)) {
+                event.setCancelled(true);
+                EventUtil.sendNoPermissionMessage((Player) root);
+            }
+        } else {
+            if (!EventUtil.hasPermission((Player) root, pdOpt.get(), Flags.INTERACT_BLOCK)) {
+                event.setCancelled(true);
+                EventUtil.sendNoPermissionMessage((Player) root);
+            }
         }
     }
 

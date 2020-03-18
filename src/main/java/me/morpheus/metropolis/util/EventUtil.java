@@ -85,7 +85,7 @@ public final class EventUtil {
 
         final byte value = pd.getPermission(flag);
         if (value != Byte.MIN_VALUE) {
-            return rank.getPermission(flag) > value;
+            return rank.getPermission(flag) >= value;
         }
 
         final GlobalConfig config = Sponge.getServiceManager().provideUnchecked(ConfigService.class).getGlobal();

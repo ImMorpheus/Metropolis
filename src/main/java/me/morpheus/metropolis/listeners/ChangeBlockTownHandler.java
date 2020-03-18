@@ -8,6 +8,8 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.cause.EventContextKey;
+import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextStyles;
@@ -29,13 +31,23 @@ public final class ChangeBlockTownHandler {
             return;
         }
 
-        boolean notAllowed = event.getLocations().anyMatch(location ->
-                ps.get(location)
-                        .filter(plotData -> !EventUtil.hasPermission((Player) cause, plotData, Flags.BLOCK_CHANGE))
-                        .isPresent()
-        );
-        if (notAllowed) {
-            event.setCancelled(true);
+        if (event.getContext().containsKey(EventContextKeys.PLAYER_BREAK)) {
+            boolean notAllowed = event.getLocations().anyMatch(location ->
+                    ps.get(location)
+                            .filter(plotData -> !EventUtil.hasPermission((Player) cause, plotData, Flags.BLOCK_BREAK))
+                            .isPresent());
+            if (notAllowed) {
+                event.setCancelled(true);
+            }
+        } else {
+            boolean notAllowed = event.getLocations().anyMatch(location ->
+                    ps.get(location)
+                            .filter(plotData -> !EventUtil.hasPermission((Player) cause, plotData, Flags.BLOCK_CHANGE))
+                            .isPresent()
+            );
+            if (notAllowed) {
+                event.setCancelled(true);
+            }
         }
     }
 
