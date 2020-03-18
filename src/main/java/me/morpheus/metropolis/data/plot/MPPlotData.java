@@ -11,6 +11,7 @@ import me.morpheus.metropolis.api.flag.Flag;
 import me.morpheus.metropolis.api.plot.PlotType;
 import me.morpheus.metropolis.api.plot.PlotTypes;
 import me.morpheus.metropolis.data.DataVersions;
+import me.morpheus.metropolis.util.Hacks;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataHolder;
@@ -22,6 +23,7 @@ import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.text.Text;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -113,7 +115,7 @@ public class MPPlotData extends AbstractData<PlotData, ImmutablePlotData> implem
         Optional<Boolean> forSale = container.getBoolean(PlotKeys.FORSALE.getQuery());
         Optional<PlotType> type = container.getCatalogType(PlotKeys.TYPE.getQuery(), PlotType.class);
         Optional<Boolean> mobSpawn = container.getBoolean(PlotKeys.MOBSPAWN.getQuery());
-        Optional<Reference2ByteMap<Flag>> permissions = (Optional<Reference2ByteMap<Flag>>) container.getMap(DataQuery.of("permissions"));
+        Reference2ByteMap<Flag> permissions = Hacks.permissionsFrom(container);
 
         this.town = town.get();
         this.name = name.orElse(null);
@@ -123,7 +125,11 @@ public class MPPlotData extends AbstractData<PlotData, ImmutablePlotData> implem
         this.forSale = forSale.orElse(false);
         this.type = type.orElse(PlotTypes.PLOT);
         this.mobSpawn = mobSpawn.orElse(false);
-        this.permissions = permissions.orElse(null);
+
+        if (!permissions.isEmpty()) {
+            this.permissions = permissions;
+            this.permissions.defaultReturnValue(Byte.MIN_VALUE);
+        }
 
         return Optional.of(this);
     }
@@ -159,7 +165,7 @@ public class MPPlotData extends AbstractData<PlotData, ImmutablePlotData> implem
         container.set(PlotKeys.TYPE.getQuery(), this.type);
         container.set(PlotKeys.MOBSPAWN.getQuery(), this.mobSpawn);
         if (this.permissions != null && !this.permissions.isEmpty()) {
-            container.set(DataQuery.of("permissions"), this.permissions);
+            container.set(DataQuery.of("permissions"), Hacks.toContainer(this.permissions));
         }
 
         return container;
