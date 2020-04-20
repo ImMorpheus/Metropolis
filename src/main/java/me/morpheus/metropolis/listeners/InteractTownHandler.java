@@ -1,13 +1,12 @@
 package me.morpheus.metropolis.listeners;
 
-import me.morpheus.metropolis.api.data.plot.PlotData;
-import me.morpheus.metropolis.api.data.plot.PlotKeys;
 import me.morpheus.metropolis.api.event.block.InteractBlockTownEvent;
 import me.morpheus.metropolis.api.event.entity.InteractEntityTownEvent;
 import me.morpheus.metropolis.api.event.item.inventory.InteractInventoryTownEvent;
 import me.morpheus.metropolis.api.event.item.inventory.InteractItemTownEvent;
 import me.morpheus.metropolis.api.flag.Flag;
 import me.morpheus.metropolis.api.flag.Flags;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.plot.PlotService;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.town.TownService;
@@ -51,9 +50,9 @@ public final class InteractTownHandler {
 
     private void onInteractBlock(InteractBlockTownEvent event, Flag flag) {
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        final Optional<PlotData> pdOpt = ps.get(event.getTargetBlock().getLocation().get());
+        final Optional<Plot> plotOpt = ps.get(event.getTargetBlock().getLocation().get());
 
-        if (!pdOpt.isPresent()) {
+        if (!plotOpt.isPresent()) {
             return;
         }
 
@@ -63,7 +62,7 @@ public final class InteractTownHandler {
             event.setCancelled(true);
             return;
         }
-        if (!EventUtil.hasPermission((Player) root, pdOpt.get(), flag)) {
+        if (!ps.hasPermission((Player) root, plotOpt.get(), flag)) {
             event.setCancelled(true);
             EventUtil.sendNoPermissionMessage((Player) root);
         }
@@ -89,9 +88,9 @@ public final class InteractTownHandler {
     private void onInteractItem(InteractItemTownEvent event, Flag flag) {
         final Object root = event.getCause().root();
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        final Optional<PlotData> pdOpt = ps.get(((Locatable) root).getLocation().add(event.getInteractionPoint().get()));
+        final Optional<Plot> plotOpt = ps.get(((Locatable) root).getLocation().add(event.getInteractionPoint().get()));
 
-        if (!pdOpt.isPresent()) {
+        if (!plotOpt.isPresent()) {
             return;
         }
         if (!(root instanceof Player)) {
@@ -99,7 +98,7 @@ public final class InteractTownHandler {
             return;
         }
 
-        if (!EventUtil.hasPermission((Player) root, pdOpt.get(), flag)) {
+        if (!ps.hasPermission((Player) root, plotOpt.get(), flag)) {
             event.setCancelled(true);
             EventUtil.sendNoPermissionMessage((Player) root);
         }
@@ -113,9 +112,9 @@ public final class InteractTownHandler {
         }
         if (entity.getType() == EntityTypes.PLAYER && event.getCause().root() instanceof Player) { //TODO
             final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-            final PlotData pd = ps.get(entity.getLocation()).get();
+            final Plot plot = ps.get(entity.getLocation()).get();
             final TownService ts = Sponge.getServiceManager().provideUnchecked(TownService.class);
-            final Town t = ts.get(pd.town().get().intValue()).get();
+            final Town t = ts.get(plot.getTown()).get();
             if (!t.getPvP().canDamage((Player) event.getCause().root(), (Player) entity)) {
                 event.setCancelled(true);
                 EventUtil.sendNoPermissionMessage((Player) event.getCause().root());
@@ -144,9 +143,9 @@ public final class InteractTownHandler {
         }
 
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        final Optional<PlotData> pdOpt = ps.get(entity.getLocation());
+        final Optional<Plot> plotOpt = ps.get(entity.getLocation());
 
-        if (!pdOpt.isPresent()) {
+        if (!plotOpt.isPresent()) {
             return;
         }
 
@@ -155,7 +154,7 @@ public final class InteractTownHandler {
             return;
         }
 
-        if (!EventUtil.hasPermission((Player) root, pdOpt.get(), flag)) {
+        if (!ps.hasPermission((Player) root, plotOpt.get(), flag)) {
             event.setCancelled(true);
             EventUtil.sendNoPermissionMessage((Player) root);
         }
@@ -166,7 +165,7 @@ public final class InteractTownHandler {
     public void onInteractTownInventoryOpen(InteractInventoryTownEvent.Open event) {
         final BlockSnapshot block = event.getContext().get(EventContextKeys.BLOCK_HIT).get();
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        final PlotData pd = ps.get(block.getLocation().get()).get();
+        final Plot plot = ps.get(block.getLocation().get()).get();
 
         final Object root = event.getCause().root();
 
@@ -174,7 +173,7 @@ public final class InteractTownHandler {
             event.setCancelled(true);
             return;
         }
-        if (!EventUtil.hasPermission((Player) root, pd, Flags.INTERACT_INVENTORY)) {
+        if (!ps.hasPermission((Player) root, plot, Flags.INTERACT_INVENTORY)) {
             event.setCancelled(true);
             EventUtil.sendNoPermissionMessage((Player) root);
         }

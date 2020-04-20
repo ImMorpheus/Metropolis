@@ -1,24 +1,18 @@
 package me.morpheus.metropolis.town.type;
 
 import com.google.common.reflect.TypeToken;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Reference2DoubleOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ShortMap;
 import it.unimi.dsi.fastutil.objects.Reference2ShortOpenHashMap;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.api.custom.CustomResourceLoader;
-import me.morpheus.metropolis.api.data.plot.PlotKeys;
 import me.morpheus.metropolis.api.health.IncidentService;
 import me.morpheus.metropolis.api.plot.PlotType;
 import me.morpheus.metropolis.api.plot.PlotTypes;
 import me.morpheus.metropolis.api.town.TownType;
 import me.morpheus.metropolis.config.ConfigUtil;
-import me.morpheus.metropolis.configurate.serialize.Object2IntSerializer;
 import me.morpheus.metropolis.configurate.serialize.Reference2DoubleSerializer;
-import me.morpheus.metropolis.configurate.serialize.Reference2IntSerializer;
 import me.morpheus.metropolis.configurate.serialize.Reference2ShortSerializer;
 import me.morpheus.metropolis.error.MPGenericErrors;
 import me.morpheus.metropolis.health.MPIncident;
@@ -41,9 +35,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 

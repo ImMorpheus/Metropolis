@@ -9,9 +9,6 @@ import me.morpheus.metropolis.api.custom.CustomResourceLoader;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.citizen.CitizenKeys;
 import me.morpheus.metropolis.api.data.citizen.ImmutableCitizenData;
-import me.morpheus.metropolis.api.data.plot.ImmutablePlotData;
-import me.morpheus.metropolis.api.data.plot.PlotData;
-import me.morpheus.metropolis.api.data.plot.PlotKeys;
 import me.morpheus.metropolis.api.data.town.ImmutableTownData;
 import me.morpheus.metropolis.api.data.town.TownData;
 import me.morpheus.metropolis.api.data.town.TownKeys;
@@ -40,9 +37,6 @@ import me.morpheus.metropolis.custom.CustomResourceLoaderRegistryModule;
 import me.morpheus.metropolis.data.citizen.ImmutableMPCitizenData;
 import me.morpheus.metropolis.data.citizen.MPCitizenData;
 import me.morpheus.metropolis.data.citizen.MPCitizenDataBuilder;
-import me.morpheus.metropolis.data.plot.ImmutableMPPlotData;
-import me.morpheus.metropolis.data.plot.MPPlotData;
-import me.morpheus.metropolis.data.plot.MPPlotDataBuilder;
 import me.morpheus.metropolis.data.town.ImmutableMPTownData;
 import me.morpheus.metropolis.data.town.MPTownData;
 import me.morpheus.metropolis.data.town.MPTownDataBuilder;
@@ -272,15 +266,6 @@ public class Metropolis {
         event.register(CitizenKeys.JOINED);
         event.register(CitizenKeys.CHAT);
 
-        event.register(PlotKeys.TOWN);
-        event.register(PlotKeys.NAME);
-        event.register(PlotKeys.OWNER);
-        event.register(PlotKeys.PRICE);
-        event.register(PlotKeys.RENT);
-        event.register(PlotKeys.FORSALE);
-        event.register(PlotKeys.TYPE);
-        event.register(PlotKeys.MOBSPAWN);
-
         event.register(TownKeys.DESCRIPTION);
         event.register(TownKeys.MOTD);
         event.register(TownKeys.OUTPOSTS);
@@ -297,16 +282,6 @@ public class Metropolis {
                 .builder(new MPCitizenDataBuilder())
                 .name("Citizen Data")
                 .id("citizen")
-                .build();
-
-        DataRegistration.builder()
-                .dataClass(PlotData.class)
-                .immutableClass(ImmutablePlotData.class)
-                .dataImplementation(MPPlotData.class)
-                .immutableImplementation(ImmutableMPPlotData.class)
-                .builder(new MPPlotDataBuilder())
-                .name("Plot Data")
-                .id("plot")
                 .build();
 
         DataRegistration.builder()

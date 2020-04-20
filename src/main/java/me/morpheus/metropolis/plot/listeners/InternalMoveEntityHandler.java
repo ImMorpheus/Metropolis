@@ -1,8 +1,8 @@
 package me.morpheus.metropolis.plot.listeners;
 
 import com.flowpowered.math.vector.Vector2i;
-import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.event.entity.MoveEntityPlotEvent;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.event.entity.MPMoveEntityPlotEvent;
 import me.morpheus.metropolis.plot.SimplePlotService;
 import me.morpheus.metropolis.util.VectorUtil;
@@ -35,13 +35,13 @@ public final class InternalMoveEntityHandler {
             return;
         }
 
-        final Map<Vector2i, PlotData> wm = this.ps.get(entity.getWorld().getUniqueId());
+        final Map<Vector2i, Plot> wm = this.ps.get(entity.getWorld().getUniqueId());
         if (wm == null) {
             return;
         }
 
-        final PlotData toPd = wm.get(VectorUtil.toChunk2i(to.getLocation()));
-        final PlotData fromPd = wm.get(VectorUtil.toChunk2i(from.getLocation()));
+        final Plot toPd = wm.get(VectorUtil.toChunk2i(to.getLocation()));
+        final Plot fromPd = wm.get(VectorUtil.toChunk2i(from.getLocation()));
         if (toPd == null && fromPd == null) {
             return;
         }

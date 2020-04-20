@@ -1,9 +1,11 @@
 package me.morpheus.metropolis.api.plot;
 
-import me.morpheus.metropolis.api.data.plot.PlotData;
+import me.morpheus.metropolis.api.data.citizen.CitizenData;
+import me.morpheus.metropolis.api.flag.Flag;
+import me.morpheus.metropolis.api.town.Town;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
-import org.spongepowered.api.world.explosion.Explosion;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -13,19 +15,25 @@ import java.util.stream.Stream;
 
 public interface PlotService {
 
-    Stream<PlotData> plots();
+    Stream<Plot> plots();
 
-    Stream<PlotData> plots(UUID world);
+    Stream<Plot> plots(UUID world);
 
-    Optional<PlotData> get(Location<World> loc);
+    Plot create(Town town);
 
-    Optional<PlotData> claim(Location<World> loc, PlotData pd);
+    Optional<Plot> get(Location<World> loc);
 
-    Optional<PlotData> unclaim(Location<World> loc);
+    Optional<Plot> claim(Location<World> loc, Plot plot);
 
-    void unclaim(Predicate<PlotData> predicate);
+    Optional<Plot> unclaim(Location<World> loc);
 
-    void unclaim(UUID world, Predicate<PlotData> predicate);
+    void unclaim(Predicate<Plot> predicate);
+
+    void unclaim(UUID world, Predicate<Plot> predicate);
+
+    boolean hasPermission(User user, Plot plot, Flag flag);
+
+    boolean hasPermission(User user, CitizenData cd, Plot plot, Flag flag);
 
     CompletableFuture<Void> saveAll();
 

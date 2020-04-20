@@ -3,8 +3,7 @@ package me.morpheus.metropolis.commands.town.plot;
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
-import me.morpheus.metropolis.api.data.plot.PlotData;
-import me.morpheus.metropolis.api.data.plot.PlotKeys;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.command.CommandException;
@@ -26,8 +25,8 @@ class DisownCommand extends AbstractHomeTownCommand {
     }
 
     @Override
-    public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, PlotData pd) throws CommandException {
-        pd.set(PlotKeys.OWNER, Optional.empty());
+    public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, Plot plot) throws CommandException {
+        plot.setOwner(null);
         source.sendMessage(TextUtil.watermark(TextColors.AQUA, "The plot owner has been removed"));
 
         return CommandResult.success();

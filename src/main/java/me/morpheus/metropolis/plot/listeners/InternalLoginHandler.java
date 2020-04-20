@@ -15,7 +15,7 @@ public final class InternalLoginHandler {
 
     @Listener(beforeModifications = true)
     public void onAuth(ClientConnectionEvent.Auth event) {
-        if (this.ps.isLoadedCompleted()) {
+        if (this.ps.isReady()) {
             return;
         }
         event.setMessage(Text.of("Server is still loading the plots! Please wait before reconnecting."));

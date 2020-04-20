@@ -34,7 +34,7 @@ public final class ChangeBlockTownHandler {
         if (event.getContext().containsKey(EventContextKeys.PLAYER_BREAK)) {
             boolean notAllowed = event.getLocations().anyMatch(location ->
                     ps.get(location)
-                            .filter(plotData -> !EventUtil.hasPermission((Player) cause, plotData, Flags.BLOCK_BREAK))
+                            .filter(plotData -> !ps.hasPermission((Player) cause, plotData, Flags.BLOCK_BREAK))
                             .isPresent());
             if (notAllowed) {
                 event.setCancelled(true);
@@ -42,7 +42,7 @@ public final class ChangeBlockTownHandler {
         } else {
             boolean notAllowed = event.getLocations().anyMatch(location ->
                     ps.get(location)
-                            .filter(plotData -> !EventUtil.hasPermission((Player) cause, plotData, Flags.BLOCK_CHANGE))
+                            .filter(plotData -> !ps.hasPermission((Player) cause, plotData, Flags.BLOCK_CHANGE))
                             .isPresent()
             );
             if (notAllowed) {
@@ -69,7 +69,7 @@ public final class ChangeBlockTownHandler {
 
         boolean notAllowed = event.getTransactions().anyMatch(transaction ->
                 ps.get(transaction.getOriginal().getLocation().get())
-                        .filter(plotData -> !EventUtil.hasPermission((Player) cause, plotData, Flags.BLOCK_PLACE))
+                        .filter(plotData -> !ps.hasPermission((Player) cause, plotData, Flags.BLOCK_PLACE))
                         .isPresent()
         );
         if (notAllowed) {
@@ -98,7 +98,7 @@ public final class ChangeBlockTownHandler {
 
         boolean notAllowed = event.getTransactions().anyMatch(transaction ->
                 ps.get(transaction.getOriginal().getLocation().get())
-                        .filter(plotData -> !EventUtil.hasPermission((Player) cause, plotData, Flags.BLOCK_BREAK))
+                        .filter(plotData -> !ps.hasPermission((Player) cause, plotData, Flags.BLOCK_BREAK))
                         .isPresent()
         );
         if (notAllowed) {

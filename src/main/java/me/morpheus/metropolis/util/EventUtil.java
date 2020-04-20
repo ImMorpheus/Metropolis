@@ -1,30 +1,17 @@
 package me.morpheus.metropolis.util;
 
-import me.morpheus.metropolis.api.config.ConfigService;
-import me.morpheus.metropolis.api.config.GlobalConfig;
-import me.morpheus.metropolis.api.data.citizen.CitizenData;
-import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.event.entity.AttackEntityTownEvent;
 import me.morpheus.metropolis.api.event.entity.DamageEntityTownEvent;
-import me.morpheus.metropolis.api.flag.Flag;
-import me.morpheus.metropolis.api.rank.Rank;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.Event;
 import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.event.cause.entity.damage.source.EntityDamageSource;
 import org.spongepowered.api.event.cause.entity.damage.source.IndirectEntityDamageSource;
-import org.spongepowered.api.event.entity.AttackEntityEvent;
-import org.spongepowered.api.event.entity.DamageEntityEvent;
-import org.spongepowered.api.service.user.UserStorageService;
-import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.format.TextStyles;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
-import java.util.UUID;
 
 public final class EventUtil {
 
@@ -69,54 +56,6 @@ public final class EventUtil {
         }
 
         return root;
-    }
-
-    public static boolean hasPermission(User source, PlotData pd, Flag flag) {
-        final Optional<CitizenData> cdOpt = source.get(CitizenData.class);
-        return cdOpt.isPresent() && hasPermission(source.getUniqueId(), cdOpt.get(), pd, flag);
-    }
-
-    public static boolean hasPermission(UUID source, CitizenData cd, PlotData pd, Flag flag) {
-        if (pd.town().get().intValue() != cd.town().get().intValue()) {
-            return false;
-        }
-
-        final Rank rank = cd.rank().get();
-
-        final byte value = pd.getPermission(flag);
-        if (value != Byte.MIN_VALUE) {
-            return rank.getPermission(flag) >= value;
-        }
-
-        final GlobalConfig config = Sponge.getServiceManager().provideUnchecked(ConfigService.class).getGlobal();
-        final byte perm = rank.getPermission(flag);
-
-        if (!pd.owner().get().isPresent()) {
-            return perm > config.getTownCategory().getPlotCategory().getUnownedPermission(flag);
-        }
-
-        final UUID ownerId = pd.owner().get().get();
-        if (ownerId.equals(source)) {
-            return true;
-        }
-
-        final Optional<User> ownerOpt = Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(ownerId);
-        if (!ownerOpt.isPresent()) {
-            //TODO wtf
-            return false;
-        }
-        final User owner = ownerOpt.get();
-
-        final Optional<CitizenData> optOwnerData = owner.get(CitizenData.class);
-        if (!optOwnerData.isPresent()) {
-            return perm > config.getTownCategory().getPlotCategory().getUnownedPermission(flag);
-        }
-
-        if (optOwnerData.get().friends().contains(source)) {
-            return true;
-        }
-
-        return perm > optOwnerData.get().rank().get().getPermission(flag);
     }
 
     public static void sendNoPermissionMessage(Player player) {

@@ -228,7 +228,7 @@ public class SimpleTownService implements TownService {
         Sponge.getEventManager().registerListeners(plugin, new InternalLoginHandler(this));
     }
 
-    public boolean isLoadedCompleted() {
+    public boolean isReady() {
         return this.loaded;
     }
 }

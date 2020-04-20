@@ -1,7 +1,7 @@
 package me.morpheus.metropolis.event.world;
 
-import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.event.block.ExplosionTownEvent;
+import me.morpheus.metropolis.api.plot.Plot;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.world.explosion.Explosion;
 
@@ -12,10 +12,10 @@ public final class MPExplosionTownEventPre implements ExplosionTownEvent.Pre {
 
     private final Cause cause;
     private final Explosion explosion;
-    private final List<PlotData> plots;
+    private final List<Plot> plots;
     private boolean cancelled = false;
 
-    public MPExplosionTownEventPre(Cause cause, Explosion explosion, List<PlotData> plots) {
+    public MPExplosionTownEventPre(Cause cause, Explosion explosion, List<Plot> plots) {
         this.cause = cause;
         this.explosion = explosion;
         this.plots = plots;
@@ -42,7 +42,7 @@ public final class MPExplosionTownEventPre implements ExplosionTownEvent.Pre {
     }
 
     @Override
-    public Stream<PlotData> getPlots() {
+    public Stream<Plot> getPlots() {
         return this.plots.stream();
     }
 }

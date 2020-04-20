@@ -2,9 +2,8 @@ package me.morpheus.metropolis.commands.town;
 
 import com.flowpowered.math.vector.Vector3i;
 import me.morpheus.metropolis.Metropolis;
-import me.morpheus.metropolis.api.command.args.MPGenericArguments;
-import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
 import me.morpheus.metropolis.util.TextUtil;
@@ -29,7 +28,7 @@ class UnclaimCommand extends AbstractHomeTownCommand {
     }
 
     @Override
-    public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, PlotData pd) throws CommandException {
+    public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, Plot plot) throws CommandException {
         final boolean unclaimed = t.unclaim(source.getLocation());
         if (!unclaimed) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Error while unclaiming"));

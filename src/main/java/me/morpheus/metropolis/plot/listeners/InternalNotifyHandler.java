@@ -4,9 +4,8 @@ import com.flowpowered.math.vector.Vector2i;
 import it.unimi.dsi.fastutil.objects.Reference2ByteMap;
 import it.unimi.dsi.fastutil.objects.Reference2ByteOpenHashMap;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
-import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.flag.Flags;
-import me.morpheus.metropolis.api.plot.PlotService;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.plot.SimplePlotService;
 import me.morpheus.metropolis.util.EventUtil;
 import me.morpheus.metropolis.util.VectorUtil;
@@ -46,13 +45,13 @@ public final class InternalNotifyHandler {
             return;
         }
 
-        final Map<Vector2i, PlotData> wm = this.ps.get(locatable.getLocation().getExtent().getUniqueId());
+        final Map<Vector2i, Plot> wm = this.ps.get(locatable.getLocation().getExtent().getUniqueId());
         if (wm == null) {
             return;
         }
         CitizenData cd = null;
         boolean outsider = false;
-        final Reference2ByteMap<PlotData> cache = new Reference2ByteOpenHashMap<>();
+        final Reference2ByteMap<Plot> cache = new Reference2ByteOpenHashMap<>();
         cache.defaultReturnValue(Byte.MIN_VALUE);
         final byte accepted = 0b0;
         final byte refused = 0b1;
@@ -69,13 +68,13 @@ public final class InternalNotifyHandler {
 
             final Location<World> loc = locatable.getLocation().add(entry.getKey().asOffset());
             final Vector2i chunk = VectorUtil.toChunk2i(loc);
-            final PlotData pd = wm.get(chunk);
+            final Plot plot = wm.get(chunk);
 
-            if (pd == null) {
+            if (plot == null) {
                 continue;
             }
 
-            final byte cached = cache.getByte(pd);
+            final byte cached = cache.getByte(plot);
             if (cached == accepted) {
                 continue;
             }
@@ -94,11 +93,11 @@ public final class InternalNotifyHandler {
                     continue;
                 }
             }
-            final boolean hasPermission = EventUtil.hasPermission(source.getUniqueId(), cd, pd, Flags.BLOCK_CHANGE);
+            final boolean hasPermission = this.ps.hasPermission(source, cd, plot, Flags.BLOCK_CHANGE);
             if (hasPermission) {
-                cache.put(pd, accepted);
+                cache.put(plot, accepted);
             } else {
-                cache.put(pd, refused);
+                cache.put(plot, refused);
                 each.remove();
             }
         }

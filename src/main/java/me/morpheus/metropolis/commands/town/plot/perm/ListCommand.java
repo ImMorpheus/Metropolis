@@ -2,9 +2,9 @@ package me.morpheus.metropolis.commands.town.plot.perm;
 
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
-import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.flag.Flag;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.rank.Rank;
 import me.morpheus.metropolis.api.town.Town;
 import org.spongepowered.api.CatalogType;
@@ -34,13 +34,13 @@ class ListCommand extends AbstractHomeTownCommand {
     }
 
     @Override
-    protected CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, PlotData pd) throws CommandException {
+    protected CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, Plot plot) throws CommandException {
         final Collection<Rank> ranks = Sponge.getRegistry().getAllOf(Rank.class);
         final Collection<Flag> flags = Sponge.getRegistry().getAllOf(Flag.class);
 
         final List<Text> perms = new ArrayList<>(flags.size());
         for (Flag flag : flags) {
-            final int pp = pd.getPermission(flag);
+            final int pp = plot.getPermission(flag);
             if (pp != Byte.MIN_VALUE) {
                 final List<String> allowed = ranks.stream()
                         .filter(rank -> rank.getPermission(flag) >= pp)

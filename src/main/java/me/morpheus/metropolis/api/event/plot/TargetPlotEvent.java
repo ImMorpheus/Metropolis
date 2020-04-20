@@ -1,10 +1,10 @@
 package me.morpheus.metropolis.api.event.plot;
 
-import me.morpheus.metropolis.api.data.plot.PlotData;
+import me.morpheus.metropolis.api.plot.Plot;
 import org.spongepowered.api.event.Event;
 
 public interface TargetPlotEvent extends Event {
 
-    PlotData getPlot();
+    Plot getPlot();
 
 }

@@ -2,8 +2,6 @@ package me.morpheus.metropolis.town;
 
 import com.google.common.base.MoreObjects;
 import com.udojava.evalex.Expression;
-import it.unimi.dsi.fastutil.objects.Reference2IntMap;
-import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ShortMap;
 import it.unimi.dsi.fastutil.objects.Reference2ShortOpenHashMap;
 import me.morpheus.metropolis.Metropolis;
@@ -13,6 +11,7 @@ import me.morpheus.metropolis.api.event.plot.UnclaimPlotEvent;
 import me.morpheus.metropolis.api.event.town.DeleteTownEvent;
 import me.morpheus.metropolis.api.event.town.JoinTownEvent;
 import me.morpheus.metropolis.api.event.town.LeaveTownEvent;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.town.visibility.Visibilities;
 import me.morpheus.metropolis.event.plot.MPClaimPlotEventPost;
 import me.morpheus.metropolis.event.plot.MPClaimPlotEventPre;
@@ -31,8 +30,6 @@ import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.GlobalConfig;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.citizen.CitizenKeys;
-import me.morpheus.metropolis.api.data.plot.PlotData;
-import me.morpheus.metropolis.api.data.plot.PlotKeys;
 import me.morpheus.metropolis.api.data.town.TownKeys;
 import me.morpheus.metropolis.api.data.town.outpost.OutpostData;
 import me.morpheus.metropolis.api.event.town.UpgradeTownEvent;
@@ -54,8 +51,6 @@ import me.morpheus.metropolis.town.chat.TownMessageChannel;
 import me.morpheus.metropolis.util.EconomyUtil;
 import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.DataQuery;
@@ -455,14 +450,13 @@ public class MPTown implements Town {
             return false;
         }
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        final PlotData pd = Sponge.getDataManager().getManipulatorBuilder(PlotData.class).get().create();
-        pd.set(PlotKeys.TOWN, this.id);
-        pd.set(PlotKeys.TYPE, type);
+        final Plot plot = ps.create(this);
+        plot.setType(type);
         if (name != null) {
-            pd.set(PlotKeys.NAME, name);
+            plot.setName(name);
         }
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
-            ClaimPlotEvent.Pre event = new MPClaimPlotEventPre(frame.getCurrentCause(), pd, location);
+            ClaimPlotEvent.Pre event = new MPClaimPlotEventPre(frame.getCurrentCause(), plot, location);
             if (Sponge.getEventManager().post(event)) {
                 return false;
             }
@@ -481,14 +475,14 @@ public class MPTown implements Town {
             odOpt.get().set(TownKeys.OUTPOSTS, map);
             offer(odOpt.get());
         }
-        final Optional<PlotData> pdOpt = ps.claim(location, pd);
-        if (pdOpt.isPresent()) {
+        final Optional<Plot> pOpt = ps.claim(location, plot);
+        if (pOpt.isPresent()) {
             return false;
         }
         this.plots.put(type, ++current);
         setDirty(true);
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
-            ClaimPlotEvent.Post event = new MPClaimPlotEventPost(frame.getCurrentCause(), pd, location);
+            ClaimPlotEvent.Post event = new MPClaimPlotEventPost(frame.getCurrentCause(), plot, location);
             Sponge.getEventManager().post(event);
         }
         return true;
@@ -503,14 +497,14 @@ public class MPTown implements Town {
             }
         }
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        final Optional<PlotData> pdOpt = ps.unclaim(location);
-        if (!pdOpt.isPresent()) {
+        final Optional<Plot> pOpt = ps.unclaim(location);
+        if (!pOpt.isPresent()) {
             return false;
         }
-        final PlotType type = pdOpt.get().type().get();
+        final PlotType type = pOpt.get().getType();
         if (type == PlotTypes.OUTPOST) {
             Optional<OutpostData> odOpt = get(OutpostData.class);
-            odOpt.ifPresent(outpostData -> outpostData.outposts().remove(pdOpt.get().name().get().toPlain()));
+            odOpt.ifPresent(outpostData -> outpostData.outposts().remove(pOpt.get().getName().toPlain()));
         }
         short current = this.plots.getShort(type);
         this.plots.put(type, --current);
@@ -544,7 +538,7 @@ public class MPTown implements Town {
 
 
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        ps.unclaim(pd -> pd.town().get().intValue() == this.id);
+        ps.unclaim(plot -> plot.getTown() == this.id);
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
             DeleteTownEvent.Post event = new MPDeleteTownEventPost(frame.getCurrentCause(), this);
             Sponge.getEventManager().post(event);

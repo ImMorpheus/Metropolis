@@ -1,10 +1,9 @@
 package me.morpheus.metropolis.commands.town.plot;
 
 import me.morpheus.metropolis.Metropolis;
-import me.morpheus.metropolis.api.data.plot.PlotData;
-import me.morpheus.metropolis.api.data.plot.PlotKeys;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.util.EconomyUtil;
 import me.morpheus.metropolis.util.TextUtil;
@@ -33,8 +32,8 @@ class BuyCommand extends AbstractHomeTownCommand {
     }
 
     @Override
-    public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, PlotData pd) throws CommandException {
-        if (!pd.forSale().get().booleanValue()) {
+    public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, Plot plot) throws CommandException {
+        if (!plot.isForSale()) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "This plot is not for sale"));
             return CommandResult.empty();
         }
@@ -50,7 +49,7 @@ class BuyCommand extends AbstractHomeTownCommand {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Unable to retrieve player account"));
             return CommandResult.empty();
         }
-        final ResultType result = EconomyUtil.transfer(accOpt.get(), bOpt.get(), es.getDefaultCurrency(), BigDecimal.valueOf(pd.price().get()));
+        final ResultType result = EconomyUtil.transfer(accOpt.get(), bOpt.get(), es.getDefaultCurrency(), BigDecimal.valueOf(plot.getPrice()));
         if (result == ResultType.ACCOUNT_NO_FUNDS) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Not enough money"));
             return CommandResult.empty();
@@ -59,10 +58,10 @@ class BuyCommand extends AbstractHomeTownCommand {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Error while paying: ", result.name()));
             return CommandResult.empty();
         }
-        pd.set(PlotKeys.OWNER, Optional.of(source.getUniqueId()));
-        source.sendMessage(TextUtil.watermark(TextColors.AQUA, "You bought this plot for ", pd.price().get()));
-        pd.set(PlotKeys.PRICE, 0.0);
-        pd.set(PlotKeys.FORSALE, false);
+        plot.setOwner(source.getUniqueId());
+        source.sendMessage(TextUtil.watermark(TextColors.AQUA, "You bought this plot for ", plot.getPrice()));
+        plot.setPrice(0.0);
+        plot.setForSale(false);
 
         return CommandResult.success();
     }

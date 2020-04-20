@@ -18,12 +18,12 @@ public class DataVersions {
         private CitizenData() {}
     }
 
-    public static final class PlotData {
+    public static final class Plot {
 
         public static final int INITIAL_VERSION = 0;
         public static final int CURRENT_VERSION = INITIAL_VERSION;
 
-        private PlotData() {}
+        private Plot() {}
     }
 
     public static final class TaxData {

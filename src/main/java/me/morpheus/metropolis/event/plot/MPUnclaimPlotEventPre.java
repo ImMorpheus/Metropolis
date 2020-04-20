@@ -1,6 +1,5 @@
 package me.morpheus.metropolis.event.plot;
 
-import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.event.plot.UnclaimPlotEvent;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.world.Location;

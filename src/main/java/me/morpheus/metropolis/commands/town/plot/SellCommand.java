@@ -2,10 +2,9 @@ package me.morpheus.metropolis.commands.town.plot;
 
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
-import me.morpheus.metropolis.api.data.plot.PlotData;
-import me.morpheus.metropolis.api.data.plot.PlotKeys;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.command.CommandException;
@@ -32,11 +31,11 @@ class SellCommand extends AbstractHomeTownCommand {
     }
 
     @Override
-    public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, PlotData pd) throws CommandException {
+    public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, Plot plot) throws CommandException {
         final double price = context.requireOne("price");
 
-        pd.set(PlotKeys.FORSALE, true);
-        pd.set(PlotKeys.PRICE, price);
+        plot.setForSale(true);
+        plot.setPrice(price);
         source.sendMessage(TextUtil.watermark(TextColors.AQUA, "Plot price set to ", price));
 
         return CommandResult.success();

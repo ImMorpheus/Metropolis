@@ -1,7 +1,7 @@
 package me.morpheus.metropolis.api.command;
 
-import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.plot.PlotService;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.util.TextUtil;
@@ -30,21 +30,21 @@ public abstract class AbstractHomeTownCommand extends AbstractCitizenCommand {
     @Override
     protected final CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        final Optional<PlotData> pdOpt = ps.get(source.getLocation());
+        final Optional<Plot> plotOpt = ps.get(source.getLocation());
 
-        if (!pdOpt.isPresent()) {
+        if (!plotOpt.isPresent()) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "This plot is not claimed"));
             return CommandResult.empty();
         }
 
-        if (pdOpt.get().town().get().intValue() != cd.town().get().intValue()) {
+        if (plotOpt.get().getTown() != cd.town().get().intValue()) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "This plot is claimed by another town"));
             return CommandResult.empty();
         }
 
-        return process(source, context, cd, t, pdOpt.get());
+        return process(source, context, cd, t, plotOpt.get());
     }
 
-    protected abstract CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, PlotData pd) throws CommandException;
+    protected abstract CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, Plot plot) throws CommandException;
 
 }

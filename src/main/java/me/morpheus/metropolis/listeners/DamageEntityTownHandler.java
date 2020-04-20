@@ -1,9 +1,9 @@
 package me.morpheus.metropolis.listeners;
 
-import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.event.entity.AttackEntityTownEvent;
 import me.morpheus.metropolis.api.event.entity.DamageEntityTownEvent;
 import me.morpheus.metropolis.api.flag.Flags;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.plot.PlotService;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.town.TownService;
@@ -26,9 +26,9 @@ public final class DamageEntityTownHandler {
         final Entity target = event.getTargetEntity();
 
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        final Optional<PlotData> pdOpt = ps.get(target.getLocation());
+        final Optional<Plot> plotOpt = ps.get(target.getLocation());
 
-        if (!pdOpt.isPresent()) {
+        if (!plotOpt.isPresent()) {
             return;
         }
 
@@ -44,7 +44,7 @@ public final class DamageEntityTownHandler {
 
         if (target instanceof Player) {
             final TownService ts = Sponge.getServiceManager().provideUnchecked(TownService.class);
-            final Town t = ts.get(pdOpt.get().town().get().intValue()).get();
+            final Town t = ts.get(plotOpt.get().getTown()).get();
             if (!t.getPvP().canDamage((Player) source, (Player) target)) {
                 event.setCancelled(true);
                 EventUtil.sendNoPermissionMessage((Player) source);
@@ -52,7 +52,7 @@ public final class DamageEntityTownHandler {
             return;
         }
 
-        if (!EventUtil.hasPermission((Player) source, pdOpt.get(), Flags.DAMAGE)) {
+        if (!ps.hasPermission((Player) source, plotOpt.get(), Flags.DAMAGE)) {
             event.setCancelled(true);
             EventUtil.sendNoPermissionMessage((Player) source);
         }
@@ -63,9 +63,9 @@ public final class DamageEntityTownHandler {
         final Entity target = event.getTargetEntity();
 
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        final Optional<PlotData> pdOpt = ps.get(target.getLocation());
+        final Optional<Plot> plotOpt = ps.get(target.getLocation());
 
-        if (!pdOpt.isPresent()) {
+        if (!plotOpt.isPresent()) {
             return;
         }
 
@@ -81,7 +81,7 @@ public final class DamageEntityTownHandler {
 
         if (target instanceof Player) {
             final TownService ts = Sponge.getServiceManager().provideUnchecked(TownService.class);
-            final Town t = ts.get(pdOpt.get().town().get().intValue()).get();
+            final Town t = ts.get(plotOpt.get().getTown()).get();
             if (!t.getPvP().canDamage((Player) source, (Player) target)) {
                 event.setCancelled(true);
                 EventUtil.sendNoPermissionMessage((Player) source);
@@ -89,7 +89,7 @@ public final class DamageEntityTownHandler {
             return;
         }
 
-        if (!EventUtil.hasPermission((Player) source, pdOpt.get(), Flags.DAMAGE)) {
+        if (!ps.hasPermission((Player) source, plotOpt.get(), Flags.DAMAGE)) {
             event.setCancelled(true);
             EventUtil.sendNoPermissionMessage((Player) source);
         }

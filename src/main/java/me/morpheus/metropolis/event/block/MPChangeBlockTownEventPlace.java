@@ -1,6 +1,5 @@
 package me.morpheus.metropolis.event.block;
 
-import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.event.block.ChangeBlockTownEvent;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.data.Transaction;

@@ -3,7 +3,6 @@ package me.morpheus.metropolis.town.listeners;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.town.SimpleTownService;
 import me.morpheus.metropolis.util.TextUtil;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
@@ -38,7 +37,7 @@ public final class InternalLoginHandler {
 
     @Listener(beforeModifications = true)
     public void onAuth(ClientConnectionEvent.Auth event) {
-        if (this.ts.isLoadedCompleted()) {
+        if (this.ts.isReady()) {
             return;
         }
         event.setMessage(Text.of("Server is still loading the towns! Please wait before reconnecting."));

@@ -4,8 +4,7 @@ import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
-import me.morpheus.metropolis.api.data.plot.PlotData;
-import me.morpheus.metropolis.api.data.plot.PlotKeys;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.command.CommandException;
@@ -28,10 +27,10 @@ class MobSpawnCommand extends AbstractHomeTownCommand {
     }
 
     @Override
-    protected CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, PlotData pd) throws CommandException {
+    protected CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, Plot plot) throws CommandException {
         final boolean flag = context.requireOne("value");
 
-        pd.set(PlotKeys.MOBSPAWN, flag);
+        plot.setMobSpawn(flag);
         source.sendMessage(TextUtil.watermark(TextColors.AQUA, "Mobspawn ", (flag ? "on" : "off"), " in plot"));
 
         return CommandResult.success();

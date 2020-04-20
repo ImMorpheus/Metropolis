@@ -1,7 +1,7 @@
 package me.morpheus.metropolis.listeners;
 
-import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.event.entity.SpawnEntityTownEvent;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.plot.PlotService;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.monster.Monster;
@@ -17,13 +17,13 @@ public final class SpawnEntityTownHandler {
 
         event.getEntities().removeIf(entity -> {
             if (entity instanceof Monster) {
-                final Optional<PlotData> pdOpt = ps.get(entity.getLocation());
+                final Optional<Plot> plotOpt = ps.get(entity.getLocation());
 
-                if (!pdOpt.isPresent()) {
+                if (!plotOpt.isPresent()) {
                     return false;
                 }
 
-                return !pdOpt.get().mobSpawn().get();
+                return !plotOpt.get().hasMobSpawn();
             }
             return false;
         });

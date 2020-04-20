@@ -1,7 +1,7 @@
 package me.morpheus.metropolis.listeners;
 
-import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.event.entity.MoveEntityPlotEvent;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.town.TownService;
 import me.morpheus.metropolis.util.TextUtil;
@@ -23,7 +23,7 @@ public final class MoveEntityTownHandler {
         }
 
         final Player player = (Player) event.getTargetEntity();
-        final Optional<PlotData> toOpt = event.getToPlot();
+        final Optional<Plot> toOpt = event.getToPlot();
 
         if (!toOpt.isPresent()) {
             player.sendMessage(TextUtil.watermark(TextColors.GREEN, "~ Wilderness"));
@@ -35,7 +35,7 @@ public final class MoveEntityTownHandler {
         }
 
         final TownService ts = Sponge.getServiceManager().provideUnchecked(TownService.class);
-        final Town t = ts.get(toOpt.get().town().get().intValue()).get();
+        final Town t = ts.get(toOpt.get().getTown()).get();
 
         final Text pvp = Text.of(TextColors.RED, "[PvP ", t.getPvP().getName(), "]");
         player.sendMessage(TextUtil.watermark(TextColors.AQUA, "~ ", t.getName(), TextColors.GRAY, " - ", pvp));

@@ -1,7 +1,7 @@
 package me.morpheus.metropolis.event.entity;
 
-import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.event.entity.MoveEntityPlotEvent;
+import me.morpheus.metropolis.api.plot.Plot;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.cause.Cause;
 
@@ -12,11 +12,11 @@ public final class MPMoveEntityPlotEvent implements MoveEntityPlotEvent {
 
     private final Cause cause;
     private final Entity entity;
-    private final PlotData from;
-    private final PlotData to;
+    private final Plot from;
+    private final Plot to;
     private boolean cancelled = false;
 
-    public MPMoveEntityPlotEvent(Cause cause, Entity entity, @Nullable PlotData from, @Nullable PlotData to) {
+    public MPMoveEntityPlotEvent(Cause cause, Entity entity, @Nullable Plot from, @Nullable Plot to) {
         this.cause = cause;
         this.entity = entity;
         this.from = from;
@@ -44,12 +44,12 @@ public final class MPMoveEntityPlotEvent implements MoveEntityPlotEvent {
     }
 
     @Override
-    public Optional<PlotData> getFromPlot() {
+    public Optional<Plot> getFromPlot() {
         return Optional.ofNullable(this.from);
     }
 
     @Override
-    public Optional<PlotData> getToPlot() {
+    public Optional<Plot> getToPlot() {
         return Optional.ofNullable(this.to);
     }
 }

@@ -1,10 +1,10 @@
 package me.morpheus.metropolis.plot.listeners;
 
-import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.event.block.InteractBlockTownEvent;
 import me.morpheus.metropolis.api.event.entity.InteractEntityTownEvent;
 import me.morpheus.metropolis.api.event.item.inventory.InteractInventoryTownEvent;
 import me.morpheus.metropolis.api.event.item.inventory.InteractItemTownEvent;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.plot.PlotService;
 import me.morpheus.metropolis.event.block.MPInteractBlockTownEventPrimary;
 import me.morpheus.metropolis.event.block.MPInteractBlockTownEventSecondary;
@@ -44,9 +44,9 @@ public final class InternalInteractHandler {
             return;
         }
 
-        final Optional<PlotData> pdOpt = this.ps.get(event.getTargetBlock().getLocation().get());
+        final Optional<Plot> plotOpt = this.ps.get(event.getTargetBlock().getLocation().get());
 
-        if (!pdOpt.isPresent()) {
+        if (!plotOpt.isPresent()) {
             return;
         }
 
@@ -72,9 +72,9 @@ public final class InternalInteractHandler {
             return;
         }
 
-        final Optional<PlotData> pdOpt = this.ps.get(((Locatable) root).getLocation().add(event.getInteractionPoint().get()));
+        final Optional<Plot> plotOpt = this.ps.get(((Locatable) root).getLocation().add(event.getInteractionPoint().get()));
 
-        if (!pdOpt.isPresent()) {
+        if (!plotOpt.isPresent()) {
             return;
         }
 
@@ -92,9 +92,9 @@ public final class InternalInteractHandler {
     @Listener(order = Order.FIRST, beforeModifications = true)
     public void onInteractEntity(InteractEntityEvent event) {
         final Entity entity = event.getTargetEntity();
-        final Optional<PlotData> pdOpt = this.ps.get(entity.getLocation());
+        final Optional<Plot> plotOpt = this.ps.get(entity.getLocation());
 
-        if (!pdOpt.isPresent()) {
+        if (!plotOpt.isPresent()) {
             return;
         }
 
@@ -125,9 +125,9 @@ public final class InternalInteractHandler {
             return;
         }
 
-        final Optional<PlotData> pdOpt = this.ps.get(locOpt.get());
+        final Optional<Plot> plotOpt = this.ps.get(locOpt.get());
 
-        if (!pdOpt.isPresent()) {
+        if (!plotOpt.isPresent()) {
             return;
         }
 

@@ -5,8 +5,8 @@ import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.GlobalConfig;
-import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.plot.PlotService;
 import me.morpheus.metropolis.api.plot.PlotType;
 import me.morpheus.metropolis.api.plot.PlotTypes;
@@ -54,10 +54,10 @@ class ClaimCommand extends AbstractCitizenCommand {
         final Text name = context.<Text>getOne("name").orElse(null);
 
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        final Optional<PlotData> pdOpt = ps.get(source.getLocation());
+        final Optional<Plot> plotOpt = ps.get(source.getLocation());
 
-        if (pdOpt.isPresent()) {
-            if (pdOpt.get().town().get().intValue() == cd.town().get().intValue()) {
+        if (plotOpt.isPresent()) {
+            if (plotOpt.get().getTown() == cd.town().get().intValue()) {
                 source.sendMessage(TextUtil.watermark(TextColors.RED, "You've already claimed this plot"));
             } else {
                 source.sendMessage(TextUtil.watermark(TextColors.RED, "This plot is claimed by another town"));

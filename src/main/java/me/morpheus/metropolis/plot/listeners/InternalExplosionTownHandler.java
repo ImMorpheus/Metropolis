@@ -1,12 +1,9 @@
 package me.morpheus.metropolis.plot.listeners;
 
 import com.flowpowered.math.vector.Vector2i;
-import me.morpheus.metropolis.api.data.plot.PlotData;
-import me.morpheus.metropolis.api.event.block.ExplosionTownEvent;
-import me.morpheus.metropolis.event.world.MPExplosionTownEventPre;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.plot.SimplePlotService;
 import me.morpheus.metropolis.util.VectorUtil;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.entity.explosive.DetonateExplosiveEvent;
@@ -15,12 +12,9 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.explosion.Explosion;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class InternalExplosionTownHandler {
@@ -46,14 +40,14 @@ public final class InternalExplosionTownHandler {
         final Vector2i se = VectorUtil.toChunk2i(loc.add(radius, 0, radius));
 
         if (nw.equals(se)) {
-            final Optional<PlotData> pdOpt = this.ps.get(loc);
-            if (pdOpt.isPresent()) {
+            final Optional<Plot> plotOpt = this.ps.get(loc);
+            if (plotOpt.isPresent()) {
                 event.setCancelled(true);
             }
             return;
         }
 
-        final Map<Vector2i, PlotData> wm = this.ps.get(world);
+        final Map<Vector2i, Plot> wm = this.ps.get(world);
         if (wm == null) {
             return;
         }

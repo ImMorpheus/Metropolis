@@ -2,11 +2,10 @@ package me.morpheus.metropolis.commands.town.plot;
 
 import com.flowpowered.math.vector.Vector3i;
 import me.morpheus.metropolis.Metropolis;
-import me.morpheus.metropolis.api.data.plot.PlotData;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.plot.PlotService;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.town.TownService;
-
 import me.morpheus.metropolis.api.command.AbstractPlayerCommand;
 import me.morpheus.metropolis.util.NameUtil;
 import me.morpheus.metropolis.util.TextUtil;
@@ -35,20 +34,20 @@ class InfoCommand extends AbstractPlayerCommand {
     @Override
     public CommandResult process(Player source, CommandContext context) throws CommandException {
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
-        final Optional<PlotData> pdOpt = ps.get(source.getLocation());
+        final Optional<Plot> plotOpt = ps.get(source.getLocation());
 
-        if (!pdOpt.isPresent()) {
+        if (!plotOpt.isPresent()) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "This chunk is not claimed"));
             return CommandResult.empty();
         }
 
-        final PlotData pd = pdOpt.get();
+        final Plot plot = plotOpt.get();
         final TownService ts = Sponge.getServiceManager().provideUnchecked(TownService.class);
-        final Town t = ts.get(pd.town().get()).get();
+        final Town t = ts.get(plot.getTown()).get();
         final Vector3i cp = source.getLocation().getChunkPosition();
 
-        final Text owner = pd.owner().get().isPresent() ? Sponge.getServiceManager().provideUnchecked(UserStorageService.class)
-                .get(pd.owner().get().get())
+        final Text owner = plot.getOwner().isPresent() ? Sponge.getServiceManager().provideUnchecked(UserStorageService.class)
+                .get(plot.getOwner().get())
                 .map(NameUtil::getDisplayName)
                 .orElse(Text.of("None")) : Text.of("None");
 
@@ -57,11 +56,11 @@ class InfoCommand extends AbstractPlayerCommand {
                 .contents(
                         Text.of(TextColors.DARK_GREEN, "Town: ", TextColors.GREEN, t.getName()),
                         Text.of(TextColors.DARK_GREEN, "Owner: ", TextColors.GREEN, owner),
-                        Text.of(TextColors.DARK_GREEN, "Name: ", TextColors.GREEN, pd.name().get()),
-                        Text.of(TextColors.DARK_GREEN, "Type: ", TextColors.GREEN, pd.type().get().getName()),
-                        Text.of(TextColors.DARK_GREEN, "Price: ", TextColors.GREEN, pd.price().get()),
-                        Text.of(TextColors.DARK_GREEN, "Rent: ", TextColors.GREEN, pd.rent().get()),
-                        Text.of(TextColors.DARK_GREEN, "Mobspawn: ", (pd.mobSpawn().get() ? Text.of(TextColors.GREEN, "On") : Text.of(TextColors.RED, "Off")))
+                        Text.of(TextColors.DARK_GREEN, "Name: ", TextColors.GREEN, plot.getName()),
+                        Text.of(TextColors.DARK_GREEN, "Type: ", TextColors.GREEN, plot.getType().getName()),
+                        Text.of(TextColors.DARK_GREEN, "Price: ", TextColors.GREEN, plot.getPrice()),
+                        Text.of(TextColors.DARK_GREEN, "Rent: ", TextColors.GREEN, plot.getRent()),
+                        Text.of(TextColors.DARK_GREEN, "Mobspawn: ", (plot.hasMobSpawn() ? Text.of(TextColors.GREEN, "On") : Text.of(TextColors.RED, "Off")))
                 )
                 .padding(Text.of(TextColors.GOLD, "-"))
                 .sendTo(source);

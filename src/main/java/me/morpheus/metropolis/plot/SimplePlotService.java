@@ -3,9 +3,14 @@ package me.morpheus.metropolis.plot;
 import com.flowpowered.math.vector.Vector2i;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.Metropolis;
-import me.morpheus.metropolis.api.data.plot.ImmutablePlotData;
-import me.morpheus.metropolis.api.data.plot.PlotData;
+import me.morpheus.metropolis.api.config.ConfigService;
+import me.morpheus.metropolis.api.config.GlobalConfig;
+import me.morpheus.metropolis.api.data.citizen.CitizenData;
+import me.morpheus.metropolis.api.flag.Flag;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.plot.PlotService;
+import me.morpheus.metropolis.api.rank.Rank;
+import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.config.ConfigUtil;
 import me.morpheus.metropolis.plot.listeners.InternalChangeBlockHandler;
 import me.morpheus.metropolis.plot.listeners.InternalClaimHandler;
@@ -19,10 +24,11 @@ import me.morpheus.metropolis.plot.listeners.InternalSpawnEntityHandler;
 import me.morpheus.metropolis.util.VectorUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
-import org.spongepowered.api.data.manipulator.DataManipulatorBuilder;
 import org.spongepowered.api.data.persistence.DataFormats;
 import org.spongepowered.api.data.persistence.InvalidDataException;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
@@ -49,20 +55,20 @@ import java.util.stream.Stream;
 
 public class SimplePlotService implements PlotService {
 
-    private final Map<UUID, Map<Vector2i, PlotData>> map = new HashMap<>();
+    private final Map<UUID, Map<Vector2i, Plot>> map = new HashMap<>();
     private final Map<UUID, Set<Vector2i>> deleted = new HashMap<>();
     private boolean loaded = false;
 
     private static final Path PLOT_DATA = ConfigUtil.DATA.resolve("plot");
 
     @Override
-    public Stream<PlotData> plots() {
+    public Stream<Plot> plots() {
         return this.map.values().stream().flatMap(m -> m.values().stream());
     }
 
     @Override
-    public Stream<PlotData> plots(UUID world) {
-        final Map<Vector2i, PlotData> plots = get(world);
+    public Stream<Plot> plots(UUID world) {
+        final Map<Vector2i, Plot> plots = get(world);
         if (plots == null) {
             return Stream.empty();
         }
@@ -70,7 +76,12 @@ public class SimplePlotService implements PlotService {
     }
 
     @Override
-    public Optional<PlotData> get(Location<World> loc) {
+    public Plot create(Town town) {
+        return new MPPlot(town);
+    }
+
+    @Override
+    public Optional<Plot> get(Location<World> loc) {
         final Vector2i cp = VectorUtil.toChunk2i(loc);
         final UUID world = loc.getExtent().getUniqueId();
 
@@ -78,19 +89,18 @@ public class SimplePlotService implements PlotService {
     }
 
     @Override
-    public Optional<PlotData> claim(Location<World> loc, PlotData pd) {
+    public Optional<Plot> claim(Location<World> loc, Plot plot) {
         final Vector2i cp = VectorUtil.toChunk2i(loc);
         final UUID world = loc.getExtent().getUniqueId();
-
-        return Optional.ofNullable(claim(world, cp, pd));
+        return Optional.ofNullable(claim(world, cp, plot));
     }
 
     @Override
-    public Optional<PlotData> unclaim(Location<World> loc) {
+    public Optional<Plot> unclaim(Location<World> loc) {
         final Vector2i cp = VectorUtil.toChunk2i(loc);
         final UUID world = loc.getExtent().getUniqueId();
 
-        final Map<Vector2i, PlotData> plots = get(world);
+        final Map<Vector2i, Plot> plots = get(world);
 
         if (plots == null) {
             return Optional.empty();
@@ -102,11 +112,11 @@ public class SimplePlotService implements PlotService {
     }
 
     @Override
-    public void unclaim(Predicate<PlotData> predicate) {
-        for (Map.Entry<UUID, Map<Vector2i, PlotData>> world : this.map.entrySet()) {
-            final Iterator<Map.Entry<Vector2i, PlotData>> iterator = world.getValue().entrySet().iterator();
+    public void unclaim(Predicate<Plot> predicate) {
+        for (Map.Entry<UUID, Map<Vector2i, Plot>> world : this.map.entrySet()) {
+            final Iterator<Map.Entry<Vector2i, Plot>> iterator = world.getValue().entrySet().iterator();
             while (iterator.hasNext()) {
-                final Map.Entry<Vector2i, PlotData> e = iterator.next();
+                final Map.Entry<Vector2i, Plot> e = iterator.next();
                 if (predicate.test(e.getValue())) {
                     final Set<Vector2i> w = this.deleted.computeIfAbsent(world.getKey(), k -> new HashSet<>());
                     w.add(e.getKey());
@@ -117,12 +127,12 @@ public class SimplePlotService implements PlotService {
     }
 
     @Override
-    public void unclaim(UUID world, Predicate<PlotData> predicate) {
-        final Map<Vector2i, PlotData> plots = get(world);
+    public void unclaim(UUID world, Predicate<Plot> predicate) {
+        final Map<Vector2i, Plot> plots = get(world);
         if (plots != null) {
-            final Iterator<Map.Entry<Vector2i, PlotData>> iterator = plots.entrySet().iterator();
+            final Iterator<Map.Entry<Vector2i, Plot>> iterator = plots.entrySet().iterator();
             while (iterator.hasNext()) {
-                final Map.Entry<Vector2i, PlotData> e = iterator.next();
+                final Map.Entry<Vector2i, Plot> e = iterator.next();
                 if (predicate.test(e.getValue())) {
                     final Set<Vector2i> w = this.deleted.computeIfAbsent(world, k -> new HashSet<>());
                     w.add(e.getKey());
@@ -130,6 +140,67 @@ public class SimplePlotService implements PlotService {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean hasPermission(User source, Plot plot, Flag flag) {
+        final Optional<CitizenData> cdOpt = source.get(CitizenData.class);
+        return cdOpt.isPresent() && hasPermission(source, cdOpt.get(), plot, flag);
+    }
+
+    @Override
+    public boolean hasPermission(User source, CitizenData cd, Plot plot, Flag flag) {
+        if (plot.getTown() != cd.town().get().intValue()) {
+            return false;
+        }
+
+        if (!plot.getOwner().isPresent()) {
+            final byte value = plot.getPermission(flag);
+            if (value != Byte.MIN_VALUE) {
+                return hasPermissionAdvanced(value, cd, flag);
+            }
+            return hasPermissionInUnowned(cd, flag);
+        }
+
+        final UUID ownerId = plot.getOwner().get();
+        if (source.getUniqueId().equals(ownerId)) {
+            return true;
+        }
+
+        final byte perm = cd.rank().get().getPermission(flag);
+        final byte value = plot.getPermission(flag);
+        if (value != Byte.MIN_VALUE) {
+            if (perm >= value) {
+                return true;
+            }
+        }
+
+        final Optional<User> ownerOpt = Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(ownerId);
+        if (ownerOpt.isPresent()) {
+            final User owner = ownerOpt.get();
+            final Optional<CitizenData> cdOpt = owner.get(CitizenData.class);
+            if (cdOpt.isPresent() && cdOpt.get().town().get().intValue() == plot.getTown()) {
+                if (cdOpt.get().friends().contains(source.getUniqueId())) {
+                    return true;
+                }
+                if (value != Byte.MIN_VALUE) {
+                    return false;
+                }
+                return perm > cdOpt.get().rank().get().getPermission(flag);
+            }
+        }
+        return hasPermissionInUnowned(cd, flag);
+    }
+
+    private boolean hasPermissionAdvanced(byte value, CitizenData cd, Flag flag) {
+        final Rank rank = cd.rank().get();
+        return rank.getPermission(flag) >= value;
+    }
+
+    private boolean hasPermissionInUnowned(CitizenData cd, Flag flag) {
+        final Rank rank = cd.rank().get();
+        final GlobalConfig config = Sponge.getServiceManager().provideUnchecked(ConfigService.class).getGlobal();
+        return rank.getPermission(flag) > config.getTownCategory().getPlotCategory().getUnownedPermission(flag);
     }
 
     @Override
@@ -145,7 +216,7 @@ public class SimplePlotService implements PlotService {
                     throw new CompletionException(e);
                 }
             }
-            for (Map.Entry<UUID, Map<Vector2i, PlotData>> entry : this.map.entrySet()) {
+            for (Map.Entry<UUID, Map<Vector2i, Plot>> entry : this.map.entrySet()) {
                 final UUID uuid = entry.getKey();
                 final Path worldDir = SimplePlotService.PLOT_DATA.resolve(uuid.toString());
 
@@ -158,20 +229,20 @@ public class SimplePlotService implements PlotService {
                     }
                 }
 
-                for (Map.Entry<Vector2i, PlotData> worldEntry : entry.getValue().entrySet()) {
-                    final PlotData pd = worldEntry.getValue();
-                    final Vector2i plot = worldEntry.getKey();
+                for (Map.Entry<Vector2i, Plot> worldEntry : entry.getValue().entrySet()) {
+                    final Plot plot = worldEntry.getValue();
+                    final Vector2i coord = worldEntry.getKey();
 
-                    final String name = plot.getX() + "." + plot.getY();
+                    final String name = coord.getX() + "." + coord.getY();
                     final Path tmp = worldDir.resolve(name + ".tmp");
 
-                    final DataContainer container = pd.toContainer();
+                    final DataContainer container = plot.toContainer();
 
                     try (OutputStream out = Files.newOutputStream(tmp, StandardOpenOption.CREATE)) {
                         DataFormats.JSON.writeTo(out, container);
                         Files.move(tmp, worldDir.resolve(name), StandardCopyOption.REPLACE_EXISTING);
                     } catch (IOException e) {
-                        MPLog.getLogger().error("Unable to save Plot at {}", plot);
+                        MPLog.getLogger().error("Unable to save Plot at {}", coord);
                         MPLog.getLogger().error("Error:", e);
                     }
                 }
@@ -204,8 +275,6 @@ public class SimplePlotService implements PlotService {
             return CompletableFuture.completedFuture(null);
         }
         return CompletableFuture.runAsync(() -> {
-            final DataManipulatorBuilder<PlotData, ImmutablePlotData> builder = Sponge.getDataManager().getManipulatorBuilder(PlotData.class).get();
-
             try (DirectoryStream<Path> worlds = Files.newDirectoryStream(SimplePlotService.PLOT_DATA)) {
                 for (Path world : worlds) {
                     final UUID uuid = UUID.fromString(world.getFileName().toString());
@@ -216,9 +285,9 @@ public class SimplePlotService implements PlotService {
 
                             try (InputStream in = Files.newInputStream(plot)) {
                                 final DataContainer container = DataFormats.JSON.readFrom(in);
-                                final PlotData plotData = builder.build(container)
+                                final Plot p = MPPlot.from(container)
                                         .orElseThrow(() -> new InvalidDataException(container.toString()));
-                                claim(uuid, coord, plotData);
+                                claim(uuid, coord, p);
                             }
                         }
                     }
@@ -246,13 +315,13 @@ public class SimplePlotService implements PlotService {
     }
 
     @Nullable
-    public Map<Vector2i, PlotData> get(UUID world) {
+    public Map<Vector2i, Plot> get(UUID world) {
         return this.map.get(world);
     }
 
     @Nullable
-    public PlotData get(UUID world, Vector2i cp) {
-        final Map<Vector2i, PlotData> plots = get(world);
+    public Plot get(UUID world, Vector2i cp) {
+        final Map<Vector2i, Plot> plots = get(world);
         if (plots == null) {
             return null;
         }
@@ -260,12 +329,12 @@ public class SimplePlotService implements PlotService {
     }
 
     @Nullable
-    private PlotData claim(final UUID world, final Vector2i chunk, final PlotData pd) {
-        final Map<Vector2i, PlotData> plots = this.map.computeIfAbsent(world, k -> new HashMap<>());
-        return plots.putIfAbsent(chunk, pd);
+    private Plot claim(final UUID world, final Vector2i chunk, final Plot plot) {
+        final Map<Vector2i, Plot> plots = this.map.computeIfAbsent(world, k -> new HashMap<>());
+        return plots.put(chunk, plot);
     }
 
-    public boolean isLoadedCompleted() {
+    public boolean isReady() {
         return this.loaded;
     }
 }

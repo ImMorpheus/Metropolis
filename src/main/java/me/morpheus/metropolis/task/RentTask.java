@@ -1,8 +1,7 @@
 package me.morpheus.metropolis.task;
 
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
-import me.morpheus.metropolis.api.data.plot.PlotData;
-import me.morpheus.metropolis.api.data.plot.PlotKeys;
+import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.plot.PlotService;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.town.TownService;
@@ -28,22 +27,22 @@ public final class RentTask implements Consumer<Task> {
     private final UserStorageService uss = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
     private final TownService ts = Sponge.getServiceManager().provideUnchecked(TownService.class);
     private final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
-    private final Iterator<PlotData> plots;
+    private final Iterator<Plot> plots;
 
     public RentTask() {
         this.plots = Sponge.getServiceManager().provideUnchecked(PlotService.class).plots()
-                .filter(pd -> pd.rent().get().doubleValue() != 0.0)
-                .filter(pd -> pd.owner().get().isPresent())
+                .filter(plot -> plot.getRent() != 0.0)
+                .filter(plot -> plot.getOwner().isPresent())
                 .iterator();
     }
 
     @Override
     public void accept(Task task) {
         for (int i = 0; i < RentTask.MAX_RENT_PER_TICK && this.plots.hasNext(); i++) {
-            final PlotData pd = this.plots.next();
-            final Optional<Town> townOpt = this.ts.get(pd.town().get().intValue());
+            final Plot plot = this.plots.next();
+            final Optional<Town> townOpt = this.ts.get(plot.getTown());
             if (townOpt.isPresent()) {
-                final Optional<User> uOpt = this.uss.get(pd.owner().get().get());
+                final Optional<User> uOpt = this.uss.get(plot.getOwner().get());
                 if (uOpt.isPresent()) {
                     final User user = uOpt.get();
                     Optional<CitizenData> cdOpt = user.get(CitizenData.class);
@@ -54,9 +53,9 @@ public final class RentTask implements Consumer<Task> {
                             final Optional<UniqueAccount> fromOpt = this.es.getOrCreateAccount(user.getUniqueId());
                             final Optional<Account> toOpt = town.getBank();
                             if (fromOpt.isPresent() && toOpt.isPresent()) {
-                                ResultType result = EconomyUtil.transfer(fromOpt.get(), toOpt.get(), this.es.getDefaultCurrency(), BigDecimal.valueOf(pd.rent().get().doubleValue()));
+                                ResultType result = EconomyUtil.transfer(fromOpt.get(), toOpt.get(), this.es.getDefaultCurrency(), BigDecimal.valueOf(plot.getRent()));
                                 if (result == ResultType.ACCOUNT_NO_FUNDS) {
-                                    pd.set(PlotKeys.OWNER, Optional.empty());
+                                    plot.setOwner(null);
                                 }
                             }
                         }

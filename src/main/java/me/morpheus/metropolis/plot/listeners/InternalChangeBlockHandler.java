@@ -1,6 +1,5 @@
 package me.morpheus.metropolis.plot.listeners;
 
-import me.morpheus.metropolis.api.data.plot.PlotData;
 import me.morpheus.metropolis.api.event.block.ChangeBlockTownEvent;
 import me.morpheus.metropolis.api.plot.PlotService;
 import me.morpheus.metropolis.event.block.MPChangeBlockTownEventBreak;
@@ -9,17 +8,11 @@ import me.morpheus.metropolis.event.block.MPChangeBlockTownEventPre;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.tileentity.TileEntity;
 import org.spongepowered.api.block.tileentity.TileEntityTypes;
-import org.spongepowered.api.entity.FallingBlock;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.block.ChangeBlockEvent;
 import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.world.LocatableBlock;
-import org.spongepowered.api.world.Location;
-import org.spongepowered.api.world.World;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public final class InternalChangeBlockHandler {
 
