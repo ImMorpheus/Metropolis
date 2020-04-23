@@ -13,6 +13,9 @@ public final class MoveEntityTownHandler {
         if (event.getTargetEntity().getType() != EntityTypes.PLAYER) {
             return;
         }
+        if (event.getMessage().isEmpty()) {
+            return;
+        }
 
         final Player player = (Player) event.getTargetEntity();
 
