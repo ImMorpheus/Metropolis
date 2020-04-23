@@ -7,9 +7,18 @@ import org.spongepowered.api.text.format.TextStyles;
 
 public final class TextUtil {
 
+    private static final Text PLUGIN = Text.of(TextColors.GOLD, "[MP] ");
+
+    public static Text watermark() {
+        return PLUGIN;
+    }
+
+    public static Text watermark(Object object) {
+        return PLUGIN.concat(Text.of(object));
+    }
+
     public static Text watermark(Object... objects) {
-        Text plugin = Text.of(TextColors.GOLD, "[", Metropolis.NAME, "] ");
-        return plugin.concat(Text.of(objects));
+        return PLUGIN.concat(Text.of(objects));
     }
 
     public static Text reset(Object... objects) {

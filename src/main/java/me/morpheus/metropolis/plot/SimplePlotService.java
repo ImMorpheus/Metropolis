@@ -53,7 +53,7 @@ import java.util.concurrent.CompletionException;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class SimplePlotService implements PlotService {
+public final class SimplePlotService implements PlotService {
 
     private final Map<UUID, Map<Vector2i, Plot>> map = new HashMap<>();
     private final Map<UUID, Set<Vector2i>> deleted = new HashMap<>();

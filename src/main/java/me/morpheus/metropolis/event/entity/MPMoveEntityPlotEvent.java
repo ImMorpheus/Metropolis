@@ -4,6 +4,7 @@ import me.morpheus.metropolis.api.event.entity.MoveEntityPlotEvent;
 import me.morpheus.metropolis.api.plot.Plot;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.text.Text;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -11,13 +12,18 @@ import java.util.Optional;
 public final class MPMoveEntityPlotEvent implements MoveEntityPlotEvent {
 
     private final Cause cause;
+    private final MessageFormatter formatter;
+    private final Text originalMessage;
     private final Entity entity;
     private final Plot from;
     private final Plot to;
     private boolean cancelled = false;
+    private boolean messageCancelled = false;
 
-    public MPMoveEntityPlotEvent(Cause cause, Entity entity, @Nullable Plot from, @Nullable Plot to) {
+    public MPMoveEntityPlotEvent(Cause cause, MessageFormatter formatter, Text message, Entity entity, @Nullable Plot from, @Nullable Plot to) {
         this.cause = cause;
+        this.formatter = formatter;
+        this.originalMessage = message;
         this.entity = entity;
         this.from = from;
         this.to = to;
@@ -51,5 +57,25 @@ public final class MPMoveEntityPlotEvent implements MoveEntityPlotEvent {
     @Override
     public Optional<Plot> getToPlot() {
         return Optional.ofNullable(this.to);
+    }
+
+    @Override
+    public Text getOriginalMessage() {
+        return this.originalMessage;
+    }
+
+    @Override
+    public boolean isMessageCancelled() {
+        return this.messageCancelled;
+    }
+
+    @Override
+    public void setMessageCancelled(boolean cancelled) {
+        this.messageCancelled = cancelled;
+    }
+
+    @Override
+    public MessageFormatter getFormatter() {
+        return this.formatter;
     }
 }

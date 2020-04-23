@@ -9,10 +9,13 @@ import me.morpheus.metropolis.api.plot.PlotTypes;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.data.DataVersions;
 import me.morpheus.metropolis.util.Hacks;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.Queries;
 import org.spongepowered.api.data.persistence.DataFormats;
+import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 
 import javax.annotation.Nullable;
@@ -25,6 +28,7 @@ public final class MPPlot implements Plot {
     private int town;
     private Text name;
     @Nullable private UUID owner;
+    @Nullable private String ownerName;
     private double price;
     private double rent;
     private boolean forSale;
@@ -68,9 +72,24 @@ public final class MPPlot implements Plot {
         return Optional.ofNullable(this.owner);
     }
 
+    public String getOwnerName() {
+        if (this.ownerName != null) {
+            return this.ownerName;
+        }
+        if (this.owner == null) {
+            this.ownerName = "";
+        } else {
+            final UserStorageService uss = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
+            final Optional<User> userOpt = uss.get(this.owner);
+            this.ownerName = userOpt.map(User::getName).orElse("");
+        }
+        return this.ownerName;
+    }
+
     @Override
     public void setOwner(@Nullable UUID owner) {
         this.owner = owner;
+        this.ownerName = null;
     }
 
     @Override
