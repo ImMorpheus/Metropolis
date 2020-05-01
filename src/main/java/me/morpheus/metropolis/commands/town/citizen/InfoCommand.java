@@ -53,7 +53,7 @@ class InfoCommand extends AbstractMPCommand {
         message.add(Text.of(TextColors.DARK_GREEN, "Rank: ", TextColors.GREEN, cd.rank().get().getName()));
         if (source.hasPermission(Metropolis.ID + ".commands.town.citizen.info.friendlist")) {
             final UserStorageService uss = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
-            Set<Text> friends = cd.friends().get().stream()
+            final Set<Text> friends = cd.friends().get().stream()
                     .map(uuid -> uss.get(uuid)
                             .map(NameUtil::getDisplayName)
                             .orElse(Text.of()))
