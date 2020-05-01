@@ -48,17 +48,17 @@ class InfoCommand extends AbstractMPCommand {
         final Town t = ts.get(cd.town().get().intValue()).get();
         final String joined = DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneId.systemDefault()).format(cd.joined().get());
 
-        final UserStorageService uss = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
-        Set<Text> friends = cd.friends().get().stream()
-                .map(uuid -> uss.get(uuid)
-                    .map(NameUtil::getDisplayName)
-                    .orElse(Text.of()))
-                .collect(Collectors.toSet());
-
         List<Text> message = new ArrayList();
         message.add(Text.of(TextColors.DARK_GREEN, "Town: ", TextColors.GREEN, t.getName()));
         message.add(Text.of(TextColors.DARK_GREEN, "Rank: ", TextColors.GREEN, cd.rank().get().getName()));
         if (source.hasPermission(Metropolis.ID + ".commands.town.citizen.info.friendlist")) {
+            final UserStorageService uss = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
+            Set<Text> friends = cd.friends().get().stream()
+                    .map(uuid -> uss.get(uuid)
+                            .map(NameUtil::getDisplayName)
+                            .orElse(Text.of()))
+                    .collect(Collectors.toSet());
+
             message.add(Text.of(TextColors.DARK_GREEN, "Friends: ", TextColors.GREEN, Text.joinWith(Text.of(","), friends)));
         }
         message.add(Text.of(TextColors.DARK_GREEN, "Joined: ", TextColors.GREEN, joined));
