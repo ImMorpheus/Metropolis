@@ -58,8 +58,9 @@ class InfoCommand extends AbstractMPCommand {
         List<Text> message = new ArrayList();
         message.add(Text.of(TextColors.DARK_GREEN, "Town: ", TextColors.GREEN, t.getName()));
         message.add(Text.of(TextColors.DARK_GREEN, "Rank: ", TextColors.GREEN, cd.rank().get().getName()));
-        if(source.hasPermission(Metropolis.ID + ".commands.town.citizen.info.friendlist"))
+        if (source.hasPermission(Metropolis.ID + ".commands.town.citizen.info.friendlist")) {
             message.add(Text.of(TextColors.DARK_GREEN, "Friends: ", TextColors.GREEN, Text.joinWith(Text.of(","), friends)));
+        }
         message.add(Text.of(TextColors.DARK_GREEN, "Joined: ", TextColors.GREEN, joined));
 
         PaginationList.builder()
