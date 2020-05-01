@@ -50,23 +50,21 @@ class InfoCommand extends AbstractMPCommand {
 
         final UserStorageService uss = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
         Set<Text> friends = cd.friends().get().stream()
-                .map(
-                    uuid -> uss.get(uuid)
+                .map(uuid -> uss.get(uuid)
                     .map(NameUtil::getDisplayName)
-                    .orElse(Text.of())
-                )
+                    .orElse(Text.of()))
                 .collect(Collectors.toSet());
 
         List<Text> message = new ArrayList();
-        message.add( Text.of(TextColors.DARK_GREEN, "Town: ", TextColors.GREEN, t.getName()) );
-        message.add( Text.of(TextColors.DARK_GREEN, "Rank: ", TextColors.GREEN, cd.rank().get().getName()) );
-        if( source.hasPermission(Metropolis.ID + ".commands.town.citizen.info.friendlist") )
-            message.add( Text.of(TextColors.DARK_GREEN, "Friends: ", TextColors.GREEN, Text.joinWith(Text.of(","), friends)) );
-        message.add( Text.of(TextColors.DARK_GREEN, "Joined: ", TextColors.GREEN, joined) );
+        message.add(Text.of(TextColors.DARK_GREEN, "Town: ", TextColors.GREEN, t.getName()));
+        message.add(Text.of(TextColors.DARK_GREEN, "Rank: ", TextColors.GREEN, cd.rank().get().getName()));
+        if(source.hasPermission(Metropolis.ID + ".commands.town.citizen.info.friendlist"))
+            message.add(Text.of(TextColors.DARK_GREEN, "Friends: ", TextColors.GREEN, Text.joinWith(Text.of(","), friends)));
+        message.add(Text.of(TextColors.DARK_GREEN, "Joined: ", TextColors.GREEN, joined));
 
         PaginationList.builder()
                 .title(Text.of(TextColors.GOLD, "[", TextColors.YELLOW, NameUtil.getDisplayName(user), TextColors.GOLD, "]"))
-                .contents( message )
+                .contents(message)
                 .padding(Text.of(TextColors.GOLD, "-"))
                 .sendTo(source);
 
