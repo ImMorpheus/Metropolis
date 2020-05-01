@@ -48,7 +48,7 @@ class InfoCommand extends AbstractMPCommand {
         final Town t = ts.get(cd.town().get().intValue()).get();
         final String joined = DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneId.systemDefault()).format(cd.joined().get());
 
-        List<Text> message = new ArrayList();
+        final List<Text> message = new ArrayList(4);
         message.add(Text.of(TextColors.DARK_GREEN, "Town: ", TextColors.GREEN, t.getName()));
         message.add(Text.of(TextColors.DARK_GREEN, "Rank: ", TextColors.GREEN, cd.rank().get().getName()));
         if (source.hasPermission(Metropolis.ID + ".commands.town.citizen.info.friendlist")) {
