@@ -27,13 +27,11 @@ public final class TownDispatcher extends AbstractCommandDispatcher {
         register(new ListCommand(), "list");
         register(new NewCommand(), "new", "create");
         register(new OutpostCommand(), "outpost");
-        register(new OutpostsCommand(), "outposts");
         register(new PricesCommand(), "prices");
         register(new SpawnCommand(), "spawn");
         register(new TreeCommand(), "tree");
         register(new UnclaimCommand(), "unclaim");
         register(new UpgradeCommand(), "upgrade");
-        register(new UpgradesCommand(), "upgrades");
         register(new WithdrawCommand(), "withdraw");
 
         registerManager(new CitizenDispatcher(), "citizen");
