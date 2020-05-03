@@ -19,25 +19,14 @@ import java.util.stream.Collectors;
 
 class TownCommandElement extends CommandElement {
 
-    private final boolean sourceIfEmpty;
-
     TownCommandElement(@Nullable Text key) {
-        this(key, false);
-    }
-
-    TownCommandElement(@Nullable Text key, boolean sourceIfEmpty) {
         super(key);
-        this.sourceIfEmpty = sourceIfEmpty;
-
     }
 
     @Nullable
     @Override
     protected Object parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
         if (!args.hasNext()) {
-            if (this.sourceIfEmpty) {
-                return getTown(source);
-            }
             return null;
         }
 
@@ -59,19 +48,6 @@ class TownCommandElement extends CommandElement {
                 .filter(t -> t.getName().toPlain().startsWith(arg))
                 .map(t -> t.getName().toPlain())
                 .collect(Collectors.toList());
-    }
-
-
-    @Nullable
-    private Town getTown(CommandSource source) {
-        if (source instanceof Player) {
-            final Optional<CitizenData> cdOpt = ((Player) source).get(CitizenData.class);
-            if (cdOpt.isPresent()) {
-                final TownService ts = Sponge.getServiceManager().provideUnchecked(TownService.class);
-                return ts.get(cdOpt.get().town().get().intValue()).orElse(null);
-            }
-        }
-        return null;
     }
 
 }

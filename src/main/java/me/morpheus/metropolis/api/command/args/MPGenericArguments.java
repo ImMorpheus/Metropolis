@@ -20,10 +20,6 @@ public final class MPGenericArguments {
         return new TownCommandElement(key);
     }
 
-    public static CommandElement townOrHomeTown(Text key) {
-        return new TownCommandElement(key, true);
-    }
-
     public static <T extends CatalogType> CommandElement catalog(Class<T> type, Text key) {
         return new CatalogCommandElement<>(type, key);
     }
