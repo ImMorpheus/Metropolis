@@ -24,9 +24,9 @@ class PvPCommand extends AbstractCitizenCommand {
 
     PvPCommand() {
         super(
-                GenericArguments.onlyOne(MPGenericArguments.catalog(PvPOption.class, Text.of("option"))),
+                MPGenericArguments.exactlyOne(MPGenericArguments.catalog(PvPOption.class, Text.of("option"))),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.set.pvp",
+                Metropolis.ID + ".commands.town.set.pvp.base",
                 Text.of()
         );
     }

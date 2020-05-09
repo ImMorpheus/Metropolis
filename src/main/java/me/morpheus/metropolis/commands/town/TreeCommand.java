@@ -21,9 +21,9 @@ import java.util.Set;
 
 class TreeCommand extends AbstractMPCommand {
 
-    public TreeCommand() {
+    TreeCommand() {
         super(
-                Metropolis.ID + ".commands.town.tree",
+                Metropolis.ID + ".commands.town.tree.base",
                 Text.of()
         );
     }

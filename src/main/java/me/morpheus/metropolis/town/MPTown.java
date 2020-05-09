@@ -444,7 +444,7 @@ public class MPTown implements Town {
     }
 
     @Override
-    public boolean claim(Location<World> location, PlotType type, @Nullable Text name) {
+    public boolean claim(Location<World> location, PlotType type) {
         short current = this.plots.getShort(type);
         if (current >= this.type.getMaxPlots(type)) {
             return false;
@@ -452,9 +452,6 @@ public class MPTown implements Town {
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
         final Plot plot = ps.create(this);
         plot.setType(type);
-        if (name != null) {
-            plot.setName(name);
-        }
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
             ClaimPlotEvent.Pre event = new MPClaimPlotEventPre(frame.getCurrentCause(), plot, location);
             if (Sponge.getEventManager().post(event)) {
@@ -466,7 +463,7 @@ public class MPTown implements Town {
             if (!odOpt.isPresent()) {
                 return false;
             }
-            final String n = name == null ? "null" : name.toPlain();
+            final String n = type.getName() + current;
             Map<String, Location<World>> map = odOpt.get().outposts().get();
             Location<World> l = map.putIfAbsent(n, location);
             if (l != null) {

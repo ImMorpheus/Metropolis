@@ -2,6 +2,7 @@ package me.morpheus.metropolis.commands.town.set;
 
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
+import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.town.TownKeys;
@@ -23,9 +24,9 @@ class TaxCommand extends AbstractCitizenCommand {
 
     TaxCommand() {
         super(
-                GenericArguments.onlyOne(GenericArguments.doubleNum(Text.of("tax"))),
+                MPGenericArguments.exactlyOne(GenericArguments.doubleNum(Text.of("tax"))),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.set.tax",
+                Metropolis.ID + ".commands.town.set.tax.base",
                 Text.of()
         );
     }

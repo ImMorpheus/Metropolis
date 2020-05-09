@@ -2,6 +2,7 @@ package me.morpheus.metropolis.commands.town.plot.set;
 
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
+import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.plot.Plot;
@@ -19,9 +20,9 @@ class MobSpawnCommand extends AbstractHomeTownCommand {
 
     MobSpawnCommand() {
         super(
-                GenericArguments.onlyOne(GenericArguments.bool(Text.of("value"))),
+                MPGenericArguments.exactlyOne(GenericArguments.bool(Text.of("value"))),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.plot.set.mobspawn",
+                Metropolis.ID + ".commands.town.plot.set.mobspawn.base",
                 Text.of("Turn on/off mobspawning in the plot.")
         );
     }

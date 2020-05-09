@@ -24,11 +24,11 @@ class SetCommand extends AbstractHomeTownCommand {
     SetCommand() {
         super(
                 GenericArguments.seq(
-                        GenericArguments.onlyOne(MPGenericArguments.catalog(Flag.class, Text.of("flag"))),
-                        GenericArguments.onlyOne(MPGenericArguments.catalog(Rank.class, Text.of("rank")))
+                        MPGenericArguments.exactlyOne(MPGenericArguments.catalog(Flag.class, Text.of("flag"))),
+                        MPGenericArguments.exactlyOne(MPGenericArguments.catalog(Rank.class, Text.of("rank")))
                 ),
                 InputTokenizer.spaceSplitString(),
-                Metropolis.ID + ".commands.town.plot.perm.set",
+                Metropolis.ID + ".commands.town.plot.perm.set.base",
                 Text.of()
         );
     }

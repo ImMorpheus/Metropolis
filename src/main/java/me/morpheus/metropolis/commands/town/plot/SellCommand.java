@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.commands.town.plot;
 
 import me.morpheus.metropolis.Metropolis;
+import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
@@ -23,9 +24,9 @@ class SellCommand extends AbstractHomeTownCommand {
 
     SellCommand() {
         super(
-                GenericArguments.onlyOne(GenericArguments.doubleNum(Text.of("price"))),
+                MPGenericArguments.exactlyOne(GenericArguments.doubleNum(Text.of("price"))),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.plot.sell",
+                Metropolis.ID + ".commands.town.plot.sell.base",
                 Text.of()
         );
     }

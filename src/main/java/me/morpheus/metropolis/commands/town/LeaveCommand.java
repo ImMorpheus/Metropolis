@@ -19,9 +19,9 @@ import java.util.Optional;
 
 class LeaveCommand extends AbstractCitizenCommand {
 
-    public LeaveCommand() {
+    LeaveCommand() {
         super(
-                Metropolis.ID + ".commands.town.leave",
+                Metropolis.ID + ".commands.town.leave.base",
                 Text.of()
         );
     }

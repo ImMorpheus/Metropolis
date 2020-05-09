@@ -26,21 +26,20 @@ class RemoveCommand extends AbstractCitizenCommand {
         super(
                 GenericArguments.user(Text.of("friends")),
                 InputTokenizer.spaceSplitString(),
-                Metropolis.ID + ".commands.town.friend.remove",
+                Metropolis.ID + ".commands.town.friend.remove.base",
                 Text.of()
         );
     }
 
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
-        Collection<User> users = context.getAll("friends");
+        final Collection<User> users = context.getAll("friends");
 
-        Set<UUID> friends = cd.friends().get();
         for (User user : users) {
-            friends.remove(user.getUniqueId());
+            cd.friends().remove(user.getUniqueId());
         }
 
-        source.offer(CitizenKeys.FRIENDS, friends);
+        source.offer(cd);
 
         return CommandResult.success();
     }

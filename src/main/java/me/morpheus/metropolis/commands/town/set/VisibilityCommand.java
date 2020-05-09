@@ -24,9 +24,9 @@ class VisibilityCommand extends AbstractCitizenCommand {
 
     VisibilityCommand() {
         super(
-                GenericArguments.onlyOne(MPGenericArguments.catalog(Visibility.class, Text.of("visibility"))),
+                MPGenericArguments.exactlyOne(MPGenericArguments.catalog(Visibility.class, Text.of("visibility"))),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.set.visibility",
+                Metropolis.ID + ".commands.town.set.visibility.base",
                 Text.of()
         );
     }

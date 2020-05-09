@@ -2,6 +2,7 @@ package me.morpheus.metropolis.commands.town;
 
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
+import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.town.outpost.OutpostData;
@@ -36,9 +37,11 @@ class OutpostCommand extends AbstractCitizenCommand {
 
     OutpostCommand() {
         super(
-                GenericArguments.optional(GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)),
+                GenericArguments.optional(
+                        GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)
+                ),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.outpost",
+                Metropolis.ID + ".commands.town.outpost.base",
                 Text.of()
         );
     }

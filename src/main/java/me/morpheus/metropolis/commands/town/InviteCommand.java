@@ -11,7 +11,6 @@ import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.living.player.Player;
@@ -19,15 +18,14 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Collection;
-import java.util.Optional;
 
 class InviteCommand extends AbstractCitizenCommand {
 
     InviteCommand() {
         super(
-                MPGenericArguments.player(Text.of("players")),
+                MPGenericArguments.visiblePlayer(Text.of("players")),
                 InputTokenizer.spaceSplitString(),
-                Metropolis.ID + ".commands.town.invite",
+                Metropolis.ID + ".commands.town.invite.base",
                 Text.of()
         );
     }

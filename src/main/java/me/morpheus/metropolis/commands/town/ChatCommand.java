@@ -18,9 +18,9 @@ import java.util.Optional;
 
 class ChatCommand extends AbstractCitizenCommand {
 
-    public ChatCommand() {
+    ChatCommand() {
         super(
-                Metropolis.ID + ".commands.town.chat",
+                Metropolis.ID + ".commands.town.chat.base",
                 Text.of()
         );
     }

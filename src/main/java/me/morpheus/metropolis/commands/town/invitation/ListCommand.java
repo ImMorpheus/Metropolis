@@ -25,7 +25,7 @@ class ListCommand extends AbstractPlayerCommand {
 
     public ListCommand() {
         super(
-                Metropolis.ID + ".commands.town.invitation.list",
+                Metropolis.ID + ".commands.town.invitation.list.base",
                 Text.of()
         );
     }

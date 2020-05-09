@@ -2,6 +2,7 @@ package me.morpheus.metropolis.commands.town;
 
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
+import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.GlobalConfig;
@@ -27,13 +28,13 @@ import org.spongepowered.api.text.format.TextColors;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-public class DepositCommand extends AbstractCitizenCommand {
+class DepositCommand extends AbstractCitizenCommand {
 
     DepositCommand() {
         super(
-                GenericArguments.onlyOne(GenericArguments.bigDecimal(Text.of("amount"))),
+                GenericArguments.bigDecimal(Text.of("amount")),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.deposit",
+                Metropolis.ID + ".commands.town.deposit.base",
                 Text.of()
         );
     }

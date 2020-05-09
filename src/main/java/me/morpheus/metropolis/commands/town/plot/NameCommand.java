@@ -2,6 +2,7 @@ package me.morpheus.metropolis.commands.town.plot;
 
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
+import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.plot.Plot;
@@ -24,9 +25,9 @@ class NameCommand extends AbstractHomeTownCommand {
 
     NameCommand() {
         super(
-                GenericArguments.onlyOne(GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)),
+                MPGenericArguments.exactlyOne(GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.plot.name",
+                Metropolis.ID + ".commands.town.plot.name.base",
                 Text.of()
         );
     }

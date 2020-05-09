@@ -26,7 +26,7 @@ class JoinCommand extends AbstractPlayerCommand {
 
     JoinCommand() {
         super(
-                GenericArguments.onlyOne(MPGenericArguments.town(Text.of("town"))),
+                MPGenericArguments.exactlyOne(MPGenericArguments.town(Text.of("town"))),
                 MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.admin.town.join",
                 Text.of()

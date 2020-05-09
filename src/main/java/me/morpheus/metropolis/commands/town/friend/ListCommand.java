@@ -24,7 +24,7 @@ class ListCommand extends AbstractCitizenCommand {
 
     public ListCommand() {
         super(
-                Metropolis.ID + ".commands.town.friend.list",
+                Metropolis.ID + ".commands.town.friend.list.base",
                 Text.of()
         );
     }
@@ -33,15 +33,15 @@ class ListCommand extends AbstractCitizenCommand {
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
         final UserStorageService uss = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
 
-        Set<Text> friends = cd.friends().get().stream()
+        final Set<Text> friends = cd.friends().get().stream()
                 .map(uuid -> uss.get(uuid)
-                        .map(NameUtil::getDisplayName)
+                        .map(user -> user.isOnline() ? Text.of(TextColors.GREEN, NameUtil.getDisplayName(user)) : Text.of(TextColors.GRAY, NameUtil.getDisplayName(user)))
                         .orElse(Text.of()))
                 .collect(Collectors.toSet());
 
         PaginationList.builder()
                 .title(Text.of(TextColors.GOLD, "[", TextColors.YELLOW, "Friends", TextColors.GOLD, "]"))
-                .contents(Text.of(TextColors.AQUA, Text.joinWith(Text.of(","), friends)))
+                .contents(Text.joinWith(Text.of(","), friends))
                 .padding(Text.of(TextColors.GOLD, "-"))
                 .sendTo(source);
 

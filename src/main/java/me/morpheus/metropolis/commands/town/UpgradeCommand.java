@@ -27,10 +27,12 @@ class UpgradeCommand extends AbstractCitizenCommand {
     UpgradeCommand() {
         super(
                 GenericArguments.optional(
-                        GenericArguments.onlyOne(MPGenericArguments.catalog(Upgrade.class, Text.of("upgrade")))
+                        MPGenericArguments.exactlyOne(
+                                MPGenericArguments.guardedCatalog(Upgrade.class, upgrade -> Metropolis.ID + ".commands.town.upgrade." + upgrade.getId(), Text.of("upgrade"))
+                        )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.upgrade",
+                Metropolis.ID + ".commands.town.upgrade.base",
                 Text.of()
         );
     }

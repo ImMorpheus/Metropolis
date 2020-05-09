@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 
 class ListCommand extends AbstractMPCommand {
 
-    public ListCommand() {
+    ListCommand() {
         super(
-                Metropolis.ID + ".commands.town.list",
+                Metropolis.ID + ".commands.town.list.base",
                 Text.of()
         );
     }

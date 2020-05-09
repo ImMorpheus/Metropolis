@@ -3,6 +3,7 @@ package me.morpheus.metropolis.commands.town;
 import com.flowpowered.math.vector.Vector3i;
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
+import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.GlobalConfig;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
@@ -17,7 +18,6 @@ import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.args.parsing.InputTokenizer;
@@ -29,6 +29,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
+import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.util.Optional;
 
@@ -37,13 +38,12 @@ class ClaimCommand extends AbstractCitizenCommand {
     ClaimCommand() {
         super(
                 GenericArguments.optional(
-                        GenericArguments.seq(
-                                MPGenericArguments.catalog(PlotType.class, Text.of("type")),
-                                GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)
+                        MPGenericArguments.exactlyOne(
+                                MPGenericArguments.guardedCatalog(PlotType.class, pt -> Metropolis.ID + ".commands.town.claim." + pt.getId(), Text.of("type"))
                         )
                 ),
-                InputTokenizer.quotedStrings(false),
-                Metropolis.ID + ".commands.town.claim",
+                MinimalInputTokenizer.INSTANCE,
+                Metropolis.ID + ".commands.town.claim.base",
                 Text.of()
         );
     }
@@ -51,7 +51,6 @@ class ClaimCommand extends AbstractCitizenCommand {
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
         final PlotType type = context.<PlotType>getOne("type").orElse(PlotTypes.PLOT);
-        final Text name = context.<Text>getOne("name").orElse(null);
 
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
         final Optional<Plot> plotOpt = ps.get(source.getLocation());
@@ -85,7 +84,7 @@ class ClaimCommand extends AbstractCitizenCommand {
             }
         }
 
-        final boolean claimed = t.claim(source.getLocation(), type, name);
+        final boolean claimed = t.claim(source.getLocation(), type);
         if (!claimed) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Error while claiming"));
             return CommandResult.empty();

@@ -28,7 +28,7 @@ class ListCommand extends AbstractHomeTownCommand {
 
     public ListCommand() {
         super(
-                Metropolis.ID + ".commands.town.plot.perm.list",
+                Metropolis.ID + ".commands.town.plot.perm.list.base",
                 Text.of()
         );
     }

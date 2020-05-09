@@ -26,7 +26,7 @@ class AddCommand extends AbstractCitizenCommand {
         super(
                 GenericArguments.user(Text.of("friends")),
                 InputTokenizer.spaceSplitString(),
-                Metropolis.ID + ".commands.town.friend.add",
+                Metropolis.ID + ".commands.town.friend.add.base",
                 Text.of()
         );
     }
@@ -35,12 +35,11 @@ class AddCommand extends AbstractCitizenCommand {
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
         final Collection<User> users = context.getAll("friends");
 
-        Set<UUID> friends = cd.friends().get();
         for (User user : users) {
-            friends.add(user.getUniqueId());
+            cd.friends().add(user.getUniqueId());
         }
 
-        source.offer(CitizenKeys.FRIENDS, friends);
+        source.offer(cd);
 
         return CommandResult.success();
     }

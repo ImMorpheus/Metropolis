@@ -20,9 +20,9 @@ import java.util.Optional;
 
 class UnclaimCommand extends AbstractHomeTownCommand {
 
-    public UnclaimCommand() {
+    UnclaimCommand() {
         super(
-                Metropolis.ID + ".commands.town.unclaim",
+                Metropolis.ID + ".commands.town.unclaim.base",
                 Text.of()
         );
     }

@@ -4,11 +4,13 @@ import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.text.Text;
 
+import java.util.function.Function;
+
 public final class MPGenericArguments {
 
     private MPGenericArguments() {}
 
-    public static CommandElement player(Text key) {
+    public static CommandElement visiblePlayer(Text key) {
         return new VisiblePlayerCommandElement(key);
     }
 
@@ -22,6 +24,18 @@ public final class MPGenericArguments {
 
     public static <T extends CatalogType> CommandElement catalog(Class<T> type, Text key) {
         return new CatalogCommandElement<>(type, key);
+    }
+
+    public static <T extends CatalogType> CommandElement guardedCatalog(Class<T> type, Function<T, String> hasPermission, Text key) {
+        return new CatalogPermissionCommandElement<>(type, hasPermission, key);
+    }
+
+    public static CommandElement optionalSeq(CommandElement... element) {
+        return new OptionalSequenceCommandElement(element);
+    }
+
+    public static CommandElement exactlyOne(CommandElement element) {
+        return new ExactlyOneCommandElement(element);
     }
 
     public static CommandElement empty() {

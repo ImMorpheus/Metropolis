@@ -16,6 +16,7 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
@@ -33,9 +34,9 @@ class PricesCommand extends AbstractMPCommand {
 
     PricesCommand() {
         super(
-                MPGenericArguments.townOrHomeTown(Text.of("townOrHomeTown")),
+                GenericArguments.optional(MPGenericArguments.exactlyOne(MPGenericArguments.town(Text.of("town")))),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.prices",
+                Metropolis.ID + ".commands.town.prices.base",
                 Text.of()
         );
     }
@@ -50,7 +51,7 @@ class PricesCommand extends AbstractMPCommand {
         }
 
         final EconomyCategory economy = cs.getGlobal().getEconomyCategory();
-        final TownType type = context.<Town>getOne("townOrHomeTown")
+        final TownType type = context.<Town>getOne("town")
                 .map(Town::getType)
                 .orElse(TownTypes.SETTLEMENT);
 

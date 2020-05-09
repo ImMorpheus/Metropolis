@@ -28,11 +28,11 @@ class SetCommand extends AbstractCitizenCommand {
     SetCommand() {
         super(
                 GenericArguments.seq(
-                        GenericArguments.onlyOne(MPGenericArguments.catalog(Rank.class, Text.of("rank"))),
+                        MPGenericArguments.exactlyOne(MPGenericArguments.catalog(Rank.class, Text.of("rank"))),
                         MPGenericArguments.citizen(Text.of("citizens"))
                 ),
                 InputTokenizer.quotedStrings(false),
-                Metropolis.ID + ".commands.town.rank.set",
+                Metropolis.ID + ".commands.town.rank.set.base",
                 Text.of()
         );
     }

@@ -2,6 +2,7 @@ package me.morpheus.metropolis.commands.town;
 
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractPlayerCommand;
+import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.GlobalConfig;
@@ -37,9 +38,9 @@ class NewCommand extends AbstractPlayerCommand {
 
     NewCommand() {
         super(
-                GenericArguments.onlyOne(GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)),
+                GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.new",
+                Metropolis.ID + ".commands.town.new.base",
                 Text.of()
         );
     }
@@ -97,7 +98,7 @@ class NewCommand extends AbstractPlayerCommand {
 
         final Town t = tOpt.get();
 
-        final boolean claimed = t.claim(source.getLocation(), PlotTypes.HOMEBLOCK, null);
+        final boolean claimed = t.claim(source.getLocation(), PlotTypes.HOMEBLOCK);
         if (!claimed) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Unable to claim homeblock"));
             t.disband();

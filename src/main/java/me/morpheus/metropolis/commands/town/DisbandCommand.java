@@ -20,9 +20,9 @@ import java.util.Optional;
 
 class DisbandCommand extends AbstractCitizenCommand {
 
-    public DisbandCommand() {
+    DisbandCommand() {
         super(
-                Metropolis.ID + ".commands.town.disband",
+                Metropolis.ID + ".commands.town.disband.base",
                 Text.of()
         );
     }

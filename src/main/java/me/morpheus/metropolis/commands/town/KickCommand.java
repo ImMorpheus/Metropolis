@@ -26,7 +26,7 @@ class KickCommand extends AbstractCitizenCommand {
         super(
                 MPGenericArguments.citizen(Text.of("citizens")),
                 InputTokenizer.spaceSplitString(),
-                Metropolis.ID + ".commands.town.kick",
+                Metropolis.ID + ".commands.town.kick.base",
                 Text.of()
         );
     }

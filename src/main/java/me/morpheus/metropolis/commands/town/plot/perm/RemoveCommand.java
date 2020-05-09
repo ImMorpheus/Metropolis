@@ -21,9 +21,9 @@ class RemoveCommand extends AbstractHomeTownCommand {
 
     RemoveCommand() {
         super(
-                GenericArguments.onlyOne(MPGenericArguments.catalog(Flag.class, Text.of("flag"))),
+                MPGenericArguments.exactlyOne(MPGenericArguments.catalog(Flag.class, Text.of("flag"))),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.plot.perm.remove",
+                Metropolis.ID + ".commands.town.plot.perm.remove.base",
                 Text.of()
         );
     }
