@@ -90,10 +90,11 @@ public final class InternalChangeBlockHandler {
             return;
         }
 
-//        if (event.getCause().getContext().asMap().isEmpty() && event.getCause().all().size() == 1
-//                && root instanceof FallingBlock) { //TODO Sponge ? Wtf ?
-//            return;
-//        }
+        // snow and block random tick
+        if (event.getCause().getContext().asMap().isEmpty() && event.getCause().all().size() == 1
+                && root instanceof LocatableBlock) { //TODO Sponge ? Wtf ?
+            return;
+        }
 
         if (event.getTransactions().stream().anyMatch(t -> this.ps.get(t.getOriginal().getLocation().get()).isPresent())) {
             ChangeBlockTownEvent.Break townEvent = new MPChangeBlockTownEventBreak(event.getCause(), event.getTransactions());
