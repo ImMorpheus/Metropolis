@@ -96,6 +96,13 @@ public final class InternalChangeBlockHandler {
             return;
         }
 
+        // dynamicliquid random tick
+        if (event.getCause().getContext().containsKey(EventContextKeys.LIQUID_BREAK)
+                && event.getCause().getContext().asMap().size() == 1 && event.getCause().all().size() == 1
+                && root instanceof LocatableBlock) {
+            return;
+        }
+
         if (event.getTransactions().stream().anyMatch(t -> this.ps.get(t.getOriginal().getLocation().get()).isPresent())) {
             ChangeBlockTownEvent.Break townEvent = new MPChangeBlockTownEventBreak(event.getCause(), event.getTransactions());
             if (Sponge.getEventManager().post(townEvent)) {
