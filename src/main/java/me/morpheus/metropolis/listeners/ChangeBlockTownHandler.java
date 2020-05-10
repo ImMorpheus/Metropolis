@@ -74,7 +74,7 @@ public final class ChangeBlockTownHandler {
         );
         if (notAllowed) {
             event.setCancelled(true);
-            if (source != null) {
+            if (source == root) {
                 source.getPlayer().ifPresent(EventUtil::sendNoPermissionMessage);
             }
         }
@@ -103,7 +103,7 @@ public final class ChangeBlockTownHandler {
         );
         if (notAllowed) {
             event.setCancelled(true);
-            if (source != null) {
+            if (source == root) {
                 source.getPlayer().ifPresent(EventUtil::sendNoPermissionMessage);
             }
         }
