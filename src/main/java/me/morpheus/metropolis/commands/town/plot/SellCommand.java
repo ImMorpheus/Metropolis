@@ -24,7 +24,7 @@ class SellCommand extends AbstractHomeTownCommand {
 
     SellCommand() {
         super(
-                MPGenericArguments.exactlyOne(GenericArguments.doubleNum(Text.of("price"))),
+                GenericArguments.doubleNum(Text.of("price")),
                 MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.plot.sell.base",
                 Text.of()

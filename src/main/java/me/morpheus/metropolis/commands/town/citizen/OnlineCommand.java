@@ -39,7 +39,7 @@ class OnlineCommand extends AbstractMPCommand {
         super(
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
-                                MPGenericArguments.exactlyOne(MPGenericArguments.town(Text.of("town"))),
+                                MPGenericArguments.town(Text.of("town")),
                                 Metropolis.ID + ".commands.town.citizen.online.other"
                         )
                 ),

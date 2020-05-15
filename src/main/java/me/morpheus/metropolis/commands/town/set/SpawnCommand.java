@@ -22,7 +22,7 @@ import java.util.Optional;
 
 class SpawnCommand extends AbstractHomeTownCommand {
 
-    public SpawnCommand() {
+    SpawnCommand() {
         super(
                 Metropolis.ID + ".commands.town.set.spawn.base",
                 Text.of()

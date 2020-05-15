@@ -24,7 +24,7 @@ import java.util.Optional;
 
 class BuyCommand extends AbstractHomeTownCommand {
 
-    public BuyCommand() {
+    BuyCommand() {
         super(
                 Metropolis.ID + ".commands.town.plot.buy.base",
                 Text.of()

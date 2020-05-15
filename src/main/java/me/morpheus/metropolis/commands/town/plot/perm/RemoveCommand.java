@@ -17,11 +17,13 @@ import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
+import java.util.Collection;
+
 class RemoveCommand extends AbstractHomeTownCommand {
 
     RemoveCommand() {
         super(
-                MPGenericArguments.exactlyOne(MPGenericArguments.catalog(Flag.class, Text.of("flag"))),
+                MPGenericArguments.catalog(Flag.class, Text.of("flag")),
                 MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.plot.perm.remove.base",
                 Text.of()
@@ -30,9 +32,11 @@ class RemoveCommand extends AbstractHomeTownCommand {
 
     @Override
     protected CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, Plot plot) throws CommandException {
-        final Flag flag = context.requireOne("flag");
+        final Collection<Flag> flags = context.getAll("flag");
 
-        plot.removePermission(flag);
+        for (Flag flag : flags) {
+            plot.removePermission(flag);
+        }
 
         return CommandResult.success();
     }

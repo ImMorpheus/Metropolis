@@ -27,9 +27,7 @@ class DescriptionCommand extends AbstractCitizenCommand {
 
     DescriptionCommand() {
         super(
-                MPGenericArguments.exactlyOne(
-                        GenericArguments.text(Text.of("description"), TextSerializers.FORMATTING_CODE, false)
-                ),
+                GenericArguments.text(Text.of("description"), TextSerializers.FORMATTING_CODE, false),
                 MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.set.description.base",
                 Text.of()

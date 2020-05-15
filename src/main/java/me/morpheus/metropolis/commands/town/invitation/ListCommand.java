@@ -23,7 +23,7 @@ import java.util.Optional;
 
 class ListCommand extends AbstractPlayerCommand {
 
-    public ListCommand() {
+    ListCommand() {
         super(
                 Metropolis.ID + ".commands.town.invitation.list.base",
                 Text.of()

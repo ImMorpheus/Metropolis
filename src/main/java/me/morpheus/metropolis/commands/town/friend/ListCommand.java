@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 class ListCommand extends AbstractCitizenCommand {
 
-    public ListCommand() {
+    ListCommand() {
         super(
                 Metropolis.ID + ".commands.town.friend.list.base",
                 Text.of()

@@ -7,6 +7,9 @@ import me.morpheus.metropolis.api.data.citizen.CitizenKeys;
 import me.morpheus.metropolis.api.data.town.TownKeys;
 import me.morpheus.metropolis.api.flag.Flag;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.DataView;
@@ -18,6 +21,7 @@ import org.spongepowered.api.data.persistence.AbstractDataBuilder;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -37,6 +41,9 @@ public final class Hacks {
     private static final Method SERIALIZE;
     public static final DataQuery DATA_MANIPULATORS;
     private static final Field REQUIRED_CLASS;
+    private static final Constructor<? extends InputTokenizer> CTOR;
+    public static final Class<? extends CommandElement> ONLY_ONE = GenericArguments.onlyOne(GenericArguments.none()).getClass();
+    public static final Class<? extends CommandElement> OPTIONAL = GenericArguments.optional(GenericArguments.none()).getClass();
 
     static {
         try {
@@ -46,6 +53,8 @@ public final class Hacks {
             SERIALIZE = datautil.getMethod("getSerializedManipulatorList", Iterable.class);
             REQUIRED_CLASS = AbstractDataBuilder.class.getDeclaredField("requiredClass");
             REQUIRED_CLASS.setAccessible(true);
+            CTOR = InputTokenizer.quotedStrings(false).getClass().getDeclaredConstructor(boolean.class, boolean.class, boolean.class);
+            CTOR.setAccessible(true);
         } catch (NoSuchMethodException | ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException("REPORT THIS", e);
         }
@@ -134,5 +143,12 @@ public final class Hacks {
         return friends;
     }
 
+    public static InputTokenizer quotedStrings(boolean handleQuotedStrings, boolean forceLenient, boolean trimTrailingSpace) {
+        try {
+            return CTOR.newInstance(handleQuotedStrings, forceLenient, trimTrailingSpace);
+        } catch (Exception e) {
+            throw new RuntimeException("REPORT THIS", e);
+        }
+    }
     private Hacks() {}
 }

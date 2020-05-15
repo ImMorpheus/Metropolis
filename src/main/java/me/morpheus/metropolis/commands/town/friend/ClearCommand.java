@@ -16,7 +16,7 @@ import java.util.Optional;
 
 class ClearCommand extends AbstractCitizenCommand {
 
-    public ClearCommand() {
+    ClearCommand() {
         super(
                 Metropolis.ID + ".commands.town.friend.clear.base",
                 Text.of()

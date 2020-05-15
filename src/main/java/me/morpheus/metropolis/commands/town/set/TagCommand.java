@@ -27,7 +27,7 @@ class TagCommand extends AbstractCitizenCommand {
 
     TagCommand() {
         super(
-                MPGenericArguments.exactlyOne(GenericArguments.text(Text.of("tag"), TextSerializers.FORMATTING_CODE, false)),
+                GenericArguments.text(Text.of("tag"), TextSerializers.FORMATTING_CODE, false),
                 MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.set.tag.base",
                 Text.of()

@@ -16,7 +16,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 class TakeoverCommand extends AbstractCitizenCommand {
 
-    public TakeoverCommand() {
+    TakeoverCommand() {
         super(
                 Metropolis.ID + ".commands.admin.town.takeover",
                 Text.of()

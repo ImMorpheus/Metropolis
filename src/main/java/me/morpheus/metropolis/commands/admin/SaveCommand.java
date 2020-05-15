@@ -21,7 +21,7 @@ import java.util.Optional;
 
 class SaveCommand extends AbstractMPCommand {
 
-    public SaveCommand() {
+    SaveCommand() {
         super(
                 Metropolis.ID + ".commands.admin.save",
                 Text.of()

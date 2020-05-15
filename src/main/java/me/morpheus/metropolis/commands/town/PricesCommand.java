@@ -34,7 +34,9 @@ class PricesCommand extends AbstractMPCommand {
 
     PricesCommand() {
         super(
-                GenericArguments.optional(MPGenericArguments.exactlyOne(MPGenericArguments.town(Text.of("town")))),
+                GenericArguments.optional(
+                        MPGenericArguments.town(Text.of("town"))
+                ),
                 MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.prices.base",
                 Text.of()

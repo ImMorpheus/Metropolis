@@ -11,9 +11,7 @@ import me.morpheus.metropolis.util.NameUtil;
 import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
@@ -27,7 +25,7 @@ class SetCommand extends AbstractCitizenCommand {
 
     SetCommand() {
         super(
-                GenericArguments.seq(
+                MPGenericArguments.orderedSeq(
                         MPGenericArguments.exactlyOne(MPGenericArguments.catalog(Rank.class, Text.of("rank"))),
                         MPGenericArguments.citizen(Text.of("citizens"))
                 ),
@@ -39,8 +37,8 @@ class SetCommand extends AbstractCitizenCommand {
 
     @Override
     protected CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
-        final Collection<User> citizens = context.getAll("citizens");
         final Rank rank = context.requireOne("rank");
+        final Collection<User> citizens = context.getAll("citizens");
 
         final Text sourceName = NameUtil.getDisplayName(source);
         for (User user : citizens) {

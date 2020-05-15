@@ -27,7 +27,7 @@ class MotdCommand extends AbstractCitizenCommand {
 
     MotdCommand() {
         super(
-                MPGenericArguments.exactlyOne(GenericArguments.text(Text.of("motd"), TextSerializers.FORMATTING_CODE, false)),
+                GenericArguments.text(Text.of("motd"), TextSerializers.FORMATTING_CODE, false),
                 MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.set.motd.base",
                 Text.of()

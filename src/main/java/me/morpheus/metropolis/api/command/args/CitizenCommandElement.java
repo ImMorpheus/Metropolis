@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CitizenCommandElement extends CommandElement {
+class CitizenCommandElement extends CommandElement {
 
     CitizenCommandElement(@Nullable Text key) {
         super(key);
@@ -37,6 +37,9 @@ public class CitizenCommandElement extends CommandElement {
 
         while (args.hasNext()) {
             final String next = args.next();
+            if (next.isEmpty() || next.length() > 16) {
+                throw args.createError(Text.of("Invalid citizen!"));
+            }
 
             final User u = Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(next)
                     .filter(p -> p.get(CitizenData.class).filter(cd -> Sponge.getServiceManager().provideUnchecked(TownService.class).exist(cd.town().get().intValue())).isPresent())

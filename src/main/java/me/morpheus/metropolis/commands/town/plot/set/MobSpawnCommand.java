@@ -20,7 +20,7 @@ class MobSpawnCommand extends AbstractHomeTownCommand {
 
     MobSpawnCommand() {
         super(
-                MPGenericArguments.exactlyOne(GenericArguments.bool(Text.of("value"))),
+                GenericArguments.bool(Text.of("value")),
                 MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.plot.set.mobspawn.base",
                 Text.of("Turn on/off mobspawning in the plot.")

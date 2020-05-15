@@ -24,7 +24,7 @@ class TaxCommand extends AbstractCitizenCommand {
 
     TaxCommand() {
         super(
-                MPGenericArguments.exactlyOne(GenericArguments.doubleNum(Text.of("tax"))),
+                GenericArguments.doubleNum(Text.of("tax")),
                 MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.set.tax.base",
                 Text.of()

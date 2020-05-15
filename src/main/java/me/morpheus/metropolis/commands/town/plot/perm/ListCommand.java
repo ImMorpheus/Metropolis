@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 class ListCommand extends AbstractHomeTownCommand {
 
-    public ListCommand() {
+    ListCommand() {
         super(
                 Metropolis.ID + ".commands.town.plot.perm.list.base",
                 Text.of()

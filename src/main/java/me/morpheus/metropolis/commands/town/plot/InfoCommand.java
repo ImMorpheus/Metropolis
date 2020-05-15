@@ -24,7 +24,7 @@ import java.util.Optional;
 
 class InfoCommand extends AbstractPlayerCommand {
 
-    public InfoCommand() {
+    InfoCommand() {
         super(
                 Metropolis.ID + ".commands.town.plot.info.base",
                 Text.of()

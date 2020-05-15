@@ -10,6 +10,8 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.text.Text;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,10 +31,17 @@ class CatalogCommandElement<T extends CatalogType> extends CommandElement {
             return null;
         }
 
-        final String id = args.next();
+        final List<T> types = new ArrayList<>(args.size());
 
-        return Sponge.getRegistry().getType(this.type, id)
-                .orElseThrow(() -> args.createError(Text.of("Invalid ", this.type.getSimpleName(), "!")));
+        while (args.hasNext()) {
+            final String id = args.next();
+
+            final T catalog = Sponge.getRegistry().getType(this.type, id)
+                    .orElseThrow(() -> args.createError(Text.of("Invalid ", this.type.getSimpleName(), "!")));
+
+            types.add(catalog);
+        }
+        return Collections.unmodifiableList(types);
     }
 
     @Override

@@ -40,7 +40,9 @@ class SpawnCommand extends AbstractPlayerCommand {
 
     SpawnCommand() {
         super(
-                GenericArguments.optional(MPGenericArguments.exactlyOne(MPGenericArguments.town(Text.of("town")))),
+                GenericArguments.optional(
+                        MPGenericArguments.town(Text.of("town"))
+                ),
                 MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.spawn",
                 Text.of()

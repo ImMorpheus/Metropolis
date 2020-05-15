@@ -17,7 +17,7 @@ import java.util.Optional;
 
 class DisownCommand extends AbstractPlayerCommand {
 
-    public DisownCommand() {
+    DisownCommand() {
         super(
                 Metropolis.ID + ".commands.admin.plot.disown",
                 Text.of()

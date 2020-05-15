@@ -19,7 +19,7 @@ import java.util.Optional;
 
 class LeaveCommand extends AbstractCitizenCommand {
 
-    public LeaveCommand() {
+    LeaveCommand() {
         super(
                 Metropolis.ID + ".commands.admin.town.leave",
                 Text.of()

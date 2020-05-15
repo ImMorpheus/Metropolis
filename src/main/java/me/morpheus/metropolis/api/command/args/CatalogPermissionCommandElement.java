@@ -10,6 +10,8 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.text.Text;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -32,15 +34,21 @@ class CatalogPermissionCommandElement<T extends CatalogType> extends CommandElem
             return null;
         }
 
-        final String id = args.next();
+        final List<T> types = new ArrayList<>(args.size());
 
-        final T catalog = Sponge.getRegistry().getType(this.type, id)
-                .orElseThrow(() -> args.createError(Text.of("Invalid ", this.type.getSimpleName(), "!")));
-        final String perm = this.hasPermission.apply(catalog);
-        if (!perm.isEmpty() && !source.hasPermission(perm)) {
-            throw args.createError(Text.of("You do not have permission to use the ", catalog.getName(), " argument"));
+        while (args.hasNext()) {
+            final String id = args.next();
+
+            final T catalog = Sponge.getRegistry().getType(this.type, id)
+                    .orElseThrow(() -> args.createError(Text.of("Invalid ", this.type.getSimpleName(), "!")));
+            final String perm = this.hasPermission.apply(catalog);
+            if (!perm.isEmpty() && !source.hasPermission(perm)) {
+                throw args.createError(Text.of("You do not have permission to use the ", catalog.getName(), " argument"));
+            }
+
+            types.add(catalog);
         }
-        return catalog;
+        return Collections.unmodifiableList(types);
     }
 
     @Override

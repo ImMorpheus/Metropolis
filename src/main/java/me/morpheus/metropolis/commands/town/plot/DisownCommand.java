@@ -17,7 +17,7 @@ import java.util.Optional;
 
 class DisownCommand extends AbstractHomeTownCommand {
 
-    public DisownCommand() {
+    DisownCommand() {
         super(
                 Metropolis.ID + ".commands.town.plot.disown.base",
                 Text.of()

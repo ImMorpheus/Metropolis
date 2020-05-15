@@ -27,7 +27,7 @@ class NameCommand extends AbstractCitizenCommand {
 
     NameCommand() {
         super(
-                MPGenericArguments.exactlyOne(GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)),
+                GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false),
                 MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.set.name.base",
                 Text.of()

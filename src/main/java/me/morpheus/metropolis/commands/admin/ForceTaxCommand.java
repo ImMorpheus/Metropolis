@@ -13,7 +13,7 @@ import org.spongepowered.api.text.Text;
 
 class ForceTaxCommand extends AbstractMPCommand {
 
-    public ForceTaxCommand() {
+    ForceTaxCommand() {
         super(
                 Metropolis.ID + ".commands.admin.forcetax",
                 Text.of()

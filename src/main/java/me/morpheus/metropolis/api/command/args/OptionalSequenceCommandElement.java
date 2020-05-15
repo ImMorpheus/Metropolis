@@ -10,7 +10,7 @@ import org.spongepowered.api.text.Text;
 
 import java.util.List;
 
-public class OptionalSequenceCommandElement extends CommandElement {
+class OptionalSequenceCommandElement extends CommandElement {
 
     private final CommandElement seq;
 

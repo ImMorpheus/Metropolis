@@ -17,6 +17,7 @@ import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
+import java.util.Collection;
 import java.util.Optional;
 
 class SetCommand extends AbstractHomeTownCommand {
@@ -24,8 +25,8 @@ class SetCommand extends AbstractHomeTownCommand {
     SetCommand() {
         super(
                 GenericArguments.seq(
-                        MPGenericArguments.exactlyOne(MPGenericArguments.catalog(Flag.class, Text.of("flag"))),
-                        MPGenericArguments.exactlyOne(MPGenericArguments.catalog(Rank.class, Text.of("rank")))
+                        MPGenericArguments.exactlyOne(MPGenericArguments.catalog(Rank.class, Text.of("rank"))),
+                        MPGenericArguments.catalog(Flag.class, Text.of("flag"))
                 ),
                 InputTokenizer.spaceSplitString(),
                 Metropolis.ID + ".commands.town.plot.perm.set.base",
@@ -35,10 +36,12 @@ class SetCommand extends AbstractHomeTownCommand {
 
     @Override
     protected CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, Plot plot) throws CommandException {
-        final Flag flag = context.requireOne("flag");
         final Rank rank = context.requireOne("rank");
+        final Collection<Flag> flags = context.getAll("flag");
 
-        plot.addPermission(flag, rank.getPermission(flag));
+        for (Flag flag : flags) {
+            plot.addPermission(flag, rank.getPermission(flag));
+        }
 
         return CommandResult.success();
     }
