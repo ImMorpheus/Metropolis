@@ -30,18 +30,10 @@ class CatalogCommandElement<T extends CatalogType> extends CommandElement {
         if (!args.hasNext()) {
             return null;
         }
+        final String id = args.next();
 
-        final List<T> types = new ArrayList<>(args.size());
-
-        while (args.hasNext()) {
-            final String id = args.next();
-
-            final T catalog = Sponge.getRegistry().getType(this.type, id)
-                    .orElseThrow(() -> args.createError(Text.of("Invalid ", this.type.getSimpleName(), "!")));
-
-            types.add(catalog);
-        }
-        return Collections.unmodifiableList(types);
+        return Sponge.getRegistry().getType(this.type, id)
+                .orElseThrow(() -> args.createError(Text.of("Invalid ", this.type.getSimpleName(), "!")));
     }
 
     @Override

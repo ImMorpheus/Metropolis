@@ -33,22 +33,15 @@ class CatalogPermissionCommandElement<T extends CatalogType> extends CommandElem
         if (!args.hasNext()) {
             return null;
         }
+        final String id = args.next();
 
-        final List<T> types = new ArrayList<>(args.size());
-
-        while (args.hasNext()) {
-            final String id = args.next();
-
-            final T catalog = Sponge.getRegistry().getType(this.type, id)
-                    .orElseThrow(() -> args.createError(Text.of("Invalid ", this.type.getSimpleName(), "!")));
-            final String perm = this.hasPermission.apply(catalog);
-            if (!perm.isEmpty() && !source.hasPermission(perm)) {
-                throw args.createError(Text.of("You do not have permission to use the ", catalog.getName(), " argument"));
-            }
-
-            types.add(catalog);
+        final T catalog = Sponge.getRegistry().getType(this.type, id)
+                .orElseThrow(() -> args.createError(Text.of("Invalid ", this.type.getSimpleName(), "!")));
+        final String perm = this.hasPermission.apply(catalog);
+        if (!perm.isEmpty() && !source.hasPermission(perm)) {
+            throw args.createError(Text.of("You do not have permission to use the ", catalog.getName(), " argument"));
         }
-        return Collections.unmodifiableList(types);
+        return catalog;
     }
 
     @Override
