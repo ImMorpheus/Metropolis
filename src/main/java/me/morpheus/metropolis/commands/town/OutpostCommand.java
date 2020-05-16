@@ -38,7 +38,10 @@ class OutpostCommand extends AbstractCitizenCommand {
     OutpostCommand() {
         super(
                 GenericArguments.optional(
-                        GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)
+                        GenericArguments.requiringPermission(
+                                GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false),
+                                Metropolis.ID + ".commands.town.outpost.teleport"
+                        )
                 ),
                 MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.outpost.base",

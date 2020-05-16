@@ -35,7 +35,10 @@ class PricesCommand extends AbstractMPCommand {
     PricesCommand() {
         super(
                 GenericArguments.optional(
-                        MPGenericArguments.town(Text.of("town"))
+                        GenericArguments.requiringPermission(
+                                MPGenericArguments.town(Text.of("town")),
+                                Metropolis.ID + ".commands.town.prices.other"
+                        )
                 ),
                 MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.town.prices.base",
