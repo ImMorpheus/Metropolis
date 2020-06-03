@@ -40,11 +40,11 @@ class OnlineCommand extends AbstractMPCommand {
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
                                 MPGenericArguments.town(Text.of("town")),
-                                Metropolis.ID + ".commands.town.citizen.online.other"
+                                CitizenDispatcher.PERM + ".online.other"
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.citizen.online.base",
+                CitizenDispatcher.PERM + ".online.base",
                 Text.of()
         );
     }
@@ -87,7 +87,7 @@ class OnlineCommand extends AbstractMPCommand {
         }
 
         PaginationList.builder()
-                .title(Text.of(TextColors.GOLD, "[", TextColors.YELLOW, "(Online citizens)", TextColors.GOLD, "]"))
+                .title(Text.of(TextColors.GOLD, "[", TextColors.YELLOW, "Online citizens", TextColors.GOLD, "]"))
                 .contents(list)
                 .padding(Text.of(TextColors.GOLD, "-"))
                 .sendTo(source);

@@ -24,7 +24,7 @@ class SpawnCommand extends AbstractHomeTownCommand {
 
     SpawnCommand() {
         super(
-                Metropolis.ID + ".commands.town.set.spawn.base",
+                SetDispatcher.PERM + ".spawn.base",
                 Text.of()
         );
     }

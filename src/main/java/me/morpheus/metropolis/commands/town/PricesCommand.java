@@ -1,6 +1,5 @@
 package me.morpheus.metropolis.commands.town;
 
-import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractMPCommand;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
@@ -17,18 +16,13 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.action.HoverAction;
-import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 class PricesCommand extends AbstractMPCommand {
 
@@ -37,11 +31,11 @@ class PricesCommand extends AbstractMPCommand {
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
                                 MPGenericArguments.town(Text.of("town")),
-                                Metropolis.ID + ".commands.town.prices.other"
+                                TownDispatcher.PERM + ".prices.other"
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.prices.base",
+                TownDispatcher.PERM + ".prices.base",
                 Text.of()
         );
     }

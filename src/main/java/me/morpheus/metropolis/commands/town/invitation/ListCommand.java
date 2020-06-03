@@ -25,7 +25,7 @@ class ListCommand extends AbstractPlayerCommand {
 
     ListCommand() {
         super(
-                Metropolis.ID + ".commands.town.invitation.list.base",
+                InvitationDispatcher.PERM + ".list.base",
                 Text.of()
         );
     }

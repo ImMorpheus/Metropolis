@@ -19,7 +19,7 @@ class DisownCommand extends AbstractHomeTownCommand {
 
     DisownCommand() {
         super(
-                Metropolis.ID + ".commands.town.plot.disown.base",
+                PlotDispatcher.PERM + ".disown.base",
                 Text.of()
         );
     }

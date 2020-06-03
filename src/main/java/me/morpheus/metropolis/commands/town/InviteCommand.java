@@ -1,6 +1,5 @@
 package me.morpheus.metropolis.commands.town;
 
-import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.town.invitation.InvitationService;
@@ -25,7 +24,7 @@ class InviteCommand extends AbstractCitizenCommand {
         super(
                 MPGenericArguments.visiblePlayer(Text.of("players")),
                 InputTokenizer.spaceSplitString(),
-                Metropolis.ID + ".commands.town.invite.base",
+                TownDispatcher.PERM + ".invite.base",
                 Text.of()
         );
     }

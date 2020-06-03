@@ -1,6 +1,5 @@
 package me.morpheus.metropolis.commands.town;
 
-import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.town.Town;
@@ -9,7 +8,6 @@ import me.morpheus.metropolis.util.NameUtil;
 import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.living.player.Player;
@@ -18,7 +16,6 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Collection;
-import java.util.Optional;
 
 class KickCommand extends AbstractCitizenCommand {
 
@@ -26,7 +23,7 @@ class KickCommand extends AbstractCitizenCommand {
         super(
                 MPGenericArguments.citizen(Text.of("citizens")),
                 InputTokenizer.spaceSplitString(),
-                Metropolis.ID + ".commands.town.kick.base",
+                TownDispatcher.PERM + ".kick.base",
                 Text.of()
         );
     }

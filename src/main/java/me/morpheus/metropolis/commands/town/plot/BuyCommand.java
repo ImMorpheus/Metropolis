@@ -15,6 +15,7 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
+import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.service.economy.transaction.ResultType;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -26,7 +27,7 @@ class BuyCommand extends AbstractHomeTownCommand {
 
     BuyCommand() {
         super(
-                Metropolis.ID + ".commands.town.plot.buy.base",
+                PlotDispatcher.PERM + ".buy.base",
                 Text.of()
         );
     }
@@ -44,7 +45,7 @@ class BuyCommand extends AbstractHomeTownCommand {
         }
         final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
 
-        final Optional<Account> accOpt = es.getOrCreateAccount(source.getIdentifier());
+        final Optional<UniqueAccount> accOpt = es.getOrCreateAccount(source.getUniqueId());
         if (!accOpt.isPresent()) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Unable to retrieve player account"));
             return CommandResult.empty();

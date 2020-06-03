@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.commands.town.plot;
 
 import me.morpheus.metropolis.command.AbstractCommandDispatcher;
+import me.morpheus.metropolis.commands.town.TownDispatcher;
 import me.morpheus.metropolis.commands.town.plot.perm.PermDispatcher;
 import me.morpheus.metropolis.commands.town.plot.set.SetDispatcher;
 import org.spongepowered.api.command.CommandSource;
@@ -9,6 +10,8 @@ import org.spongepowered.api.text.Text;
 import java.util.Optional;
 
 public final class PlotDispatcher extends AbstractCommandDispatcher {
+
+    public static final String PERM = TownDispatcher.PERM + ".plot";
 
     @Override
     public void registerDefaults() {

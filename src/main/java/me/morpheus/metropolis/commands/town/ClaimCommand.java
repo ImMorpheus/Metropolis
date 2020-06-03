@@ -1,7 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
 import com.flowpowered.math.vector.Vector3i;
-import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.config.ConfigService;
@@ -20,16 +19,13 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.transaction.ResultType;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.serializer.TextSerializers;
 
-import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.util.Optional;
 
@@ -39,11 +35,11 @@ class ClaimCommand extends AbstractCitizenCommand {
         super(
                 GenericArguments.optional(
                         MPGenericArguments.exactlyOne(
-                                MPGenericArguments.guardedCatalog(PlotType.class, pt -> Metropolis.ID + ".commands.town.claim." + pt.getId(), Text.of("type"))
+                                MPGenericArguments.guardedCatalog(PlotType.class, pt -> TownDispatcher.PERM + ".claim." + pt.getId(), Text.of("type"))
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.claim.base",
+                TownDispatcher.PERM + ".claim.base",
                 Text.of()
         );
     }

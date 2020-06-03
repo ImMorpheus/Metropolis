@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.command.AbstractCommandDispatcher;
 import me.morpheus.metropolis.commands.town.citizen.CitizenDispatcher;
 import me.morpheus.metropolis.commands.town.friend.FriendDispatcher;
@@ -13,6 +14,8 @@ import org.spongepowered.api.text.Text;
 import java.util.Optional;
 
 public final class TownDispatcher extends AbstractCommandDispatcher {
+
+    public static final String PERM = Metropolis.ID + ".commands.town";
 
     @Override
     public void registerDefaults() {

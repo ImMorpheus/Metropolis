@@ -1,11 +1,7 @@
 package me.morpheus.metropolis.commands.town;
 
-import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
-import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
-import me.morpheus.metropolis.api.config.ConfigService;
-import me.morpheus.metropolis.api.config.GlobalConfig;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.util.EconomyUtil;
@@ -14,13 +10,12 @@ import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
+import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.service.economy.transaction.ResultType;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -34,7 +29,7 @@ class DepositCommand extends AbstractCitizenCommand {
         super(
                 GenericArguments.bigDecimal(Text.of("amount")),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.deposit.base",
+                TownDispatcher.PERM + ".deposit.base",
                 Text.of()
         );
     }
@@ -54,7 +49,7 @@ class DepositCommand extends AbstractCitizenCommand {
         }
         final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
 
-        final Optional<Account> accOpt = es.getOrCreateAccount(source.getIdentifier());
+        final Optional<UniqueAccount> accOpt = es.getOrCreateAccount(source.getUniqueId());
         if (!accOpt.isPresent()) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Unable to retrieve player account"));
             return CommandResult.empty();

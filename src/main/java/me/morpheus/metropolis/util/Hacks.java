@@ -42,8 +42,6 @@ public final class Hacks {
     public static final DataQuery DATA_MANIPULATORS;
     private static final Field REQUIRED_CLASS;
     private static final Constructor<? extends InputTokenizer> CTOR;
-    public static final Class<? extends CommandElement> ONLY_ONE = GenericArguments.onlyOne(GenericArguments.none()).getClass();
-    public static final Class<? extends CommandElement> OPTIONAL = GenericArguments.optional(GenericArguments.none()).getClass();
 
     static {
         try {
@@ -143,12 +141,5 @@ public final class Hacks {
         return friends;
     }
 
-    public static InputTokenizer quotedStrings(boolean handleQuotedStrings, boolean forceLenient, boolean trimTrailingSpace) {
-        try {
-            return CTOR.newInstance(handleQuotedStrings, forceLenient, trimTrailingSpace);
-        } catch (Exception e) {
-            throw new RuntimeException("REPORT THIS", e);
-        }
-    }
     private Hacks() {}
 }

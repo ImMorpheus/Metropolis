@@ -26,7 +26,7 @@ class SellCommand extends AbstractHomeTownCommand {
         super(
                 GenericArguments.doubleNum(Text.of("price")),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.plot.sell.base",
+                PlotDispatcher.PERM + ".sell.base",
                 Text.of()
         );
     }

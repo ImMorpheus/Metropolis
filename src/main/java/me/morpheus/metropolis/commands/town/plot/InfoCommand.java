@@ -26,7 +26,7 @@ class InfoCommand extends AbstractPlayerCommand {
 
     InfoCommand() {
         super(
-                Metropolis.ID + ".commands.town.plot.info.base",
+                PlotDispatcher.PERM + ".info.base",
                 Text.of()
         );
     }

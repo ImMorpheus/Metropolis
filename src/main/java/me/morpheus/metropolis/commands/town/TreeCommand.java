@@ -1,6 +1,5 @@
 package me.morpheus.metropolis.commands.town;
 
-import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractMPCommand;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
@@ -16,14 +15,13 @@ import org.spongepowered.api.text.format.TextColors;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 class TreeCommand extends AbstractMPCommand {
 
     TreeCommand() {
         super(
-                Metropolis.ID + ".commands.town.tree.base",
+                TownDispatcher.PERM + ".tree.base",
                 Text.of()
         );
     }

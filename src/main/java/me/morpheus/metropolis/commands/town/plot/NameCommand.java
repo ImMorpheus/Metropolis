@@ -27,7 +27,7 @@ class NameCommand extends AbstractHomeTownCommand {
         super(
                 GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.plot.name.base",
+                PlotDispatcher.PERM + ".name.base",
                 Text.of()
         );
     }

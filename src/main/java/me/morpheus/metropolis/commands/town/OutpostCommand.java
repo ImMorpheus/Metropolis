@@ -2,7 +2,6 @@ package me.morpheus.metropolis.commands.town;
 
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
-import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.town.outpost.OutpostData;
@@ -11,10 +10,8 @@ import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.CauseStackManager;
@@ -40,11 +37,11 @@ class OutpostCommand extends AbstractCitizenCommand {
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
                                 GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false),
-                                Metropolis.ID + ".commands.town.outpost.teleport"
+                                TownDispatcher.PERM + ".outpost.teleport"
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.outpost.base",
+                TownDispatcher.PERM + ".outpost.base",
                 Text.of()
         );
     }

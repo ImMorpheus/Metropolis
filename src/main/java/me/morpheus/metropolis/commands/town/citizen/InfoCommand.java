@@ -38,11 +38,11 @@ class InfoCommand extends AbstractMPCommand {
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
                                 MPGenericArguments.exactlyOne(MPGenericArguments.citizen(Text.of("citizen"))),
-                                Metropolis.ID + ".commands.town.citizen.info.other"
+                                CitizenDispatcher.PERM + ".info.other"
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.citizen.info.base",
+                CitizenDispatcher.PERM + ".info.base",
                 Text.of()
         );
     }

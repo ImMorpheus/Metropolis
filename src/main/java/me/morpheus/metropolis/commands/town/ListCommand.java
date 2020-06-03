@@ -1,6 +1,5 @@
 package me.morpheus.metropolis.commands.town;
 
-import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.town.TownService;
 import me.morpheus.metropolis.api.command.AbstractMPCommand;
@@ -14,14 +13,13 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 class ListCommand extends AbstractMPCommand {
 
     ListCommand() {
         super(
-                Metropolis.ID + ".commands.town.list.base",
+                TownDispatcher.PERM + ".list.base",
                 Text.of()
         );
     }

@@ -30,14 +30,6 @@ public final class MPGenericArguments {
         return new CatalogPermissionCommandElement<>(type, hasPermission, key);
     }
 
-    public static CommandElement orderedSeq(CommandElement... elements) {
-        return new OrderedSequenceCommandElement(elements);
-    }
-
-    public static CommandElement optionalSeq(CommandElement... elements) {
-        return new OptionalSequenceCommandElement(elements);
-    }
-
     public static CommandElement exactlyOne(CommandElement element) {
         return new ExactlyOneCommandElement(element);
     }

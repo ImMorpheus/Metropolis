@@ -69,6 +69,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.CauseStackManager;
 import org.spongepowered.api.profile.GameProfile;
+import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.transaction.ResultType;
@@ -319,7 +320,8 @@ public class MPTown implements Town {
         final Optional<Account> bOpt = getBank();
         if (bOpt.isPresent()) {
             final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
-            list.add(Text.of(TextColors.DARK_GREEN, "Balance: ", TextColors.GREEN, es.getDefaultCurrency().getSymbol(), bOpt.get().getBalance(es.getDefaultCurrency())));
+            final Currency def = es.getDefaultCurrency();
+            list.add(Text.of(TextColors.DARK_GREEN, "Balance: ", TextColors.GREEN, def.format(bOpt.get().getBalance(def))));
         }
         list.add(Text.of(TextColors.DARK_GREEN, "Citizens: ", TextColors.GREEN, "[", this.citizens, "/", this.type.getMaxCitizens(), "]"));
         final Text.Builder hoverBuilder = Text.builder();
