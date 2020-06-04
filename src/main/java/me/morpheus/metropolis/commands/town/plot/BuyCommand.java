@@ -13,6 +13,10 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.CauseStackManager;
+import org.spongepowered.api.event.cause.EventContextKeys;
+import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
@@ -50,17 +54,21 @@ class BuyCommand extends AbstractHomeTownCommand {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Unable to retrieve player account"));
             return CommandResult.empty();
         }
-        final ResultType result = EconomyUtil.transfer(accOpt.get(), bOpt.get(), es.getDefaultCurrency(), BigDecimal.valueOf(plot.getPrice()));
-        if (result == ResultType.ACCOUNT_NO_FUNDS) {
-            source.sendMessage(TextUtil.watermark(TextColors.RED, "Not enough money"));
-            return CommandResult.empty();
-        }
-        if (result != ResultType.SUCCESS) {
-            source.sendMessage(TextUtil.watermark(TextColors.RED, "Error while paying: ", result.name()));
-            return CommandResult.empty();
+
+        final BigDecimal amount = BigDecimal.valueOf(plot.getPrice());
+        final Currency currency = es.getDefaultCurrency();
+        try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+            frame.addContext(EventContextKeys.PLUGIN, plugin);
+            final ResultType result = accOpt.get().transfer(bOpt.get(), currency, amount, frame.getCurrentCause()).getResult();
+            if (result != ResultType.SUCCESS) {
+                final String error = EconomyUtil.getErrorMessage(result);
+                source.sendMessage(TextUtil.watermark(TextColors.RED, error));
+                return CommandResult.empty();
+            }
         }
         plot.setOwner(source.getUniqueId());
-        source.sendMessage(TextUtil.watermark(TextColors.AQUA, "You bought this plot for ", plot.getPrice()));
+        source.sendMessage(TextUtil.watermark(TextColors.AQUA, "You bought this plot for ", currency.format(amount)));
         plot.setPrice(0.0);
         plot.setForSale(false);
 

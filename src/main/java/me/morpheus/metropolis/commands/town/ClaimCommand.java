@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.commands.town;
 
 import com.flowpowered.math.vector.Vector3i;
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.config.ConfigService;
@@ -20,6 +21,9 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.CauseStackManager;
+import org.spongepowered.api.event.cause.EventContextKeys;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.transaction.ResultType;
@@ -68,15 +72,17 @@ class ClaimCommand extends AbstractCitizenCommand {
                 return CommandResult.empty();
             }
             final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
-            final double price = t.getType().getClaimPrice(type);
-            final ResultType result = EconomyUtil.withdraw(accOpt.get(), es.getDefaultCurrency(), BigDecimal.valueOf(price));
-            if (result == ResultType.ACCOUNT_NO_FUNDS) {
-                source.sendMessage(TextUtil.watermark(TextColors.RED, "Not enough money"));
-                return CommandResult.empty();
-            }
-            if (result != ResultType.SUCCESS) {
-                source.sendMessage(TextUtil.watermark(TextColors.RED, "Error while paying: ", result.name()));
-                return CommandResult.empty();
+
+            try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+                final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+                frame.addContext(EventContextKeys.PLUGIN, plugin);
+                final BigDecimal amount = BigDecimal.valueOf(t.getType().getClaimPrice(type));
+                final ResultType result = accOpt.get().withdraw(es.getDefaultCurrency(), amount, frame.getCurrentCause()).getResult();
+                if (result != ResultType.SUCCESS) {
+                    final String error = EconomyUtil.getErrorMessage(result);
+                    source.sendMessage(TextUtil.watermark(TextColors.RED, error));
+                    return CommandResult.empty();
+                }
             }
         }
 

@@ -83,14 +83,17 @@ class SpawnCommand extends AbstractPlayerCommand {
                 source.sendMessage(TextUtil.watermark(TextColors.RED, "Unable to retrieve player account"));
                 return CommandResult.empty();
             }
-            final ResultType result = EconomyUtil.withdraw(accOpt.get(), es.getDefaultCurrency(), BigDecimal.valueOf(t.getType().getSpawnPrice()));
-            if (result == ResultType.ACCOUNT_NO_FUNDS) {
-                source.sendMessage(TextUtil.watermark(TextColors.RED, "Not enough money"));
-                return CommandResult.empty();
-            }
-            if (result != ResultType.SUCCESS) {
-                source.sendMessage(TextUtil.watermark(TextColors.RED, "Error while paying: ", result.name()));
-                return CommandResult.empty();
+
+            try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+                final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+                frame.addContext(EventContextKeys.PLUGIN, plugin);
+                final BigDecimal amount = BigDecimal.valueOf(t.getType().getSpawnPrice());
+                final ResultType result = accOpt.get().withdraw(es.getDefaultCurrency(), amount, frame.getCurrentCause()).getResult();
+                if (result != ResultType.SUCCESS) {
+                    final String error = EconomyUtil.getErrorMessage(result);
+                    source.sendMessage(TextUtil.watermark(TextColors.RED, error));
+                    return CommandResult.empty();
+                }
             }
         }
         final Optional<Entity> vehicleOpt = source.getVehicle();

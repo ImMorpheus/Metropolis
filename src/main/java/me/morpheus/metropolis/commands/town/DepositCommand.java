@@ -1,6 +1,8 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
+import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.town.Town;
@@ -13,6 +15,10 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.CauseStackManager;
+import org.spongepowered.api.event.cause.EventContextKeys;
+import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
@@ -27,7 +33,7 @@ class DepositCommand extends AbstractCitizenCommand {
 
     DepositCommand() {
         super(
-                GenericArguments.bigDecimal(Text.of("amount")),
+                MPGenericArguments.positiveBigDecimal(Text.of("amount")),
                 MinimalInputTokenizer.INSTANCE,
                 TownDispatcher.PERM + ".deposit.base",
                 Text.of()
@@ -42,11 +48,6 @@ class DepositCommand extends AbstractCitizenCommand {
             return CommandResult.empty();
         }
 
-        final BigDecimal amount = context.requireOne("amount");
-        if (amount.compareTo(BigDecimal.ZERO) < 1) {
-            source.sendMessage(TextUtil.watermark(TextColors.RED, "Expected a positive amount, but input ", amount, " was not"));
-            return CommandResult.empty();
-        }
         final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
 
         final Optional<UniqueAccount> accOpt = es.getOrCreateAccount(source.getUniqueId());
@@ -54,18 +55,23 @@ class DepositCommand extends AbstractCitizenCommand {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Unable to retrieve player account"));
             return CommandResult.empty();
         }
-        final ResultType result = EconomyUtil.transfer(accOpt.get(), bOpt.get(), es.getDefaultCurrency(), amount);
-        if (result == ResultType.ACCOUNT_NO_FUNDS) {
-            source.sendMessage(TextUtil.watermark(TextColors.RED, "Not enough money"));
-            return CommandResult.empty();
-        }
-        if (result != ResultType.SUCCESS) {
-            source.sendMessage(TextUtil.watermark(TextColors.RED, "Error while paying: ", result.name()));
-            return CommandResult.empty();
+
+        final BigDecimal amount = context.requireOne("amount");
+        final Currency currency = es.getDefaultCurrency();
+
+        try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+            frame.addContext(EventContextKeys.PLUGIN, plugin);
+            final ResultType result = accOpt.get().transfer(bOpt.get(), currency, amount, frame.getCurrentCause()).getResult();
+            if (result != ResultType.SUCCESS) {
+                final String error = EconomyUtil.getErrorMessage(result);
+                source.sendMessage(TextUtil.watermark(TextColors.RED, error));
+                return CommandResult.empty();
+            }
         }
 
         final Text sourceName = NameUtil.getDisplayName(source);
-        t.sendMessage(Text.of(sourceName, " deposited ", amount, " into the town bank"));
+        t.sendMessage(Text.of(sourceName, " deposited ", currency.format(amount), " into the town bank"));
         return CommandResult.success();
     }
 }

@@ -9,6 +9,7 @@ import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
@@ -21,7 +22,7 @@ class KickCommand extends AbstractCitizenCommand {
 
     KickCommand() {
         super(
-                MPGenericArguments.citizen(Text.of("citizens")),
+                GenericArguments.allOf(MPGenericArguments.citizen(Text.of("citizens"))),
                 InputTokenizer.spaceSplitString(),
                 TownDispatcher.PERM + ".kick.base",
                 Text.of()

@@ -15,41 +15,25 @@ import org.spongepowered.api.service.economy.transaction.ResultType;
 import org.spongepowered.api.service.economy.transaction.TransactionResult;
 
 import java.math.BigDecimal;
+import java.util.EnumMap;
 import java.util.Optional;
 
 public final class EconomyUtil {
 
-    public static ResultType deposit(Account account, Currency currency, BigDecimal amount) {
-        final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
-        final EventContext eventContext = EventContext.builder()
-                .add(EventContextKeys.PLUGIN, plugin)
-                .build();
-
-        final TransactionResult result = account.deposit(currency, amount, Cause.of(eventContext, plugin));
-
-        return result.getResult();
+    private static final EnumMap<ResultType, String> ERRORS = new EnumMap<>(ResultType.class);
+    static {
+        ERRORS.put(ResultType.ACCOUNT_NO_FUNDS, "Not enough money");
     }
 
-    public static ResultType withdraw(Account account, Currency currency, BigDecimal amount) {
-        final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
-        final EventContext eventContext = EventContext.builder()
-                .add(EventContextKeys.PLUGIN, plugin)
-                .build();
-
-        final TransactionResult result = account.withdraw(currency, amount, Cause.of(eventContext, plugin));
-
-        return result.getResult();
-    }
-
-    public static ResultType transfer(Account from, Account to, Currency currency, BigDecimal amount) {
-        final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
-        final EventContext eventContext = EventContext.builder()
-                .add(EventContextKeys.PLUGIN, plugin)
-                .build();
-
-        final TransactionResult result = from.transfer(to, currency, amount, Cause.of(eventContext, plugin));
-
-        return result.getResult();
+    public static String getErrorMessage(ResultType result) {
+        if (result == ResultType.SUCCESS) {
+            throw new IllegalArgumentException("SUCCESS is not an error");
+        }
+        final String error = ERRORS.get(result);
+        if (error == null) {
+            return "Error while paying: " + result.name();
+        }
+        return error;
     }
 
     private EconomyUtil() {}

@@ -1,9 +1,13 @@
 package me.morpheus.metropolis.task;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.town.TownService;
 import me.morpheus.metropolis.util.EconomyUtil;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.event.CauseStackManager;
+import org.spongepowered.api.event.cause.EventContextKeys;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
@@ -28,14 +32,18 @@ public final class UpkeepTask implements Consumer<Task> {
 
     @Override
     public void accept(Task task) {
+        final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
         for (int i = 0; i < UpkeepTask.MAX_UPKEEP_PER_TICK && this.towns.hasNext(); i++) {
             final Town town = this.towns.next();
             final Optional<Account> bankOpt = town.getBank();
             if (bankOpt.isPresent()) {
                 final BigDecimal upkeep = town.getUpkeep();
-                ResultType result = EconomyUtil.withdraw(town.getBank().get(), this.es.getDefaultCurrency(), upkeep);
-                if (result == ResultType.ACCOUNT_NO_FUNDS) {
-                    town.disband();
+                try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+                    frame.addContext(EventContextKeys.PLUGIN, plugin);
+                    final ResultType result = bankOpt.get().withdraw(this.es.getDefaultCurrency(), upkeep, frame.getCurrentCause()).getResult();
+                    if (result == ResultType.ACCOUNT_NO_FUNDS) {
+                        town.disband();
+                    }
                 }
             }
         }

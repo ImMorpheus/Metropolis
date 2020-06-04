@@ -22,6 +22,10 @@ public final class MPGenericArguments {
         return new TownCommandElement(key);
     }
 
+    public static CommandElement positiveBigDecimal(Text key) {
+        return new PositiveBigDecimal(key);
+    }
+
     public static <T extends CatalogType> CommandElement catalog(Class<T> type, Text key) {
         return new CatalogCommandElement<>(type, key);
     }

@@ -18,13 +18,14 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 class SellCommand extends AbstractHomeTownCommand {
 
     SellCommand() {
         super(
-                GenericArguments.doubleNum(Text.of("price")),
+                MPGenericArguments.positiveBigDecimal(Text.of("price")),
                 MinimalInputTokenizer.INSTANCE,
                 PlotDispatcher.PERM + ".sell.base",
                 Text.of()
@@ -33,10 +34,10 @@ class SellCommand extends AbstractHomeTownCommand {
 
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, Plot plot) throws CommandException {
-        final double price = context.requireOne("price");
+        final BigDecimal price = context.requireOne("price");
 
         plot.setForSale(true);
-        plot.setPrice(price);
+        plot.setPrice(price.doubleValue());
         source.sendMessage(TextUtil.watermark(TextColors.AQUA, "Plot price set to ", price));
 
         return CommandResult.success();

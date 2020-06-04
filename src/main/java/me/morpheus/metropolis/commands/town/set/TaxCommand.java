@@ -18,13 +18,14 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 class TaxCommand extends AbstractCitizenCommand {
 
     TaxCommand() {
         super(
-                GenericArguments.doubleNum(Text.of("tax")),
+                MPGenericArguments.positiveBigDecimal(Text.of("tax")),
                 MinimalInputTokenizer.INSTANCE,
                 SetDispatcher.PERM + ".tax.base",
                 Text.of()
@@ -33,7 +34,8 @@ class TaxCommand extends AbstractCitizenCommand {
 
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
-        final double tax = context.requireOne("tax");
+        final BigDecimal amount = context.requireOne("tax");
+        final double tax = amount.doubleValue();
 
         if (tax == 0) {
             t.remove(TaxData.class);

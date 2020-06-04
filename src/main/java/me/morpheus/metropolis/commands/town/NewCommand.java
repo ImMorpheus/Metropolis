@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractPlayerCommand;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.config.ConfigService;
@@ -19,6 +20,9 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.CauseStackManager;
+import org.spongepowered.api.event.cause.EventContextKeys;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.service.economy.transaction.ResultType;
@@ -65,14 +69,17 @@ class NewCommand extends AbstractPlayerCommand {
                 source.sendMessage(TextUtil.watermark(TextColors.RED, "Unable to retrieve player account"));
                 return CommandResult.empty();
             }
-            final ResultType result = EconomyUtil.withdraw(accOpt.get(), es.getDefaultCurrency(), BigDecimal.valueOf(global.getEconomyCategory().getTownCreationPrice()));
-            if (result == ResultType.ACCOUNT_NO_FUNDS) {
-                source.sendMessage(TextUtil.watermark(TextColors.RED, "Not enough money"));
-                return CommandResult.empty();
-            }
-            if (result != ResultType.SUCCESS) {
-                source.sendMessage(TextUtil.watermark(TextColors.RED, "Error while paying: ", result.name()));
-                return CommandResult.empty();
+
+            try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+                final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+                frame.addContext(EventContextKeys.PLUGIN, plugin);
+                final BigDecimal amount = BigDecimal.valueOf(global.getEconomyCategory().getTownCreationPrice());
+                final ResultType result = accOpt.get().withdraw(es.getDefaultCurrency(), amount, frame.getCurrentCause()).getResult();
+                if (result != ResultType.SUCCESS) {
+                    final String error = EconomyUtil.getErrorMessage(result);
+                    source.sendMessage(TextUtil.watermark(TextColors.RED, error));
+                    return CommandResult.empty();
+                }
             }
         }
 

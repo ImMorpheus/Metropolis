@@ -68,6 +68,8 @@ import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.CauseStackManager;
+import org.spongepowered.api.event.cause.EventContextKeys;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.service.economy.EconomyService;
@@ -103,8 +105,6 @@ import java.util.function.DoubleSupplier;
 import java.util.stream.Stream;
 
 public class MPTown implements Town {
-
-    private static final boolean ECONOMY = Sponge.getServiceManager().provide(EconomyService.class).isPresent();
 
     private final int id;
     private final Instant founded;
@@ -196,6 +196,8 @@ public class MPTown implements Town {
             return false;
         }
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+            frame.addContext(EventContextKeys.PLUGIN, plugin);
             UpgradeTownEvent.Pre event = new MPUpgradeTownEventPre(frame.getCurrentCause(), this, upgrade);
             if (Sponge.getEventManager().post(event)) {
                 return false;
@@ -207,14 +209,21 @@ public class MPTown implements Town {
             if (!bankOpt.isPresent()) {
                 return false;
             }
-            final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
-            final ResultType result = EconomyUtil.withdraw(bankOpt.get(), es.getDefaultCurrency(), BigDecimal.valueOf(cost));
-            if (result != ResultType.SUCCESS) {
-                return false;
+            try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+                final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+                frame.addContext(EventContextKeys.PLUGIN, plugin);
+                final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
+                final BigDecimal amount = BigDecimal.valueOf(cost);
+                final ResultType result = bankOpt.get().withdraw(es.getDefaultCurrency(), amount, frame.getCurrentCause()).getResult();
+                if (result != ResultType.SUCCESS) {
+                    return false;
+                }
             }
         }
         this.type = upgrade.getTarget();
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+            frame.addContext(EventContextKeys.PLUGIN, plugin);
             UpgradeTownEvent.Post event = new MPUpgradeTownEventPost(frame.getCurrentCause(), this, upgrade);
             Sponge.getEventManager().post(event);
         }
@@ -279,23 +288,16 @@ public class MPTown implements Town {
 
     @Override
     public Optional<Account> getBank() {
-        if (!MPTown.ECONOMY) {
-            return Optional.empty();
-        }
         final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
-        final Optional<Account> accountOpt = es.getOrCreateAccount(Metropolis.ID + "+" + this.id);
-
-        if (!accountOpt.isPresent()) {
-            MPLog.getLogger().error("Error while creating a bank for town {} ({})", this.name, Integer.toString(this.id));
-        }
-
-        return accountOpt;
+        return es.getOrCreateAccount(Metropolis.ID + "+" + this.id);
     }
 
     @Override
     public BigDecimal getUpkeep() {
         Expression expression = new Expression(this.type.getTaxFunction());
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+            frame.addContext(EventContextKeys.PLUGIN, plugin);
             MPTownTransactionEventUpkeep event = new MPTownTransactionEventUpkeep(frame.getCurrentCause(), this);
             if (Sponge.getEventManager().post(event)) {
                 return BigDecimal.ZERO;
@@ -320,8 +322,8 @@ public class MPTown implements Town {
         final Optional<Account> bOpt = getBank();
         if (bOpt.isPresent()) {
             final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
-            final Currency def = es.getDefaultCurrency();
-            list.add(Text.of(TextColors.DARK_GREEN, "Balance: ", TextColors.GREEN, def.format(bOpt.get().getBalance(def))));
+            final Currency currency = es.getDefaultCurrency();
+            list.add(Text.of(TextColors.DARK_GREEN, "Balance: ", TextColors.GREEN, currency.format(bOpt.get().getBalance(currency))));
         }
         list.add(Text.of(TextColors.DARK_GREEN, "Citizens: ", TextColors.GREEN, "[", this.citizens, "/", this.type.getMaxCitizens(), "]"));
         final Text.Builder hoverBuilder = Text.builder();
@@ -398,6 +400,8 @@ public class MPTown implements Town {
             return false;
         }
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+            frame.addContext(EventContextKeys.PLUGIN, plugin);
             JoinTownEvent.Pre event = new MPJoinTownEventPre(frame.getCurrentCause(), this);
             if (Sponge.getEventManager().post(event)) {
                 return false;
@@ -413,6 +417,8 @@ public class MPTown implements Town {
         this.citizens++;
         setDirty(true);
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+            frame.addContext(EventContextKeys.PLUGIN, plugin);
             JoinTownEvent.Post event = new MPJoinTownEventPost(frame.getCurrentCause(), this);
             Sponge.getEventManager().post(event);
         }
@@ -427,6 +433,8 @@ public class MPTown implements Town {
             return false;
         }
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+            frame.addContext(EventContextKeys.PLUGIN, plugin);
             LeaveTownEvent.Pre event = new MPLeaveTownEventPre(frame.getCurrentCause(), this);
             if (Sponge.getEventManager().post(event)) {
                 return false;
@@ -439,6 +447,8 @@ public class MPTown implements Town {
         this.citizens--;
         setDirty(true);
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+            frame.addContext(EventContextKeys.PLUGIN, plugin);
             LeaveTownEvent.Post event = new MPLeaveTownEventPost(frame.getCurrentCause(), this);
             Sponge.getEventManager().post(event);
         }
@@ -455,6 +465,8 @@ public class MPTown implements Town {
         final Plot plot = ps.create(this);
         plot.setType(type);
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+            frame.addContext(EventContextKeys.PLUGIN, plugin);
             ClaimPlotEvent.Pre event = new MPClaimPlotEventPre(frame.getCurrentCause(), plot, location);
             if (Sponge.getEventManager().post(event)) {
                 return false;
@@ -481,6 +493,8 @@ public class MPTown implements Town {
         this.plots.put(type, ++current);
         setDirty(true);
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+            frame.addContext(EventContextKeys.PLUGIN, plugin);
             ClaimPlotEvent.Post event = new MPClaimPlotEventPost(frame.getCurrentCause(), plot, location);
             Sponge.getEventManager().post(event);
         }
@@ -490,6 +504,8 @@ public class MPTown implements Town {
     @Override
     public boolean unclaim(Location<World> location) {
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+            frame.addContext(EventContextKeys.PLUGIN, plugin);
             UnclaimPlotEvent.Pre event = new MPUnclaimPlotEventPre(frame.getCurrentCause(), location);
             if (Sponge.getEventManager().post(event)) {
                 return false;
@@ -509,6 +525,8 @@ public class MPTown implements Town {
         this.plots.put(type, --current);
         setDirty(true);
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+            frame.addContext(EventContextKeys.PLUGIN, plugin);
             UnclaimPlotEvent.Post event = new MPUnclaimPlotEventPost(frame.getCurrentCause(), location);
             Sponge.getEventManager().post(event);
         }
@@ -518,6 +536,8 @@ public class MPTown implements Town {
     @Override
     public boolean disband() {
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+            frame.addContext(EventContextKeys.PLUGIN, plugin);
             DeleteTownEvent.Pre event = new MPDeleteTownEventPre(frame.getCurrentCause(), this);
             if (Sponge.getEventManager().post(event)) {
                 return false;
@@ -539,6 +559,8 @@ public class MPTown implements Town {
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
         ps.unclaim(plot -> plot.getTown() == this.id);
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+            final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+            frame.addContext(EventContextKeys.PLUGIN, plugin);
             DeleteTownEvent.Post event = new MPDeleteTownEventPost(frame.getCurrentCause(), this);
             Sponge.getEventManager().post(event);
         }
