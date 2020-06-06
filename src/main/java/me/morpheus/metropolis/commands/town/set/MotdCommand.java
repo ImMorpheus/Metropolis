@@ -23,13 +23,13 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.Optional;
 
-class MotdCommand extends AbstractCitizenCommand {
+public class MotdCommand extends AbstractCitizenCommand {
 
-    MotdCommand() {
+    public MotdCommand() {
         super(
                 GenericArguments.text(Text.of("motd"), TextSerializers.FORMATTING_CODE, false),
                 MinimalInputTokenizer.INSTANCE,
-                SetDispatcher.PERM + ".motd.base",
+                "metropolis.commands.town.set.motd.base",
                 Text.of()
         );
     }

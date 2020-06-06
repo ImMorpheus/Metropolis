@@ -15,9 +15,9 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-class DisownCommand extends AbstractPlayerCommand {
+public class DisownCommand extends AbstractPlayerCommand {
 
-    DisownCommand() {
+    public DisownCommand() {
         super(
                 Metropolis.ID + ".commands.admin.plot.disown",
                 Text.of()

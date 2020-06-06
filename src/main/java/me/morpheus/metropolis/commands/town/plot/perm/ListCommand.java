@@ -25,11 +25,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-class ListCommand extends AbstractHomeTownCommand {
+public class ListCommand extends AbstractHomeTownCommand {
 
-    ListCommand() {
+    public ListCommand() {
         super(
-                PermDispatcher.PERM + ".list.base",
+                "metropolis.commands.town.plot.perm.list.base",
                 Text.of()
         );
     }

@@ -17,9 +17,9 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-class LeaveCommand extends AbstractCitizenCommand {
+public class LeaveCommand extends AbstractCitizenCommand {
 
-    LeaveCommand() {
+    public LeaveCommand() {
         super(
                 Metropolis.ID + ".commands.admin.town.leave",
                 Text.of()

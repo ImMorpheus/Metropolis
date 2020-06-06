@@ -41,7 +41,6 @@ public final class Hacks {
     private static final Method SERIALIZE;
     public static final DataQuery DATA_MANIPULATORS;
     private static final Field REQUIRED_CLASS;
-    private static final Constructor<? extends InputTokenizer> CTOR;
 
     static {
         try {
@@ -51,8 +50,6 @@ public final class Hacks {
             SERIALIZE = datautil.getMethod("getSerializedManipulatorList", Iterable.class);
             REQUIRED_CLASS = AbstractDataBuilder.class.getDeclaredField("requiredClass");
             REQUIRED_CLASS.setAccessible(true);
-            CTOR = InputTokenizer.quotedStrings(false).getClass().getDeclaredConstructor(boolean.class, boolean.class, boolean.class);
-            CTOR.setAccessible(true);
         } catch (NoSuchMethodException | ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException("REPORT THIS", e);
         }

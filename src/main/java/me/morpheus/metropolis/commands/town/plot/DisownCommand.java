@@ -15,11 +15,11 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-class DisownCommand extends AbstractHomeTownCommand {
+public class DisownCommand extends AbstractHomeTownCommand {
 
-    DisownCommand() {
+    public DisownCommand() {
         super(
-                PlotDispatcher.PERM + ".disown.base",
+                "metropolis.commands.town.plot.disown.base",
                 Text.of()
         );
     }

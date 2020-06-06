@@ -19,9 +19,9 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-class SaveCommand extends AbstractMPCommand {
+public class SaveCommand extends AbstractMPCommand {
 
-    SaveCommand() {
+    public SaveCommand() {
         super(
                 Metropolis.ID + ".commands.admin.save",
                 Text.of()

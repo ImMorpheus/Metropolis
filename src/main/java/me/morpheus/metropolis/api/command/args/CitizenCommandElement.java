@@ -2,65 +2,57 @@ package me.morpheus.metropolis.api.command.args;
 
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.town.TownService;
-import me.morpheus.metropolis.util.NameUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
-import org.spongepowered.api.data.manipulator.mutable.entity.InvisibilityData;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 class CitizenCommandElement extends CommandElement {
 
-    CitizenCommandElement(@Nullable Text key) {
+    private final CommandElement user;
+
+    CitizenCommandElement(Text key) {
         super(key);
+        this.user = GenericArguments.user(key);
+    }
+
+    @Override
+    public void parse(CommandSource source, CommandArgs args, CommandContext context) throws ArgumentParseException {
+        this.user.parse(source, args, context);
+        final Collection<User> players = context.getAll(getKey());
+        final TownService ts = Sponge.getServiceManager().provideUnchecked(TownService.class);
+        for (User u : players) {
+            if (!u.get(CitizenData.class).filter(cd -> ts.exist(cd.town().get().intValue())).isPresent()) {
+                throw args.createError(Text.of(u.getName(), " is not part of any town"));
+            }
+        }
     }
 
     @Nullable
     @Override
     protected Object parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
-        if (!args.hasNext()) {
-            return null;
-        }
-
-        final List<User> users = new ArrayList<>(args.size());
-
-        while (args.hasNext()) {
-            final String next = args.next();
-            if (next.isEmpty() || next.length() > 16) {
-                throw args.createError(Text.of("Invalid citizen!"));
-            }
-
-            final User u = Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(next)
-                    .filter(p -> p.get(CitizenData.class).filter(cd -> Sponge.getServiceManager().provideUnchecked(TownService.class).exist(cd.town().get().intValue())).isPresent())
-                    .orElseThrow(() -> args.createError(Text.of("Invalid citizen!")));
-
-            users.add(u);
-        }
-        return Collections.unmodifiableList(users);
+        throw args.createError(Text.of("How ?"));
     }
 
     @Override
     public List<String> complete(CommandSource src, CommandArgs args, CommandContext context) {
-        final String arg = args.nextIfPresent().orElse("");
         final UserStorageService uss = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
-
-        return uss.getAll().stream()
-                .filter(gp -> uss.get(gp).isPresent())
-                .map(gp -> uss.get(gp).get())
+        return this.user.complete(src, args, context).stream()
+                .filter(s -> uss.get(s).isPresent())
+                .map(s -> uss.get(s).get())
                 .filter(u -> u.get(CitizenData.class).isPresent())
-                .map(u -> NameUtil.getDisplayName(u).toPlain())
-                .filter(name -> name.startsWith(arg))
+                .map(User::getName)
                 .collect(Collectors.toList());
     }
 }

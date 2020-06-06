@@ -17,11 +17,11 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-class ClearCommand extends AbstractCitizenCommand {
+public class ClearCommand extends AbstractCitizenCommand {
 
-    ClearCommand() {
+    public ClearCommand() {
         super(
-                FriendDispatcher.PERM + ".clear.base",
+                "metropolis.commands.town.friend.clear.base",
                 Text.of()
         );
     }

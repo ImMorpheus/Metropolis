@@ -33,17 +33,17 @@ import org.spongepowered.api.text.format.TextColors;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-class ClaimCommand extends AbstractCitizenCommand {
+public class ClaimCommand extends AbstractCitizenCommand {
 
-    ClaimCommand() {
+    public ClaimCommand() {
         super(
                 GenericArguments.optional(
                         MPGenericArguments.exactlyOne(
-                                MPGenericArguments.guardedCatalog(PlotType.class, pt -> TownDispatcher.PERM + ".claim." + pt.getId(), Text.of("type"))
+                                MPGenericArguments.guardedCatalog(PlotType.class, pt -> "metropolis.commands.town.claim." + pt.getId(), Text.of("type"))
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                TownDispatcher.PERM + ".claim.base",
+                "metropolis.commands.town.claim.base",
                 Text.of()
         );
     }

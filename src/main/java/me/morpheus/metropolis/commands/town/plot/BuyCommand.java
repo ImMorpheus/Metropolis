@@ -27,11 +27,11 @@ import org.spongepowered.api.text.format.TextColors;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-class BuyCommand extends AbstractHomeTownCommand {
+public class BuyCommand extends AbstractHomeTownCommand {
 
-    BuyCommand() {
+    public BuyCommand() {
         super(
-                PlotDispatcher.PERM + ".buy.base",
+                "metropolis.commands.town.plot.buy.base",
                 Text.of()
         );
     }

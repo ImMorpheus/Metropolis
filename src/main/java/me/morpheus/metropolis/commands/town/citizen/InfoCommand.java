@@ -31,18 +31,18 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-class InfoCommand extends AbstractMPCommand {
+public class InfoCommand extends AbstractMPCommand {
 
-    InfoCommand() {
+    public InfoCommand() {
         super(
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
                                 MPGenericArguments.exactlyOne(MPGenericArguments.citizen(Text.of("citizen"))),
-                                CitizenDispatcher.PERM + ".info.other"
+                                "metropolis.commands.town.citizen.info.other"
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                CitizenDispatcher.PERM + ".info.base",
+                "metropolis.commands.town.citizen.info.base",
                 Text.of()
         );
     }

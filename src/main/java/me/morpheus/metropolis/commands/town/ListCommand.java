@@ -15,11 +15,11 @@ import org.spongepowered.api.text.format.TextColors;
 import java.util.List;
 import java.util.stream.Collectors;
 
-class ListCommand extends AbstractMPCommand {
+public class ListCommand extends AbstractMPCommand {
 
-    ListCommand() {
+    public ListCommand() {
         super(
-                TownDispatcher.PERM + ".list.base",
+                "metropolis.commands.town.list.base",
                 Text.of()
         );
     }

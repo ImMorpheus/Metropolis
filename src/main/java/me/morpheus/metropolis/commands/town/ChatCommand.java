@@ -12,11 +12,11 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-class ChatCommand extends AbstractCitizenCommand {
+public class ChatCommand extends AbstractCitizenCommand {
 
-    ChatCommand() {
+    public ChatCommand() {
         super(
-                TownDispatcher.PERM + ".chat.base",
+                "metropolis.commands.town.chat.base",
                 Text.of()
         );
     }
@@ -27,6 +27,7 @@ class ChatCommand extends AbstractCitizenCommand {
         cd.set(CitizenKeys.CHAT, !current);
         source.offer(cd);
         source.sendMessage(TextUtil.watermark(TextColors.AQUA, "town chat set to ", !current));
+
         return CommandResult.success();
     }
 }

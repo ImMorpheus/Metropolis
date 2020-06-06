@@ -30,13 +30,13 @@ import org.spongepowered.api.text.format.TextColors;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-class WithdrawCommand extends AbstractCitizenCommand {
+public class WithdrawCommand extends AbstractCitizenCommand {
 
-    WithdrawCommand() {
+    public WithdrawCommand() {
         super(
                 MPGenericArguments.positiveBigDecimal(Text.of("amount")),
                 MinimalInputTokenizer.INSTANCE,
-                TownDispatcher.PERM + ".withdraw.base",
+                "metropolis.commands.town.withdraw.base",
                 Text.of()
         );
     }

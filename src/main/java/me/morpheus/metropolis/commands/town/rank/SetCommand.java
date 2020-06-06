@@ -22,18 +22,18 @@ import org.spongepowered.api.text.format.TextColors;
 import java.util.Collection;
 import java.util.Optional;
 
-class SetCommand extends AbstractCitizenCommand {
+public class SetCommand extends AbstractCitizenCommand {
 
-    SetCommand() {
+    public SetCommand() {
         super(
                 GenericArguments.seq(
                         MPGenericArguments.exactlyOne(
-                                MPGenericArguments.guardedCatalog(Rank.class, rank -> RankDispatcher.PERM + ".set." + rank.getId(), Text.of("rank"))
+                                MPGenericArguments.guardedCatalog(Rank.class, rank -> "metropolis.commands.town.rank.set." + rank.getId(), Text.of("rank"))
                         ),
                         GenericArguments.allOf(MPGenericArguments.citizen(Text.of("citizens")))
                 ),
-                InputTokenizer.quotedStrings(false),
-                RankDispatcher.PERM + ".set.base",
+                InputTokenizer.spaceSplitString(),
+                "metropolis.commands.town.rank.set.base",
                 Text.of()
         );
     }

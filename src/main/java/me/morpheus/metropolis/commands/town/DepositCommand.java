@@ -29,13 +29,13 @@ import org.spongepowered.api.text.format.TextColors;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-class DepositCommand extends AbstractCitizenCommand {
+public class DepositCommand extends AbstractCitizenCommand {
 
-    DepositCommand() {
+    public DepositCommand() {
         super(
                 MPGenericArguments.positiveBigDecimal(Text.of("amount")),
                 MinimalInputTokenizer.INSTANCE,
-                TownDispatcher.PERM + ".deposit.base",
+                "metropolis.commands.town.deposit.base",
                 Text.of()
         );
     }

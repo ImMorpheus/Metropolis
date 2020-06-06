@@ -33,18 +33,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-class OnlineCommand extends AbstractMPCommand {
+public class OnlineCommand extends AbstractMPCommand {
 
-    OnlineCommand() {
+    public OnlineCommand() {
         super(
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
                                 MPGenericArguments.town(Text.of("town")),
-                                CitizenDispatcher.PERM + ".online.other"
+                                "metropolis.commands.town.citizen.online.other"
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                CitizenDispatcher.PERM + ".online.base",
+                "metropolis.commands.town.citizen.online.base",
                 Text.of()
         );
     }

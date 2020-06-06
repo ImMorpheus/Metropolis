@@ -10,6 +10,7 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandArgs;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.service.context.Context;
@@ -39,7 +40,7 @@ public abstract class AbstractMPCommand implements CommandCallable {
     }
 
     protected AbstractMPCommand(String permission, Text description) {
-        this(MPGenericArguments.empty(), MinimalInputTokenizer.INSTANCE, permission, description);
+        this(GenericArguments.none(), MinimalInputTokenizer.INSTANCE, permission, description);
     }
 
     @Override
@@ -48,6 +49,10 @@ public abstract class AbstractMPCommand implements CommandCallable {
         final CommandContext context = new CommandContext();
 
         this.args.parse(source, commandArgs, context);
+        if (commandArgs.hasNext()) {
+            commandArgs.next();
+            throw commandArgs.createError(Text.of("Too many arguments!"));
+        }
 
         return process(source, context);
     }
@@ -72,7 +77,7 @@ public abstract class AbstractMPCommand implements CommandCallable {
             Optional<CitizenData> cdOpt = ((DataHolder) source).get(CitizenData.class);
             if (cdOpt.isPresent()) {
                 final Set<Context> contexts = new HashSet<>(source.getActiveContexts());
-                contexts.add(new Context("rank", cdOpt.get().rank().get().getId()));
+                contexts.add(new Context("townrank", cdOpt.get().rank().get().getId()));
                 return source.hasPermission(contexts, this.permission);
             }
         }

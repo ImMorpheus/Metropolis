@@ -22,20 +22,20 @@ import org.spongepowered.api.text.format.TextColors;
 import java.util.Collection;
 import java.util.Optional;
 
-class SetCommand extends AbstractHomeTownCommand {
+public class SetCommand extends AbstractHomeTownCommand {
 
-    SetCommand() {
+    public SetCommand() {
         super(
                 GenericArguments.seq(
                         MPGenericArguments.exactlyOne(
-                                MPGenericArguments.guardedCatalog(Rank.class, rank -> PermDispatcher.PERM + ".set.rank." + rank.getId(), Text.of("rank"))
+                                MPGenericArguments.guardedCatalog(Rank.class, rank -> "metropolis.commands.town.plot.perm.set.rank." + rank.getId(), Text.of("rank"))
                         ),
                         GenericArguments.allOf(
-                                MPGenericArguments.guardedCatalog(Flag.class, flag -> PermDispatcher.PERM + ".set.flag." + flag.getId(), Text.of("flag"))
+                                MPGenericArguments.guardedCatalog(Flag.class, flag -> "metropolis.commands.town.plot.perm.set.flag." + flag.getId(), Text.of("flag"))
                         )
                 ),
                 InputTokenizer.spaceSplitString(),
-                PermDispatcher.PERM + ".set.base",
+                "metropolis.commands.town.plot.perm.set.base",
                 Text.of()
         );
     }

@@ -30,18 +30,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-class OutpostCommand extends AbstractCitizenCommand {
+public class OutpostCommand extends AbstractCitizenCommand {
 
-    OutpostCommand() {
+    public OutpostCommand() {
         super(
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
                                 GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false),
-                                TownDispatcher.PERM + ".outpost.teleport"
+                                "metropolis.commands.town.outpost.teleport"
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                TownDispatcher.PERM + ".outpost.base",
+                "metropolis.commands.town.outpost.base",
                 Text.of()
         );
     }
@@ -92,8 +92,12 @@ class OutpostCommand extends AbstractCitizenCommand {
             final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
             frame.addContext(EventContextKeys.TELEPORT_TYPE, TeleportTypes.COMMAND);
             frame.addContext(EventContextKeys.PLUGIN, plugin);
-            source.transferToWorld(out.getExtent(), out.getPosition());
+            final boolean success = source.transferToWorld(out.getExtent(), out.getPosition());
+            if (!success) {
+                return CommandResult.empty();
+            }
         }
+        source.sendMessage(TextUtil.watermark(TextColors.AQUA, "Teleported to ", name));
         return CommandResult.success();
     }
 }

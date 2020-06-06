@@ -21,15 +21,15 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Collection;
 
-class RemoveCommand extends AbstractHomeTownCommand {
+public class RemoveCommand extends AbstractHomeTownCommand {
 
-    RemoveCommand() {
+    public RemoveCommand() {
         super(
                 GenericArguments.allOf(
-                        MPGenericArguments.guardedCatalog(Flag.class, flag -> PermDispatcher.PERM + ".remove." + flag.getId(), Text.of("flag"))
+                        MPGenericArguments.guardedCatalog(Flag.class, flag -> "metropolis.commands.town.plot.perm.remove." + flag.getId(), Text.of("flag"))
                 ),
                 InputTokenizer.spaceSplitString(),
-                PermDispatcher.PERM + ".remove.base",
+                "metropolis.commands.town.plot.perm.remove.base",
                 Text.of()
         );
     }

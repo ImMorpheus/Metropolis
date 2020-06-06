@@ -16,13 +16,13 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-class MobSpawnCommand extends AbstractHomeTownCommand {
+public class MobSpawnCommand extends AbstractHomeTownCommand {
 
-    MobSpawnCommand() {
+    public MobSpawnCommand() {
         super(
                 GenericArguments.bool(Text.of("value")),
                 MinimalInputTokenizer.INSTANCE,
-                SetDispatcher.PERM + ".mobspawn.base",
+                "metropolis.commands.town.plot.set.mobspawn.base",
                 Text.of("Turn on/off mobspawning in the plot.")
         );
     }

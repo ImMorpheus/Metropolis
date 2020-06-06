@@ -22,11 +22,11 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-class InfoCommand extends AbstractPlayerCommand {
+public class InfoCommand extends AbstractPlayerCommand {
 
-    InfoCommand() {
+    public InfoCommand() {
         super(
-                PlotDispatcher.PERM + ".info.base",
+                "metropolis.commands.town.plot.info.base",
                 Text.of()
         );
     }

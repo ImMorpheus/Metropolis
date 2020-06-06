@@ -22,16 +22,16 @@ import org.spongepowered.api.text.format.TextColors;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-class InfoCommand extends AbstractMPCommand {
+public class InfoCommand extends AbstractMPCommand {
 
-    InfoCommand() {
+    public InfoCommand() {
         super(
                 GenericArguments.requiringPermission(
                         MPGenericArguments.town(Text.of("town")),
-                        TownDispatcher.PERM + ".info.other"
+                        "metropolis.commands.town.info.other"
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                TownDispatcher.PERM + ".info.base",
+                "metropolis.commands.town.info.base",
                 Text.of()
         );
     }

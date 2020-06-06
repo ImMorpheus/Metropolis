@@ -23,13 +23,13 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.Optional;
 
-class NameCommand extends AbstractCitizenCommand {
+public class NameCommand extends AbstractCitizenCommand {
 
-    NameCommand() {
+    public NameCommand() {
         super(
                 GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false),
                 MinimalInputTokenizer.INSTANCE,
-                SetDispatcher.PERM + ".name.base",
+                "metropolis.commands.town.set.name.base",
                 Text.of()
         );
     }

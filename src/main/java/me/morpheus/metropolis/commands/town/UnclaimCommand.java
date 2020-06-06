@@ -13,11 +13,11 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-class UnclaimCommand extends AbstractHomeTownCommand {
+public class UnclaimCommand extends AbstractHomeTownCommand {
 
-    UnclaimCommand() {
+    public UnclaimCommand() {
         super(
-                TownDispatcher.PERM + ".unclaim.base",
+                "metropolis.commands.town.unclaim.base",
                 Text.of()
         );
     }

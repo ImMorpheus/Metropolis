@@ -20,11 +20,11 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-class SpawnCommand extends AbstractHomeTownCommand {
+public class SpawnCommand extends AbstractHomeTownCommand {
 
-    SpawnCommand() {
+    public SpawnCommand() {
         super(
-                SetDispatcher.PERM + ".spawn.base",
+                "metropolis.commands.town.set.spawn.base",
                 Text.of()
         );
     }

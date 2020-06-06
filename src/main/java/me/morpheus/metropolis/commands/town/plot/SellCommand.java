@@ -21,13 +21,13 @@ import org.spongepowered.api.text.format.TextColors;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-class SellCommand extends AbstractHomeTownCommand {
+public class SellCommand extends AbstractHomeTownCommand {
 
-    SellCommand() {
+    public SellCommand() {
         super(
                 MPGenericArguments.positiveBigDecimal(Text.of("price")),
                 MinimalInputTokenizer.INSTANCE,
-                PlotDispatcher.PERM + ".sell.base",
+                "metropolis.commands.town.plot.sell.base",
                 Text.of()
         );
     }

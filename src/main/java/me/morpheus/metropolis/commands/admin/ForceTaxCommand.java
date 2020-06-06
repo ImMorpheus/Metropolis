@@ -11,9 +11,9 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 
-class ForceTaxCommand extends AbstractMPCommand {
+public class ForceTaxCommand extends AbstractMPCommand {
 
-    ForceTaxCommand() {
+    public ForceTaxCommand() {
         super(
                 Metropolis.ID + ".commands.admin.forcetax",
                 Text.of()

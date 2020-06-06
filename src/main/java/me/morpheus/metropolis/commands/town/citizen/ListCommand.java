@@ -35,18 +35,18 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-class ListCommand extends AbstractMPCommand {
+public class ListCommand extends AbstractMPCommand {
 
-    ListCommand() {
+    public ListCommand() {
         super(
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
                                 MPGenericArguments.town(Text.of("town")),
-                                CitizenDispatcher.PERM + ".list.other"
+                                "metropolis.commands.town.citizen.list.other"
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                CitizenDispatcher.PERM + ".list.base",
+                "metropolis.commands.town.citizen.list.base",
                 Text.of()
         );
     }

@@ -22,9 +22,9 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-class JoinCommand extends AbstractPlayerCommand {
+public class JoinCommand extends AbstractPlayerCommand {
 
-    JoinCommand() {
+    public JoinCommand() {
         super(
                 MPGenericArguments.exactlyOne(MPGenericArguments.town(Text.of("town"))),
                 MinimalInputTokenizer.INSTANCE,

@@ -21,11 +21,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-class ListCommand extends AbstractPlayerCommand {
+public class ListCommand extends AbstractPlayerCommand {
 
-    ListCommand() {
+    public ListCommand() {
         super(
-                InvitationDispatcher.PERM + ".list.base",
+                "metropolis.commands.town.invitation.list.base",
                 Text.of()
         );
     }

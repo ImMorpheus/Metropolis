@@ -24,18 +24,18 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-class PricesCommand extends AbstractMPCommand {
+public class PricesCommand extends AbstractMPCommand {
 
-    PricesCommand() {
+    public PricesCommand() {
         super(
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
                                 MPGenericArguments.town(Text.of("town")),
-                                TownDispatcher.PERM + ".prices.other"
+                                "metropolis.commands.town.prices.other"
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                TownDispatcher.PERM + ".prices.base",
+                "metropolis.commands.town.prices.base",
                 Text.of()
         );
     }

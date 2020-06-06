@@ -21,13 +21,13 @@ import org.spongepowered.api.text.format.TextColors;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-class TaxCommand extends AbstractCitizenCommand {
+public class TaxCommand extends AbstractCitizenCommand {
 
-    TaxCommand() {
+    public TaxCommand() {
         super(
                 MPGenericArguments.positiveBigDecimal(Text.of("tax")),
                 MinimalInputTokenizer.INSTANCE,
-                SetDispatcher.PERM + ".tax.base",
+                "metropolis.commands.town.set.tax.base",
                 Text.of()
         );
     }

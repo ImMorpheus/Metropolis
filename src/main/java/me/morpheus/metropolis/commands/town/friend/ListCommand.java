@@ -23,11 +23,11 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-class ListCommand extends AbstractCitizenCommand {
+public class ListCommand extends AbstractCitizenCommand {
 
-    ListCommand() {
+    public ListCommand() {
         super(
-                FriendDispatcher.PERM + ".list.base",
+                "metropolis.commands.town.friend.list.base",
                 Text.of()
         );
     }

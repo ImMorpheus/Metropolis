@@ -18,13 +18,13 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Collection;
 
-class KickCommand extends AbstractCitizenCommand {
+public class KickCommand extends AbstractCitizenCommand {
 
-    KickCommand() {
+    public KickCommand() {
         super(
                 GenericArguments.allOf(MPGenericArguments.citizen(Text.of("citizens"))),
                 InputTokenizer.spaceSplitString(),
-                TownDispatcher.PERM + ".kick.base",
+                "metropolis.commands.town.kick.base",
                 Text.of()
         );
     }

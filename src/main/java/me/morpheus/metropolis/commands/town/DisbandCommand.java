@@ -12,11 +12,11 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-class DisbandCommand extends AbstractCitizenCommand {
+public class DisbandCommand extends AbstractCitizenCommand {
 
-    DisbandCommand() {
+    public DisbandCommand() {
         super(
-                TownDispatcher.PERM + ".disband.base",
+                "metropolis.commands.town.disband.base",
                 Text.of()
         );
     }

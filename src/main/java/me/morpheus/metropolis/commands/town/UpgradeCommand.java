@@ -21,17 +21,17 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-class UpgradeCommand extends AbstractCitizenCommand {
+public class UpgradeCommand extends AbstractCitizenCommand {
 
-    UpgradeCommand() {
+    public UpgradeCommand() {
         super(
                 GenericArguments.optional(
                         MPGenericArguments.exactlyOne(
-                                MPGenericArguments.guardedCatalog(Upgrade.class, upgrade -> TownDispatcher.PERM + ".upgrade." + upgrade.getId(), Text.of("upgrade"))
+                                MPGenericArguments.guardedCatalog(Upgrade.class, upgrade -> "metropolis.commands.town.upgrade." + upgrade.getId(), Text.of("upgrade"))
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                TownDispatcher.PERM + ".upgrade.base",
+                "metropolis.commands.town.upgrade.base",
                 Text.of()
         );
     }

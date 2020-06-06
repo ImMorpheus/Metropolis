@@ -33,13 +33,13 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-class NewCommand extends AbstractPlayerCommand {
+public class NewCommand extends AbstractPlayerCommand {
 
-    NewCommand() {
+    public NewCommand() {
         super(
                 GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false),
                 MinimalInputTokenizer.INSTANCE,
-                TownDispatcher.PERM + ".new.base",
+                "metropolis.commands.town.new.base",
                 Text.of()
         );
     }

@@ -24,13 +24,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-class AddCommand extends AbstractCitizenCommand {
+public class AddCommand extends AbstractCitizenCommand {
 
-    AddCommand() {
+    public AddCommand() {
         super(
                 GenericArguments.allOf(GenericArguments.user(Text.of("friends"))),
                 InputTokenizer.spaceSplitString(),
-                FriendDispatcher.PERM + ".add.base",
+                "metropolis.commands.town.friend.add.base",
                 Text.of()
         );
     }

@@ -23,13 +23,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-class RemoveCommand extends AbstractCitizenCommand {
+public class RemoveCommand extends AbstractCitizenCommand {
 
-    RemoveCommand() {
+    public RemoveCommand() {
         super(
                 GenericArguments.allOf(GenericArguments.user(Text.of("friends"))),
                 InputTokenizer.spaceSplitString(),
-                FriendDispatcher.PERM + ".remove.base",
+                "metropolis.commands.town.friend.remove.base",
                 Text.of()
         );
     }

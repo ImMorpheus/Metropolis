@@ -11,6 +11,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -18,13 +19,13 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Collection;
 
-class InviteCommand extends AbstractCitizenCommand {
+public class InviteCommand extends AbstractCitizenCommand {
 
-    InviteCommand() {
+    public InviteCommand() {
         super(
-                MPGenericArguments.visiblePlayer(Text.of("players")),
+                GenericArguments.allOf(MPGenericArguments.visiblePlayer(Text.of("players"))),
                 InputTokenizer.spaceSplitString(),
-                TownDispatcher.PERM + ".invite.base",
+                "metropolis.commands.town.invite.base",
                 Text.of()
         );
     }

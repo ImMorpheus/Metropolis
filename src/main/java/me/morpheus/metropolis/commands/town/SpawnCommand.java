@@ -33,18 +33,18 @@ import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-class SpawnCommand extends AbstractPlayerCommand {
+public class SpawnCommand extends AbstractPlayerCommand {
 
-    SpawnCommand() {
+    public SpawnCommand() {
         super(
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
                                 MPGenericArguments.town(Text.of("town")),
-                                TownDispatcher.PERM + ".spawn.other"
+                                "metropolis.commands.town.spawn.other"
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                TownDispatcher.PERM + ".spawn.base",
+                "metropolis.commands.town.spawn.base",
                 Text.of()
         );
     }
@@ -108,8 +108,12 @@ class SpawnCommand extends AbstractPlayerCommand {
             final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
             frame.addContext(EventContextKeys.TELEPORT_TYPE, TeleportTypes.COMMAND);
             frame.addContext(EventContextKeys.PLUGIN, plugin);
-            source.transferToWorld(t.getSpawn().getExtent(), t.getSpawn().getPosition());
+            final boolean success = source.transferToWorld(t.getSpawn().getExtent(), t.getSpawn().getPosition());
+            if (!success) {
+                return CommandResult.empty();
+            }
         }
+        source.sendMessage(TextUtil.watermark(TextColors.AQUA, "Teleported to ", t.getName(), " spawn"));
         return CommandResult.success();
     }
 }

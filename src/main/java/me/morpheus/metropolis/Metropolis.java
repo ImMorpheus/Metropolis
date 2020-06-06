@@ -1,7 +1,6 @@
 package me.morpheus.metropolis;
 
 import com.google.inject.Inject;
-import me.morpheus.metropolis.api.command.CommandDispatcher;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.EconomyCategory;
 import me.morpheus.metropolis.api.config.GlobalConfig;
@@ -29,8 +28,42 @@ import me.morpheus.metropolis.api.town.invitation.InvitationService;
 import me.morpheus.metropolis.api.town.pvp.PvPOption;
 import me.morpheus.metropolis.api.town.visibility.Visibility;
 import me.morpheus.metropolis.api.util.MPTypeTokens;
-import me.morpheus.metropolis.commands.admin.AdminDispatcher;
-import me.morpheus.metropolis.commands.town.TownDispatcher;
+import me.morpheus.metropolis.commands.admin.ForceTaxCommand;
+import me.morpheus.metropolis.commands.admin.SaveCommand;
+import me.morpheus.metropolis.commands.admin.town.JoinCommand;
+import me.morpheus.metropolis.commands.town.ChatCommand;
+import me.morpheus.metropolis.commands.town.ClaimCommand;
+import me.morpheus.metropolis.commands.town.DepositCommand;
+import me.morpheus.metropolis.commands.town.DisbandCommand;
+import me.morpheus.metropolis.commands.town.InfoCommand;
+import me.morpheus.metropolis.commands.town.InviteCommand;
+import me.morpheus.metropolis.commands.town.KickCommand;
+import me.morpheus.metropolis.commands.town.LeaveCommand;
+import me.morpheus.metropolis.commands.town.ListCommand;
+import me.morpheus.metropolis.commands.town.NewCommand;
+import me.morpheus.metropolis.commands.town.OutpostCommand;
+import me.morpheus.metropolis.commands.town.PricesCommand;
+import me.morpheus.metropolis.commands.town.SpawnCommand;
+import me.morpheus.metropolis.commands.town.UnclaimCommand;
+import me.morpheus.metropolis.commands.town.UpgradeCommand;
+import me.morpheus.metropolis.commands.town.WithdrawCommand;
+import me.morpheus.metropolis.commands.town.citizen.OnlineCommand;
+import me.morpheus.metropolis.commands.town.friend.AddCommand;
+import me.morpheus.metropolis.commands.town.friend.ClearCommand;
+import me.morpheus.metropolis.commands.town.friend.RemoveCommand;
+import me.morpheus.metropolis.commands.town.plot.BuyCommand;
+import me.morpheus.metropolis.commands.town.plot.DisownCommand;
+import me.morpheus.metropolis.commands.town.plot.NameCommand;
+import me.morpheus.metropolis.commands.town.plot.RentCommand;
+import me.morpheus.metropolis.commands.town.plot.SellCommand;
+import me.morpheus.metropolis.commands.town.plot.perm.SetCommand;
+import me.morpheus.metropolis.commands.town.plot.set.MobSpawnCommand;
+import me.morpheus.metropolis.commands.town.set.DescriptionCommand;
+import me.morpheus.metropolis.commands.town.set.MotdCommand;
+import me.morpheus.metropolis.commands.town.set.PvPCommand;
+import me.morpheus.metropolis.commands.town.set.TagCommand;
+import me.morpheus.metropolis.commands.town.set.TaxCommand;
+import me.morpheus.metropolis.commands.town.set.VisibilityCommand;
 import me.morpheus.metropolis.config.SimpleConfigService;
 import me.morpheus.metropolis.configurate.serialize.DurationSerializer;
 import me.morpheus.metropolis.custom.CustomResourceLoaderRegistryModule;
@@ -53,15 +86,15 @@ import me.morpheus.metropolis.health.MPreconditions;
 import me.morpheus.metropolis.health.SimpleIncidentService;
 import me.morpheus.metropolis.listeners.ChangeBlockTownHandler;
 import me.morpheus.metropolis.listeners.ChatHandler;
-import me.morpheus.metropolis.listeners.TownChatHandler;
 import me.morpheus.metropolis.listeners.DamageEntityTownHandler;
-import me.morpheus.metropolis.listeners.debug.ChangeBlockDebugHandler;
 import me.morpheus.metropolis.listeners.InteractTownHandler;
 import me.morpheus.metropolis.listeners.MoveEntityTownHandler;
 import me.morpheus.metropolis.listeners.ReloadHandler;
 import me.morpheus.metropolis.listeners.SaveHandler;
-import me.morpheus.metropolis.listeners.debug.DamageEntityDebugHandler;
 import me.morpheus.metropolis.listeners.SpawnEntityTownHandler;
+import me.morpheus.metropolis.listeners.TownChatHandler;
+import me.morpheus.metropolis.listeners.debug.ChangeBlockDebugHandler;
+import me.morpheus.metropolis.listeners.debug.DamageEntityDebugHandler;
 import me.morpheus.metropolis.plot.PlotTypeRegistryModule;
 import me.morpheus.metropolis.plot.SimplePlotService;
 import me.morpheus.metropolis.rank.RankRegistryModule;
@@ -316,13 +349,119 @@ public class Metropolis {
     }
 
     private void registerCommands() {
-        final CommandDispatcher town = new TownDispatcher();
-        town.registerDefaults();
-        Sponge.getCommandManager().register(this.container, town, "town", "t");
+        final CommandSpec.Builder t = CommandSpec.builder();
+        {
+            t.child(new ChatCommand(), "chat")
+                    .child(new ClaimCommand(), "claim")
+                    .child(new DepositCommand(), "deposit")
+                    .child(new DisbandCommand(), "disband")
+                    .child(new InfoCommand(), "info")
+                    .child(new InviteCommand(), "invite")
+                    .child(new KickCommand(), "kick")
+                    .child(new LeaveCommand(), "leave")
+                    .child(new ListCommand(), "list")
+                    .child(new NewCommand(), "new", "create")
+                    .child(new OutpostCommand(), "outpost")
+                    .child(new PricesCommand(), "prices")
+                    .child(new SpawnCommand(), "spawn")
+                    .child(new UnclaimCommand(), "unclaim")
+                    .child(new UpgradeCommand(), "upgrade")
+                    .child(new WithdrawCommand(), "withdraw");
+        }
 
-        final CommandDispatcher mpadmin = new AdminDispatcher();
-        mpadmin.registerDefaults();
-        Sponge.getCommandManager().register(this.container, mpadmin, "mpadmin");
+        {
+            final CommandSpec citizen = CommandSpec.builder()
+                    .child(new me.morpheus.metropolis.commands.town.citizen.InfoCommand(), "info")
+                    .child(new me.morpheus.metropolis.commands.town.citizen.ListCommand(), "list")
+                    .child(new OnlineCommand(), "online")
+                    .build();
+            t.child(citizen, "citizen");
+        }
+
+        {
+            final CommandSpec friend = CommandSpec.builder()
+                    .child(new AddCommand(), "add")
+                    .child(new RemoveCommand(), "remove")
+                    .child(new me.morpheus.metropolis.commands.town.friend.ListCommand(), "list")
+                    .child(new ClearCommand(), "clear")
+                    .build();
+            t.child(friend, "friend");
+        }
+
+        {
+            final CommandSpec invitation = CommandSpec.builder()
+                    .child(new me.morpheus.metropolis.commands.town.invitation.ListCommand(), "list")
+                    .build();
+            t.child(invitation, "invitation");
+        }
+
+        {
+            final CommandSpec perm = CommandSpec.builder()
+                    .child(new me.morpheus.metropolis.commands.town.plot.perm.RemoveCommand(), "remove")
+                    .child(new SetCommand(), "set")
+                    .child(new me.morpheus.metropolis.commands.town.plot.perm.ListCommand(), "list")
+                    .build();
+
+            final CommandSpec set = CommandSpec.builder()
+                    .child(new MobSpawnCommand(), "mobspawn")
+                    .build();
+
+            final CommandSpec plot = CommandSpec.builder()
+                    .child(new me.morpheus.metropolis.commands.town.plot.InfoCommand(), "info")
+                    .child(new BuyCommand(), "buy")
+                    .child(new DisownCommand(), "disown")
+                    .child(new SellCommand(), "sell")
+                    .child(new RentCommand(), "rent")
+                    .child(new NameCommand(), "name")
+                    .child(perm, "perm")
+                    .child(set, "set")
+                    .build();
+            t.child(plot, "plot");
+        }
+
+        {
+            final CommandSpec rank = CommandSpec.builder()
+                    .child(new me.morpheus.metropolis.commands.town.rank.SetCommand(), "set")
+                    .build();
+            t.child(rank, "rank");
+        }
+
+        {
+            final CommandSpec set = CommandSpec.builder()
+                    .child(new DescriptionCommand(), "description", "desc")
+                    .child(new MotdCommand(), "motd")
+                    .child(new me.morpheus.metropolis.commands.town.set.NameCommand(), "name")
+                    .child(new VisibilityCommand(), "visibility")
+                    .child(new PvPCommand(), "pvp")
+                    .child(new me.morpheus.metropolis.commands.town.set.SpawnCommand(), "spawn")
+                    .child(new TagCommand(), "tag")
+                    .child(new TaxCommand(), "tax")
+                    .build();
+            t.child(set, "set");
+        }
+
+        Sponge.getCommandManager().register(this.container, t.build(), "town", "t");
+
+        final CommandSpec.Builder mpadmin = CommandSpec.builder()
+                .child(new SaveCommand(), "save")
+                .child(new ForceTaxCommand(), "forcetax");
+
+        {
+            final CommandSpec town = CommandSpec.builder()
+                    .child(new JoinCommand(), "join")
+                    .child(new me.morpheus.metropolis.commands.admin.town.LeaveCommand(), "leave")
+                    .build();
+            mpadmin.child(town, "town");
+        }
+
+        {
+            final CommandSpec plot = CommandSpec.builder()
+                    .child(new me.morpheus.metropolis.commands.admin.plot.DisownCommand(), "disown")
+                    .build();
+            mpadmin.child(plot, "plot");
+        }
+
+        Sponge.getCommandManager().register(this.container, mpadmin.build(), "mpadmin");
 
         Sponge.getServiceManager().provideUnchecked(PlotService.class).registerCommands();
     }

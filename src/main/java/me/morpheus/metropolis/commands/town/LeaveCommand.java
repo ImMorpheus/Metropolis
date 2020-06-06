@@ -13,11 +13,11 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-class LeaveCommand extends AbstractCitizenCommand {
+public class LeaveCommand extends AbstractCitizenCommand {
 
-    LeaveCommand() {
+    public LeaveCommand() {
         super(
-                TownDispatcher.PERM + ".leave.base",
+                "metropolis.commands.town.leave.base",
                 Text.of()
         );
     }
