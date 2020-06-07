@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Reference2ShortMap;
 import it.unimi.dsi.fastutil.objects.Reference2ShortOpenHashMap;
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.town.TownData;
+import me.morpheus.metropolis.api.data.town.economy.TaxData;
 import me.morpheus.metropolis.api.event.plot.ClaimPlotEvent;
 import me.morpheus.metropolis.api.event.plot.UnclaimPlotEvent;
 import me.morpheus.metropolis.api.event.town.DeleteTownEvent;
@@ -316,6 +317,8 @@ public class MPTown implements Town {
         list.add(Text.of(TextColors.DARK_GREEN, "Type: ", TextColors.GREEN, this.type.getName()));
         list.add(Text.of(TextColors.DARK_GREEN, "PvP: ", TextColors.GREEN, this.pvp.getName()));
         list.add(Text.of(TextColors.DARK_GREEN, "Visibility: ", TextColors.GREEN, this.visibility.getName()));
+        final Optional<TaxData> taxOpt = get(TaxData.class);
+        taxOpt.ifPresent(taxData -> list.add(Text.of(TextColors.DARK_GREEN, "Tax: ", TextColors.GREEN, taxData.get(TownKeys.TAX).get())));
         if (canSeeSpawn(receiver)) {
             list.add(Text.of(TextColors.DARK_GREEN, "Spawn: ", TextColors.GREEN, this.spawn.getBlockPosition(), " in ", this.spawn.getExtent().getName()));
         }
@@ -477,8 +480,8 @@ public class MPTown implements Town {
             if (!odOpt.isPresent()) {
                 return false;
             }
-            final String n = type.getName() + current;
             Map<String, Location<World>> map = odOpt.get().outposts().get();
+            final String n = type.getName() + map.size();
             Location<World> l = map.putIfAbsent(n, location);
             if (l != null) {
                 return false;

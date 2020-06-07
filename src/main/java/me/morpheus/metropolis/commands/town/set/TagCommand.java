@@ -29,7 +29,7 @@ public class TagCommand extends AbstractCitizenCommand {
         super(
                 GenericArguments.text(Text.of("tag"), TextSerializers.FORMATTING_CODE, false),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.set.tag.base",
+                Metropolis.ID + ".commands.town.set.tag.base",
                 Text.of()
         );
     }

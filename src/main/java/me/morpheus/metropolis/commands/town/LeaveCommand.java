@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.rank.Rank;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
@@ -17,7 +18,7 @@ public class LeaveCommand extends AbstractCitizenCommand {
 
     public LeaveCommand() {
         super(
-                "metropolis.commands.town.leave.base",
+                Metropolis.ID + ".commands.town.leave.base",
                 Text.of()
         );
     }

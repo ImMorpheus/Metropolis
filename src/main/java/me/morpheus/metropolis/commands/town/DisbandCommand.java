@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
 import me.morpheus.metropolis.api.town.Town;
@@ -16,7 +17,7 @@ public class DisbandCommand extends AbstractCitizenCommand {
 
     public DisbandCommand() {
         super(
-                "metropolis.commands.town.disband.base",
+                Metropolis.ID + ".commands.town.disband.base",
                 Text.of()
         );
     }

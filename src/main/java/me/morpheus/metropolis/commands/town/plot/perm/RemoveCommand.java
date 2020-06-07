@@ -26,10 +26,10 @@ public class RemoveCommand extends AbstractHomeTownCommand {
     public RemoveCommand() {
         super(
                 GenericArguments.allOf(
-                        MPGenericArguments.guardedCatalog(Flag.class, flag -> "metropolis.commands.town.plot.perm.remove." + flag.getId(), Text.of("flag"))
+                        MPGenericArguments.guardedCatalog(Flag.class, flag -> Metropolis.ID + ".commands.town.plot.perm.remove." + flag.getId(), Text.of("flag"))
                 ),
                 InputTokenizer.spaceSplitString(),
-                "metropolis.commands.town.plot.perm.remove.base",
+                Metropolis.ID + ".commands.town.plot.perm.remove.base",
                 Text.of()
         );
     }

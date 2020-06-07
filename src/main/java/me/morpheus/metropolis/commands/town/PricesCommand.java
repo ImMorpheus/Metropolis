@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractMPCommand;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
@@ -31,11 +32,11 @@ public class PricesCommand extends AbstractMPCommand {
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
                                 MPGenericArguments.town(Text.of("town")),
-                                "metropolis.commands.town.prices.other"
+                                Metropolis.ID + ".commands.town.prices.other"
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.prices.base",
+                Metropolis.ID + ".commands.town.prices.base",
                 Text.of()
         );
     }

@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.citizen.CitizenKeys;
@@ -16,7 +17,7 @@ public class ChatCommand extends AbstractCitizenCommand {
 
     public ChatCommand() {
         super(
-                "metropolis.commands.town.chat.base",
+                Metropolis.ID + ".commands.town.chat.base",
                 Text.of()
         );
     }

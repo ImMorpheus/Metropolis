@@ -31,7 +31,7 @@ public class BuyCommand extends AbstractHomeTownCommand {
 
     public BuyCommand() {
         super(
-                "metropolis.commands.town.plot.buy.base",
+                Metropolis.ID + ".commands.town.plot.buy.base",
                 Text.of()
         );
     }

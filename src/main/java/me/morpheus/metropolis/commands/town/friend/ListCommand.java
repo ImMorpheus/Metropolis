@@ -27,7 +27,7 @@ public class ListCommand extends AbstractCitizenCommand {
 
     public ListCommand() {
         super(
-                "metropolis.commands.town.friend.list.base",
+                Metropolis.ID + ".commands.town.friend.list.base",
                 Text.of()
         );
     }

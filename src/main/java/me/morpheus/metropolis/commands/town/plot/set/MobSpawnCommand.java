@@ -22,7 +22,7 @@ public class MobSpawnCommand extends AbstractHomeTownCommand {
         super(
                 GenericArguments.bool(Text.of("value")),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.plot.set.mobspawn.base",
+                Metropolis.ID + ".commands.town.plot.set.mobspawn.base",
                 Text.of("Turn on/off mobspawning in the plot.")
         );
     }

@@ -38,11 +38,11 @@ public class InfoCommand extends AbstractMPCommand {
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
                                 MPGenericArguments.exactlyOne(MPGenericArguments.citizen(Text.of("citizen"))),
-                                "metropolis.commands.town.citizen.info.other"
+                                Metropolis.ID + ".commands.town.citizen.info.other"
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.citizen.info.base",
+                Metropolis.ID + ".commands.town.citizen.info.base",
                 Text.of()
         );
     }
@@ -82,7 +82,11 @@ public class InfoCommand extends AbstractMPCommand {
                             .orElse(Text.of()))
                     .collect(Collectors.toSet());
 
-            message.add(Text.of(TextColors.DARK_GREEN, "Friends: ", Text.joinWith(Text.of(","), friends)));
+            if (!friends.isEmpty()) {
+                message.add(Text.of(TextColors.DARK_GREEN, "Friends: ", Text.joinWith(Text.of(","), friends)));
+            } else {
+                message.add(Text.of(TextColors.DARK_GREEN, "Friends: None"));
+            }
         }
         if (source.hasPermission(Metropolis.ID + ".commands.town.citizen.info.joined")) {
             final String joined = DateTimeFormatter.ISO_LOCAL_DATE.withZone(ZoneId.systemDefault()).format(cd.joined().get());

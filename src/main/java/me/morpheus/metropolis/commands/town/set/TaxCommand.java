@@ -27,7 +27,7 @@ public class TaxCommand extends AbstractCitizenCommand {
         super(
                 MPGenericArguments.positiveBigDecimal(Text.of("tax")),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.set.tax.base",
+                Metropolis.ID + ".commands.town.set.tax.base",
                 Text.of()
         );
     }

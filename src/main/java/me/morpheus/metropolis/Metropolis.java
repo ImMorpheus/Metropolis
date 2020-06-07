@@ -463,6 +463,17 @@ public class Metropolis {
 
         Sponge.getCommandManager().register(this.container, mpadmin.build(), "mpadmin");
 
+        final CommandSpec.Builder outpost = CommandSpec.builder();
+
+        {
+            final CommandSpec set = CommandSpec.builder()
+                    .child(new me.morpheus.metropolis.commands.outpost.set.NameCommand(), "name")
+                    .build();
+            outpost.child(set, "set");
+        }
+
+        Sponge.getCommandManager().register(this.container, outpost.build(), "outpost");
+
         Sponge.getServiceManager().provideUnchecked(PlotService.class).registerCommands();
     }
 

@@ -39,7 +39,7 @@ public class NewCommand extends AbstractPlayerCommand {
         super(
                 GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.new.base",
+                Metropolis.ID + ".commands.town.new.base",
                 Text.of()
         );
     }

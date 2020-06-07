@@ -29,7 +29,7 @@ public class ListCommand extends AbstractHomeTownCommand {
 
     public ListCommand() {
         super(
-                "metropolis.commands.town.plot.perm.list.base",
+                Metropolis.ID + ".commands.town.plot.perm.list.base",
                 Text.of()
         );
     }

@@ -29,7 +29,7 @@ public class DescriptionCommand extends AbstractCitizenCommand {
         super(
                 GenericArguments.text(Text.of("description"), TextSerializers.FORMATTING_CODE, false),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.set.description.base",
+                Metropolis.ID + ".commands.town.set.description.base",
                 Text.of()
         );
     }

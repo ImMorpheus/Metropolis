@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
@@ -27,11 +28,11 @@ public class UpgradeCommand extends AbstractCitizenCommand {
         super(
                 GenericArguments.optional(
                         MPGenericArguments.exactlyOne(
-                                MPGenericArguments.guardedCatalog(Upgrade.class, upgrade -> "metropolis.commands.town.upgrade." + upgrade.getId(), Text.of("upgrade"))
+                                MPGenericArguments.guardedCatalog(Upgrade.class, upgrade -> Metropolis.ID + ".commands.town.upgrade." + upgrade.getId(), Text.of("upgrade"))
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.upgrade.base",
+                Metropolis.ID + ".commands.town.upgrade.base",
                 Text.of()
         );
     }

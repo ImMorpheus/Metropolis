@@ -35,7 +35,7 @@ public class DepositCommand extends AbstractCitizenCommand {
         super(
                 MPGenericArguments.positiveBigDecimal(Text.of("amount")),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.deposit.base",
+                Metropolis.ID + ".commands.town.deposit.base",
                 Text.of()
         );
     }

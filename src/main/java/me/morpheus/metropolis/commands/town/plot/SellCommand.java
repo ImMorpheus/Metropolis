@@ -27,7 +27,7 @@ public class SellCommand extends AbstractHomeTownCommand {
         super(
                 MPGenericArguments.positiveBigDecimal(Text.of("price")),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.plot.sell.base",
+                Metropolis.ID + ".commands.town.plot.sell.base",
                 Text.of()
         );
     }

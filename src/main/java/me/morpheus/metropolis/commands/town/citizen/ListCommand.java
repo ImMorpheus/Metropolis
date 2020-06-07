@@ -42,11 +42,11 @@ public class ListCommand extends AbstractMPCommand {
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
                                 MPGenericArguments.town(Text.of("town")),
-                                "metropolis.commands.town.citizen.list.other"
+                                Metropolis.ID + ".commands.town.citizen.list.other"
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.citizen.list.base",
+                Metropolis.ID + ".commands.town.citizen.list.base",
                 Text.of()
         );
     }

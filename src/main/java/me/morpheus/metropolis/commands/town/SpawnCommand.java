@@ -40,11 +40,11 @@ public class SpawnCommand extends AbstractPlayerCommand {
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
                                 MPGenericArguments.town(Text.of("town")),
-                                "metropolis.commands.town.spawn.other"
+                                Metropolis.ID + ".commands.town.spawn.other"
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.spawn.base",
+                Metropolis.ID + ".commands.town.spawn.base",
                 Text.of()
         );
     }

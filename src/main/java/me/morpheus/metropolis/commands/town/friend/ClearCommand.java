@@ -21,7 +21,7 @@ public class ClearCommand extends AbstractCitizenCommand {
 
     public ClearCommand() {
         super(
-                "metropolis.commands.town.friend.clear.base",
+                Metropolis.ID + ".commands.town.friend.clear.base",
                 Text.of()
         );
     }

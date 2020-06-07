@@ -40,11 +40,11 @@ public class OnlineCommand extends AbstractMPCommand {
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
                                 MPGenericArguments.town(Text.of("town")),
-                                "metropolis.commands.town.citizen.online.other"
+                                Metropolis.ID + ".commands.town.citizen.online.other"
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.citizen.online.base",
+                Metropolis.ID + ".commands.town.citizen.online.base",
                 Text.of()
         );
     }

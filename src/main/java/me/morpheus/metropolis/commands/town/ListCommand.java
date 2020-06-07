@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.api.town.TownService;
 import me.morpheus.metropolis.api.command.AbstractMPCommand;
@@ -19,7 +20,7 @@ public class ListCommand extends AbstractMPCommand {
 
     public ListCommand() {
         super(
-                "metropolis.commands.town.list.base",
+                Metropolis.ID + ".commands.town.list.base",
                 Text.of()
         );
     }

@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town.plot;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
@@ -22,7 +23,7 @@ public class RentCommand extends AbstractHomeTownCommand {
         super(
                 MPGenericArguments.positiveBigDecimal(Text.of("rent")),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.plot.rent.base",
+                Metropolis.ID + ".commands.town.plot.rent.base",
                 Text.of()
         );
     }

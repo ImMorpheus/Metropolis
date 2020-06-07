@@ -36,7 +36,7 @@ public class WithdrawCommand extends AbstractCitizenCommand {
         super(
                 MPGenericArguments.positiveBigDecimal(Text.of("amount")),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.withdraw.base",
+                Metropolis.ID + ".commands.town.withdraw.base",
                 Text.of()
         );
     }

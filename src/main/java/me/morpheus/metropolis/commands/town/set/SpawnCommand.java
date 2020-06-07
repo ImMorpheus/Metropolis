@@ -24,7 +24,7 @@ public class SpawnCommand extends AbstractHomeTownCommand {
 
     public SpawnCommand() {
         super(
-                "metropolis.commands.town.set.spawn.base",
+                Metropolis.ID + ".commands.town.set.spawn.base",
                 Text.of()
         );
     }

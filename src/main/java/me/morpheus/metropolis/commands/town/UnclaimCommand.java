@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.commands.town;
 
 import com.flowpowered.math.vector.Vector3i;
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.town.Town;
@@ -17,7 +18,7 @@ public class UnclaimCommand extends AbstractHomeTownCommand {
 
     public UnclaimCommand() {
         super(
-                "metropolis.commands.town.unclaim.base",
+                Metropolis.ID + ".commands.town.unclaim.base",
                 Text.of()
         );
     }

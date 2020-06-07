@@ -6,12 +6,15 @@ import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.town.outpost.OutpostData;
 import me.morpheus.metropolis.api.town.Town;
+import me.morpheus.metropolis.api.town.TownService;
 import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.CauseStackManager;
@@ -26,6 +29,7 @@ import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -36,12 +40,37 @@ public class OutpostCommand extends AbstractCitizenCommand {
         super(
                 GenericArguments.optional(
                         GenericArguments.requiringPermission(
-                                GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false),
-                                "metropolis.commands.town.outpost.teleport"
+                                GenericArguments.withSuggestions(
+                                        GenericArguments.string(Text.of("name")),
+                                        (CommandSource source) -> {
+                                            if (!(source instanceof DataHolder)) {
+                                                return Collections.emptyList();
+                                            }
+                                            final Optional<CitizenData> cdOpt = ((DataHolder) source).get(CitizenData.class);
+
+                                            if (!cdOpt.isPresent()) {
+                                                return Collections.emptyList();
+                                            }
+
+                                            final TownService ts = Sponge.getServiceManager().provideUnchecked(TownService.class);
+                                            final Optional<Town> townOpt = ts.get(cdOpt.get().town().get().intValue());
+                                            if (!townOpt.isPresent()) {
+                                                return Collections.emptyList();
+                                            }
+
+                                            final Optional<OutpostData> outpostOpt = townOpt.get().get(OutpostData.class);
+                                            if (!outpostOpt.isPresent()) {
+                                                return Collections.emptyList();
+                                            }
+
+                                            return outpostOpt.get().outposts().keySet();
+                                        }
+                                ),
+                                Metropolis.ID + ".commands.town.outpost.teleport"
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.outpost.base",
+                Metropolis.ID + ".commands.town.outpost.base",
                 Text.of()
         );
     }
@@ -55,7 +84,7 @@ public class OutpostCommand extends AbstractCitizenCommand {
             return CommandResult.empty();
         }
 
-        final Optional<Text> nameOpt = context.getOne("name");
+        final Optional<String> nameOpt = context.getOne("name");
 
         if (!nameOpt.isPresent()) {
             final List<Text> outposts = new ArrayList<>(odOpt.get().outposts().size());
@@ -72,8 +101,8 @@ public class OutpostCommand extends AbstractCitizenCommand {
             return CommandResult.success();
         }
 
-        final Text name = nameOpt.get();
-        final Location<World> out = odOpt.get().outposts().get().get(name.toPlain());
+        final String name = nameOpt.get();
+        final Location<World> out = odOpt.get().outposts().get().get(name);
 
         if (out == null) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "There is no outpost named ", name));

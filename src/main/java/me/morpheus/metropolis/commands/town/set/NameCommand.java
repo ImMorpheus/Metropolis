@@ -29,7 +29,7 @@ public class NameCommand extends AbstractCitizenCommand {
         super(
                 GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.set.name.base",
+                Metropolis.ID + ".commands.town.set.name.base",
                 Text.of()
         );
     }

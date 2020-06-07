@@ -30,7 +30,7 @@ public class AddCommand extends AbstractCitizenCommand {
         super(
                 GenericArguments.allOf(GenericArguments.user(Text.of("friends"))),
                 InputTokenizer.spaceSplitString(),
-                "metropolis.commands.town.friend.add.base",
+                Metropolis.ID + ".commands.town.friend.add.base",
                 Text.of()
         );
     }

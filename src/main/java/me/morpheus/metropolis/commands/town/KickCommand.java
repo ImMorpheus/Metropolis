@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.commands.town;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.town.Town;
@@ -24,7 +25,7 @@ public class KickCommand extends AbstractCitizenCommand {
         super(
                 GenericArguments.allOf(MPGenericArguments.citizen(Text.of("citizens"))),
                 InputTokenizer.spaceSplitString(),
-                "metropolis.commands.town.kick.base",
+                Metropolis.ID + ".commands.town.kick.base",
                 Text.of()
         );
     }

@@ -39,11 +39,11 @@ public class ClaimCommand extends AbstractCitizenCommand {
         super(
                 GenericArguments.optional(
                         MPGenericArguments.exactlyOne(
-                                MPGenericArguments.guardedCatalog(PlotType.class, pt -> "metropolis.commands.town.claim." + pt.getId(), Text.of("type"))
+                                MPGenericArguments.guardedCatalog(PlotType.class, pt -> Metropolis.ID + ".commands.town.claim." + pt.getId(), Text.of("type"))
                         )
                 ),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.claim.base",
+                Metropolis.ID + ".commands.town.claim.base",
                 Text.of()
         );
     }

@@ -26,7 +26,7 @@ public class InfoCommand extends AbstractPlayerCommand {
 
     public InfoCommand() {
         super(
-                "metropolis.commands.town.plot.info.base",
+                Metropolis.ID + ".commands.town.plot.info.base",
                 Text.of()
         );
     }
@@ -49,14 +49,15 @@ public class InfoCommand extends AbstractPlayerCommand {
         final Text owner = plot.getOwner().isPresent() ? Sponge.getServiceManager().provideUnchecked(UserStorageService.class)
                 .get(plot.getOwner().get())
                 .map(NameUtil::getDisplayName)
-                .orElse(Text.of("None")) : Text.of("None");
+                .orElse(Text.of("Unknown")) : Text.of("None");
+        final Text name = plot.getName().isEmpty() ? Text.of("None") : plot.getName();
 
         PaginationList.builder()
                 .title(Text.of(TextColors.GOLD, "[", TextColors.YELLOW, cp.getX(), ", ", cp.getZ(), TextColors.GOLD, "]"))
                 .contents(
                         Text.of(TextColors.DARK_GREEN, "Town: ", TextColors.GREEN, t.getName()),
                         Text.of(TextColors.DARK_GREEN, "Owner: ", TextColors.GREEN, owner),
-                        Text.of(TextColors.DARK_GREEN, "Name: ", TextColors.GREEN, plot.getName()),
+                        Text.of(TextColors.DARK_GREEN, "Name: ", TextColors.GREEN, name),
                         Text.of(TextColors.DARK_GREEN, "Type: ", TextColors.GREEN, plot.getType().getName()),
                         Text.of(TextColors.DARK_GREEN, "Price: ", TextColors.GREEN, plot.getPrice()),
                         Text.of(TextColors.DARK_GREEN, "Rent: ", TextColors.GREEN, plot.getRent()),

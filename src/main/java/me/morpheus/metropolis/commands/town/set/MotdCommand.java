@@ -29,7 +29,7 @@ public class MotdCommand extends AbstractCitizenCommand {
         super(
                 GenericArguments.text(Text.of("motd"), TextSerializers.FORMATTING_CODE, false),
                 MinimalInputTokenizer.INSTANCE,
-                "metropolis.commands.town.set.motd.base",
+                Metropolis.ID + ".commands.town.set.motd.base",
                 Text.of()
         );
     }

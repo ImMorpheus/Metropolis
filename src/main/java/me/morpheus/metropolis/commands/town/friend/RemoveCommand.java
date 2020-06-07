@@ -29,7 +29,7 @@ public class RemoveCommand extends AbstractCitizenCommand {
         super(
                 GenericArguments.allOf(GenericArguments.user(Text.of("friends"))),
                 InputTokenizer.spaceSplitString(),
-                "metropolis.commands.town.friend.remove.base",
+                Metropolis.ID + ".commands.town.friend.remove.base",
                 Text.of()
         );
     }
