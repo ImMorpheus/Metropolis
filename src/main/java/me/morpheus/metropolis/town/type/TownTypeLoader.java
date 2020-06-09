@@ -100,9 +100,6 @@ public class TownTypeLoader implements CustomResourceLoader<TownType> {
         CommentedConfigurationNode node = loader.load();
         mapper.populate(node);
 
-        SimpleCommentedConfigurationNode n = SimpleCommentedConfigurationNode.root();
-        mapper.serialize(n);
-        loader.save(n);
         MPTownType type = mapper.getInstance();
         type.getPrices().defaultReturnValue(Double.MAX_VALUE);
         type.getMaxPlots().defaultReturnValue((short) 0);

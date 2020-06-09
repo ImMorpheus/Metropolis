@@ -75,15 +75,11 @@ public class UpgradeLoader implements CustomResourceLoader<Upgrade> {
                 .setPath(path)
                 .build();
 
-        ObjectMapper.BoundInstance mapper = ObjectMapper.forClass(MPUpgrade.class).bindToNew();
+        ObjectMapper<MPUpgrade>.BoundInstance mapper = ObjectMapper.forClass(MPUpgrade.class).bindToNew();
         CommentedConfigurationNode node = loader.load();
         mapper.populate(node);
 
-        SimpleCommentedConfigurationNode n = SimpleCommentedConfigurationNode.root();
-        mapper.serialize(n);
-        loader.save(n);
-
-        return (Upgrade) mapper.getInstance();
+        return mapper.getInstance();
     }
 
     @Override

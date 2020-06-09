@@ -94,9 +94,6 @@ public class RankLoader implements CustomResourceLoader<Rank> {
         CommentedConfigurationNode node = loader.load();
         mapper.populate(node);
 
-        SimpleCommentedConfigurationNode n = SimpleCommentedConfigurationNode.root();
-        mapper.serialize(n);
-        loader.save(n);
         MPRank rank = mapper.getInstance();
         rank.getPermissions().defaultReturnValue(Byte.MIN_VALUE);
 
