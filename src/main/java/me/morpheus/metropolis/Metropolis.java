@@ -197,7 +197,7 @@ public class Metropolis {
             Sponge.getEventManager().registerListeners(this.container, new MoveEntityTownHandler());
         }
 
-        if (g.getDebugCategory().isEnabled()) {
+        if (Boolean.parseBoolean(System.getProperty(Metropolis.ID + ".debugListeners", null))) {
             registerDebugCommands();
 
             Sponge.getEventManager().registerListeners(this.container, new ChangeBlockDebugHandler());
