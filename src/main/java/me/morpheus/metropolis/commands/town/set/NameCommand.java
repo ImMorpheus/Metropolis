@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.commands.town.set;
 
 import me.morpheus.metropolis.Metropolis;
+import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.TownCategory;
@@ -22,13 +23,13 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.Optional;
 
-class NameCommand extends AbstractCitizenCommand {
+public class NameCommand extends AbstractCitizenCommand {
 
-    NameCommand() {
+    public NameCommand() {
         super(
-                GenericArguments.onlyOne(GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)),
+                GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.set.name",
+                Metropolis.ID + ".commands.town.set.name.base",
                 Text.of()
         );
     }

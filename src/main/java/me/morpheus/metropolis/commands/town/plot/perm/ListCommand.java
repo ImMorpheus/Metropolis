@@ -7,6 +7,7 @@ import me.morpheus.metropolis.api.flag.Flag;
 import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.rank.Rank;
 import me.morpheus.metropolis.api.town.Town;
+import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
@@ -24,11 +25,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-class ListCommand extends AbstractHomeTownCommand {
+public class ListCommand extends AbstractHomeTownCommand {
 
     public ListCommand() {
         super(
-                Metropolis.ID + ".commands.town.plot.perm.list",
+                Metropolis.ID + ".commands.town.plot.perm.list.base",
                 Text.of()
         );
     }
@@ -48,6 +49,10 @@ class ListCommand extends AbstractHomeTownCommand {
                         .collect(Collectors.toList());
                 perms.add(Text.of(TextColors.AQUA, flag.getName(), ": ", allowed));
             }
+        }
+        if (perms.isEmpty()) {
+            source.sendMessage(TextUtil.watermark(TextColors.RED, "This plot has no special permissions"));
+            return CommandResult.empty();
         }
 
         PaginationList.builder()

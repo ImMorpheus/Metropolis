@@ -3,6 +3,7 @@ package me.morpheus.metropolis.api.plot;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.flag.Flag;
 import me.morpheus.metropolis.api.town.Town;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;

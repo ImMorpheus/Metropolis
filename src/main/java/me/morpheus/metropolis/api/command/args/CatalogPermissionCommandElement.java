@@ -10,16 +10,21 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.text.Text;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-class CatalogCommandElement<T extends CatalogType> extends CommandElement {
+class CatalogPermissionCommandElement<T extends CatalogType> extends CommandElement {
 
     private final Class<T> type;
+    private final Function<T, String> hasPermission;
 
-    CatalogCommandElement(Class<T> type, @Nullable Text key) {
+    CatalogPermissionCommandElement(Class<T> type, Function<T, String> hasPermission, @Nullable Text key) {
         super(key);
         this.type = type;
+        this.hasPermission = hasPermission;
     }
 
     @Nullable
@@ -28,11 +33,15 @@ class CatalogCommandElement<T extends CatalogType> extends CommandElement {
         if (!args.hasNext()) {
             return null;
         }
-
         final String id = args.next();
 
-        return Sponge.getRegistry().getType(this.type, id)
+        final T catalog = Sponge.getRegistry().getType(this.type, id)
                 .orElseThrow(() -> args.createError(Text.of("Invalid ", this.type.getSimpleName(), "!")));
+        final String perm = this.hasPermission.apply(catalog);
+        if (!perm.isEmpty() && !source.hasPermission(perm)) {
+            throw args.createError(Text.of("You do not have permission to use the ", catalog.getName(), " argument"));
+        }
+        return catalog;
     }
 
     @Override
@@ -41,7 +50,12 @@ class CatalogCommandElement<T extends CatalogType> extends CommandElement {
 
         return Sponge.getRegistry().getAllOf(this.type).stream()
                 .filter(f -> f.getId().startsWith(arg))
+                .filter(f -> {
+                    final String perm = this.hasPermission.apply(f);
+                    return !perm.isEmpty() && src.hasPermission(perm);
+                })
                 .map(CatalogType::getId)
                 .collect(Collectors.toList());
     }
 }
+

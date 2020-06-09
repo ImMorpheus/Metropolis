@@ -14,14 +14,13 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-class ListCommand extends AbstractMPCommand {
+public class ListCommand extends AbstractMPCommand {
 
     public ListCommand() {
         super(
-                Metropolis.ID + ".commands.town.list",
+                Metropolis.ID + ".commands.town.list.base",
                 Text.of()
         );
     }

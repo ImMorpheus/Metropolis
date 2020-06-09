@@ -20,13 +20,15 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-class VisibilityCommand extends AbstractCitizenCommand {
+public class VisibilityCommand extends AbstractCitizenCommand {
 
-    VisibilityCommand() {
+    public VisibilityCommand() {
         super(
-                GenericArguments.onlyOne(MPGenericArguments.catalog(Visibility.class, Text.of("visibility"))),
+                MPGenericArguments.exactlyOne(
+                        MPGenericArguments.guardedCatalog(Visibility.class, v -> Metropolis.ID + ".commands.town.set.visibility." + v.getId(), Text.of("visibility"))
+                ),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.set.visibility",
+                Metropolis.ID + ".commands.town.set.visibility.base",
                 Text.of()
         );
     }

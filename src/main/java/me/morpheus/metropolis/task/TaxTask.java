@@ -1,5 +1,6 @@
 package me.morpheus.metropolis.task;
 
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.town.economy.TaxData;
 import me.morpheus.metropolis.api.town.Town;
@@ -7,8 +8,12 @@ import me.morpheus.metropolis.api.town.TownService;
 import me.morpheus.metropolis.util.EconomyUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.event.CauseStackManager;
+import org.spongepowered.api.event.cause.EventContextKeys;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
@@ -36,6 +41,8 @@ public final class TaxTask implements Consumer<Task> {
 
     @Override
     public void accept(Task task) {
+        final Currency currency = this.es.getDefaultCurrency();
+        final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
         for (int i = 0; i < TaxTask.MAX_TAX_PER_TICK && this.profiles.hasNext(); i++) {
             final GameProfile profile = this.profiles.next();
             final Optional<User> userOpt = this.uss.get(profile);
@@ -53,9 +60,13 @@ public final class TaxTask implements Consumer<Task> {
                                 final Optional<UniqueAccount> fromOpt = this.es.getOrCreateAccount(user.getUniqueId());
                                 final Optional<Account> toOpt = town.getBank();
                                 if (fromOpt.isPresent() && toOpt.isPresent()) {
-                                    ResultType result = EconomyUtil.transfer(fromOpt.get(), toOpt.get(), this.es.getDefaultCurrency(), BigDecimal.valueOf(taxOpt.get().tax().get()));
-                                    if (result == ResultType.ACCOUNT_NO_FUNDS) {
-                                        town.kick(user.getUniqueId());
+                                    final BigDecimal amount = BigDecimal.valueOf(taxOpt.get().tax().get());
+                                    try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+                                        frame.addContext(EventContextKeys.PLUGIN, plugin);
+                                        final ResultType result = fromOpt.get().transfer(toOpt.get(), currency, amount, frame.getCurrentCause()).getResult();
+                                        if (result == ResultType.ACCOUNT_NO_FUNDS) {
+                                            town.kick(user.getUniqueId());
+                                        }
                                     }
                                 }
                             }

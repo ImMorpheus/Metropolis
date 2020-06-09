@@ -8,24 +8,29 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.text.Text;
 
 import javax.annotation.Nullable;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 
-class EmptyCommandElement extends CommandElement {
+class PositiveBigDecimal extends CommandElement {
 
-    EmptyCommandElement() {
-        super(null);
+    PositiveBigDecimal(@Nullable Text key) {
+        super(key);
     }
 
     @Nullable
     @Override
     protected Object parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
-        final int size = args.size();
-        if (size != 0) {
-            throw args.createError(Text.of("This command doesn't need any argument!"));
+        final String next = args.next();
+        try {
+            final BigDecimal amount = new BigDecimal(next);
+            if (amount.compareTo(BigDecimal.ZERO) < 0) {
+                throw args.createError(Text.of("Expected a positive amount, but input ", amount, " was not"));
+            }
+            return amount;
+        } catch (NumberFormatException ex) {
+            throw args.createError(Text.of("Expected a number, but input " + next + " was not"));
         }
-
-        return null;
     }
 
     @Override

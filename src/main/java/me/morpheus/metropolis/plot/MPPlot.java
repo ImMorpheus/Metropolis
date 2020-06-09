@@ -9,7 +9,9 @@ import me.morpheus.metropolis.api.plot.PlotTypes;
 import me.morpheus.metropolis.api.town.Town;
 import me.morpheus.metropolis.data.DataVersions;
 import me.morpheus.metropolis.util.Hacks;
+import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.Queries;
@@ -17,9 +19,11 @@ import org.spongepowered.api.data.persistence.DataFormats;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -99,6 +103,9 @@ public final class MPPlot implements Plot {
 
     @Override
     public void setPrice(double price) {
+        if (price < 0) {
+            throw new IllegalArgumentException("Expected a positive amount, but input " + price + " was not");
+        }
         this.price = price;
     }
 
@@ -109,6 +116,9 @@ public final class MPPlot implements Plot {
 
     @Override
     public void setRent(double rent) {
+        if (rent < 0) {
+            throw new IllegalArgumentException("Expected a positive amount, but input " + rent + " was not");
+        }
         this.rent = rent;
     }
 

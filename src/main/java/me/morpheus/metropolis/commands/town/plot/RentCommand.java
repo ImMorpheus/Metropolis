@@ -1,11 +1,12 @@
-package me.morpheus.metropolis.commands.town;
+package me.morpheus.metropolis.commands.town.plot;
 
-import com.flowpowered.math.vector.Vector3i;
 import me.morpheus.metropolis.Metropolis;
+import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
+import me.morpheus.metropolis.api.command.args.MPGenericArguments;
+import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.town.Town;
-import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
 import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -14,25 +15,25 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public class UnclaimCommand extends AbstractHomeTownCommand {
+import java.math.BigDecimal;
 
-    public UnclaimCommand() {
+public class RentCommand extends AbstractHomeTownCommand {
+
+    public RentCommand() {
         super(
-                Metropolis.ID + ".commands.town.unclaim.base",
+                MPGenericArguments.positiveBigDecimal(Text.of("rent")),
+                MinimalInputTokenizer.INSTANCE,
+                Metropolis.ID + ".commands.town.plot.rent.base",
                 Text.of()
         );
     }
 
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, Plot plot) throws CommandException {
-        final boolean unclaimed = t.unclaim(source.getLocation());
-        if (!unclaimed) {
-            source.sendMessage(TextUtil.watermark(TextColors.RED, "Error while unclaiming"));
-            return CommandResult.empty();
-        }
+        final BigDecimal price = context.requireOne("rent");
 
-        final Vector3i cp = source.getLocation().getChunkPosition();
-        source.sendMessage(TextUtil.watermark(TextColors.AQUA, "Unclaimed: [", cp.getX(), ",", cp.getZ(), "]"));
+        plot.setRent(price.doubleValue());
+        source.sendMessage(TextUtil.watermark(TextColors.AQUA, "Plot rent set to ", price));
 
         return CommandResult.success();
     }

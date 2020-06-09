@@ -20,13 +20,15 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-class PvPCommand extends AbstractCitizenCommand {
+public class PvPCommand extends AbstractCitizenCommand {
 
-    PvPCommand() {
+    public PvPCommand() {
         super(
-                GenericArguments.onlyOne(MPGenericArguments.catalog(PvPOption.class, Text.of("option"))),
+                MPGenericArguments.exactlyOne(
+                        MPGenericArguments.guardedCatalog(PvPOption.class, pvp -> Metropolis.ID + ".commands.town.set.pvp." + pvp.getId(), Text.of("option"))
+                ),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.set.pvp",
+                Metropolis.ID + ".commands.town.set.pvp.base",
                 Text.of()
         );
     }

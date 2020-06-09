@@ -16,26 +16,27 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.args.parsing.InputTokenizer;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.action.HoverAction;
-import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
-class PricesCommand extends AbstractMPCommand {
+public class PricesCommand extends AbstractMPCommand {
 
-    PricesCommand() {
+    public PricesCommand() {
         super(
-                MPGenericArguments.townOrHomeTown(Text.of("townOrHomeTown")),
+                GenericArguments.optional(
+                        GenericArguments.requiringPermission(
+                                MPGenericArguments.town(Text.of("town")),
+                                Metropolis.ID + ".commands.town.prices.other"
+                        )
+                ),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.prices",
+                Metropolis.ID + ".commands.town.prices.base",
                 Text.of()
         );
     }
@@ -50,7 +51,7 @@ class PricesCommand extends AbstractMPCommand {
         }
 
         final EconomyCategory economy = cs.getGlobal().getEconomyCategory();
-        final TownType type = context.<Town>getOne("townOrHomeTown")
+        final TownType type = context.<Town>getOne("town")
                 .map(Town::getType)
                 .orElse(TownTypes.SETTLEMENT);
 

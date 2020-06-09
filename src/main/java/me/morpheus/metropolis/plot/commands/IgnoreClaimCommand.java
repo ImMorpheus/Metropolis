@@ -3,6 +3,7 @@ package me.morpheus.metropolis.plot.commands;
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
 import me.morpheus.metropolis.api.command.AbstractPlayerCommand;
+import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.town.Town;
@@ -22,7 +23,7 @@ public class IgnoreClaimCommand extends AbstractPlayerCommand {
 
     public IgnoreClaimCommand(SimplePlotService ps) {
         super(
-                GenericArguments.onlyOne(GenericArguments.bool(Text.of("toggle"))),
+                MPGenericArguments.exactlyOne(GenericArguments.bool(Text.of("toggle"))),
                 MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.admin.ignoreclaims",
                 Text.of()

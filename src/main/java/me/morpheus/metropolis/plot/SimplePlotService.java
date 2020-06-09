@@ -3,7 +3,6 @@ package me.morpheus.metropolis.plot;
 import com.flowpowered.math.vector.Vector2i;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.Metropolis;
-import me.morpheus.metropolis.api.command.CommandDispatcher;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.GlobalConfig;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
@@ -25,7 +24,11 @@ import me.morpheus.metropolis.plot.listeners.InternalNotifyHandler;
 import me.morpheus.metropolis.plot.listeners.InternalSpawnEntityHandler;
 import me.morpheus.metropolis.util.VectorUtil;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandCallable;
 import org.spongepowered.api.command.CommandMapping;
+import org.spongepowered.api.command.args.ChildCommandElementExecutor;
+import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.persistence.DataFormats;
 import org.spongepowered.api.data.persistence.InvalidDataException;
@@ -327,7 +330,9 @@ public final class SimplePlotService implements PlotService {
     @Override
     public void registerCommands() {
         final CommandMapping cm = Sponge.getCommandManager().get("mpadmin").get();
-        ((CommandDispatcher) cm.getCallable()).register(new IgnoreClaimCommand(this), "ignoreclaims");
+        final CommandCallable callable = cm.getCallable();
+        final CommandExecutor exec = ((CommandSpec) callable).getExecutor();
+        ((ChildCommandElementExecutor) exec).register(new IgnoreClaimCommand(this), "ignoreclaims");
     }
 
     @Nullable

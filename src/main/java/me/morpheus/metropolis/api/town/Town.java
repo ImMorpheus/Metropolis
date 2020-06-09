@@ -65,7 +65,7 @@ public interface Town extends DataHolder, MessageReceiver {
 
     boolean kick(UUID user);
 
-    boolean claim(Location<World> location, PlotType type, @Nullable Text name);
+    boolean claim(Location<World> location, PlotType type);
 
     boolean unclaim(Location<World> location);
 

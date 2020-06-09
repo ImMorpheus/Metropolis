@@ -19,7 +19,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-class SaveCommand extends AbstractMPCommand {
+public class SaveCommand extends AbstractMPCommand {
 
     public SaveCommand() {
         super(

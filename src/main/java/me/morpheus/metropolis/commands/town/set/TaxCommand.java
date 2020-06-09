@@ -2,6 +2,7 @@ package me.morpheus.metropolis.commands.town.set;
 
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.AbstractCitizenCommand;
+import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.data.town.TownKeys;
@@ -17,22 +18,24 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
-class TaxCommand extends AbstractCitizenCommand {
+public class TaxCommand extends AbstractCitizenCommand {
 
-    TaxCommand() {
+    public TaxCommand() {
         super(
-                GenericArguments.onlyOne(GenericArguments.doubleNum(Text.of("tax"))),
+                MPGenericArguments.positiveBigDecimal(Text.of("tax")),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.set.tax",
+                Metropolis.ID + ".commands.town.set.tax.base",
                 Text.of()
         );
     }
 
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
-        final double tax = context.requireOne("tax");
+        final BigDecimal amount = context.requireOne("tax");
+        final double tax = amount.doubleValue();
 
         if (tax == 0) {
             t.remove(TaxData.class);

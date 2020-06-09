@@ -11,7 +11,6 @@ import me.morpheus.metropolis.util.NameUtil;
 import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.args.parsing.InputTokenizer;
@@ -23,24 +22,26 @@ import org.spongepowered.api.text.format.TextColors;
 import java.util.Collection;
 import java.util.Optional;
 
-class SetCommand extends AbstractCitizenCommand {
+public class SetCommand extends AbstractCitizenCommand {
 
-    SetCommand() {
+    public SetCommand() {
         super(
                 GenericArguments.seq(
-                        GenericArguments.onlyOne(MPGenericArguments.catalog(Rank.class, Text.of("rank"))),
-                        MPGenericArguments.citizen(Text.of("citizens"))
+                        MPGenericArguments.exactlyOne(
+                                MPGenericArguments.guardedCatalog(Rank.class, rank -> Metropolis.ID + ".commands.town.rank.set." + rank.getId(), Text.of("rank"))
+                        ),
+                        GenericArguments.allOf(MPGenericArguments.citizen(Text.of("citizens")))
                 ),
-                InputTokenizer.quotedStrings(false),
-                Metropolis.ID + ".commands.town.rank.set",
+                InputTokenizer.spaceSplitString(),
+                Metropolis.ID + ".commands.town.rank.set.base",
                 Text.of()
         );
     }
 
     @Override
     protected CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
-        final Collection<User> citizens = context.getAll("citizens");
         final Rank rank = context.requireOne("rank");
+        final Collection<User> citizens = context.getAll("citizens");
 
         final Text sourceName = NameUtil.getDisplayName(source);
         for (User user : citizens) {

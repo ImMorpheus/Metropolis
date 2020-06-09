@@ -7,6 +7,9 @@ import me.morpheus.metropolis.api.data.citizen.CitizenKeys;
 import me.morpheus.metropolis.api.data.town.TownKeys;
 import me.morpheus.metropolis.api.flag.Flag;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.DataView;
@@ -18,6 +21,7 @@ import org.spongepowered.api.data.persistence.AbstractDataBuilder;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

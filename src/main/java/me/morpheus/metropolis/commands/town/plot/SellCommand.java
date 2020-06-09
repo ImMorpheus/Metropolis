@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.commands.town.plot;
 
 import me.morpheus.metropolis.Metropolis;
+import me.morpheus.metropolis.api.command.args.MPGenericArguments;
 import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
 import me.morpheus.metropolis.api.command.AbstractHomeTownCommand;
@@ -17,25 +18,26 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
-class SellCommand extends AbstractHomeTownCommand {
+public class SellCommand extends AbstractHomeTownCommand {
 
-    SellCommand() {
+    public SellCommand() {
         super(
-                GenericArguments.onlyOne(GenericArguments.doubleNum(Text.of("price"))),
+                MPGenericArguments.positiveBigDecimal(Text.of("price")),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.plot.sell",
+                Metropolis.ID + ".commands.town.plot.sell.base",
                 Text.of()
         );
     }
 
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, Plot plot) throws CommandException {
-        final double price = context.requireOne("price");
+        final BigDecimal price = context.requireOne("price");
 
         plot.setForSale(true);
-        plot.setPrice(price);
+        plot.setPrice(price.doubleValue());
         source.sendMessage(TextUtil.watermark(TextColors.AQUA, "Plot price set to ", price));
 
         return CommandResult.success();

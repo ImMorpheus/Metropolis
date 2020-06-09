@@ -22,11 +22,11 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Optional;
 
-class JoinCommand extends AbstractPlayerCommand {
+public class JoinCommand extends AbstractPlayerCommand {
 
-    JoinCommand() {
+    public JoinCommand() {
         super(
-                GenericArguments.onlyOne(MPGenericArguments.town(Text.of("town"))),
+                MPGenericArguments.exactlyOne(MPGenericArguments.town(Text.of("town"))),
                 MinimalInputTokenizer.INSTANCE,
                 Metropolis.ID + ".commands.admin.town.join",
                 Text.of()

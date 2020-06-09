@@ -9,6 +9,7 @@ import me.morpheus.metropolis.api.flag.Flag;
 import me.morpheus.metropolis.api.plot.Plot;
 import me.morpheus.metropolis.api.rank.Rank;
 import me.morpheus.metropolis.api.town.Town;
+import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.args.CommandContext;
@@ -16,23 +17,31 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
-class RemoveCommand extends AbstractHomeTownCommand {
+import java.util.Collection;
 
-    RemoveCommand() {
+public class RemoveCommand extends AbstractHomeTownCommand {
+
+    public RemoveCommand() {
         super(
-                GenericArguments.onlyOne(MPGenericArguments.catalog(Flag.class, Text.of("flag"))),
-                MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.plot.perm.remove",
+                GenericArguments.allOf(
+                        MPGenericArguments.guardedCatalog(Flag.class, flag -> Metropolis.ID + ".commands.town.plot.perm.remove." + flag.getId(), Text.of("flag"))
+                ),
+                InputTokenizer.spaceSplitString(),
+                Metropolis.ID + ".commands.town.plot.perm.remove.base",
                 Text.of()
         );
     }
 
     @Override
     protected CommandResult process(Player source, CommandContext context, CitizenData cd, Town t, Plot plot) throws CommandException {
-        final Flag flag = context.requireOne("flag");
+        final Collection<Flag> flags = context.getAll("flag");
 
-        plot.removePermission(flag);
+        for (Flag flag : flags) {
+            plot.removePermission(flag);
+        }
+        source.sendMessage(TextUtil.watermark(TextColors.AQUA, "Plot permissions have been updated"));
 
         return CommandResult.success();
     }

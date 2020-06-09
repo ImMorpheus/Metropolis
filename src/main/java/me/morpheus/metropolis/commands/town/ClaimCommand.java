@@ -3,6 +3,7 @@ package me.morpheus.metropolis.commands.town;
 import com.flowpowered.math.vector.Vector3i;
 import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.command.args.MPGenericArguments;
+import me.morpheus.metropolis.api.command.args.parsing.MinimalInputTokenizer;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.GlobalConfig;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
@@ -17,33 +18,32 @@ import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.CauseStackManager;
+import org.spongepowered.api.event.cause.EventContextKeys;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.transaction.ResultType;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
-class ClaimCommand extends AbstractCitizenCommand {
+public class ClaimCommand extends AbstractCitizenCommand {
 
-    ClaimCommand() {
+    public ClaimCommand() {
         super(
                 GenericArguments.optional(
-                        GenericArguments.seq(
-                                MPGenericArguments.catalog(PlotType.class, Text.of("type")),
-                                GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)
+                        MPGenericArguments.exactlyOne(
+                                MPGenericArguments.guardedCatalog(PlotType.class, pt -> Metropolis.ID + ".commands.town.claim." + pt.getId(), Text.of("type"))
                         )
                 ),
-                InputTokenizer.quotedStrings(false),
-                Metropolis.ID + ".commands.town.claim",
+                MinimalInputTokenizer.INSTANCE,
+                Metropolis.ID + ".commands.town.claim.base",
                 Text.of()
         );
     }
@@ -51,7 +51,6 @@ class ClaimCommand extends AbstractCitizenCommand {
     @Override
     public CommandResult process(Player source, CommandContext context, CitizenData cd, Town t) throws CommandException {
         final PlotType type = context.<PlotType>getOne("type").orElse(PlotTypes.PLOT);
-        final Text name = context.<Text>getOne("name").orElse(null);
 
         final PlotService ps = Sponge.getServiceManager().provideUnchecked(PlotService.class);
         final Optional<Plot> plotOpt = ps.get(source.getLocation());
@@ -73,19 +72,21 @@ class ClaimCommand extends AbstractCitizenCommand {
                 return CommandResult.empty();
             }
             final EconomyService es = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
-            final double price = t.getType().getClaimPrice(type);
-            final ResultType result = EconomyUtil.withdraw(accOpt.get(), es.getDefaultCurrency(), BigDecimal.valueOf(price));
-            if (result == ResultType.ACCOUNT_NO_FUNDS) {
-                source.sendMessage(TextUtil.watermark(TextColors.RED, "Not enough money"));
-                return CommandResult.empty();
-            }
-            if (result != ResultType.SUCCESS) {
-                source.sendMessage(TextUtil.watermark(TextColors.RED, "Error while paying: ", result.name()));
-                return CommandResult.empty();
+
+            try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+                final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+                frame.addContext(EventContextKeys.PLUGIN, plugin);
+                final BigDecimal amount = BigDecimal.valueOf(t.getType().getClaimPrice(type));
+                final ResultType result = accOpt.get().withdraw(es.getDefaultCurrency(), amount, frame.getCurrentCause()).getResult();
+                if (result != ResultType.SUCCESS) {
+                    final String error = EconomyUtil.getErrorMessage(result);
+                    source.sendMessage(TextUtil.watermark(TextColors.RED, error));
+                    return CommandResult.empty();
+                }
             }
         }
 
-        final boolean claimed = t.claim(source.getLocation(), type, name);
+        final boolean claimed = t.claim(source.getLocation(), type);
         if (!claimed) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Error while claiming"));
             return CommandResult.empty();

@@ -17,13 +17,13 @@ import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.args.parsing.InputTokenizer;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.CauseStackManager;
+import org.spongepowered.api.event.cause.EventContextKeys;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.economy.EconomyService;
-import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.service.economy.transaction.ResultType;
 import org.spongepowered.api.text.Text;
@@ -33,13 +33,13 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 import java.math.BigDecimal;
 import java.util.Optional;
 
-class NewCommand extends AbstractPlayerCommand {
+public class NewCommand extends AbstractPlayerCommand {
 
-    NewCommand() {
+    public NewCommand() {
         super(
-                GenericArguments.onlyOne(GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false)),
+                GenericArguments.text(Text.of("name"), TextSerializers.FORMATTING_CODE, false),
                 MinimalInputTokenizer.INSTANCE,
-                Metropolis.ID + ".commands.town.new",
+                Metropolis.ID + ".commands.town.new.base",
                 Text.of()
         );
     }
@@ -69,14 +69,17 @@ class NewCommand extends AbstractPlayerCommand {
                 source.sendMessage(TextUtil.watermark(TextColors.RED, "Unable to retrieve player account"));
                 return CommandResult.empty();
             }
-            final ResultType result = EconomyUtil.withdraw(accOpt.get(), es.getDefaultCurrency(), BigDecimal.valueOf(global.getEconomyCategory().getTownCreationPrice()));
-            if (result == ResultType.ACCOUNT_NO_FUNDS) {
-                source.sendMessage(TextUtil.watermark(TextColors.RED, "Not enough money"));
-                return CommandResult.empty();
-            }
-            if (result != ResultType.SUCCESS) {
-                source.sendMessage(TextUtil.watermark(TextColors.RED, "Error while paying: ", result.name()));
-                return CommandResult.empty();
+
+            try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
+                final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();
+                frame.addContext(EventContextKeys.PLUGIN, plugin);
+                final BigDecimal amount = BigDecimal.valueOf(global.getEconomyCategory().getTownCreationPrice());
+                final ResultType result = accOpt.get().withdraw(es.getDefaultCurrency(), amount, frame.getCurrentCause()).getResult();
+                if (result != ResultType.SUCCESS) {
+                    final String error = EconomyUtil.getErrorMessage(result);
+                    source.sendMessage(TextUtil.watermark(TextColors.RED, error));
+                    return CommandResult.empty();
+                }
             }
         }
 
@@ -97,7 +100,7 @@ class NewCommand extends AbstractPlayerCommand {
 
         final Town t = tOpt.get();
 
-        final boolean claimed = t.claim(source.getLocation(), PlotTypes.HOMEBLOCK, null);
+        final boolean claimed = t.claim(source.getLocation(), PlotTypes.HOMEBLOCK);
         if (!claimed) {
             source.sendMessage(TextUtil.watermark(TextColors.RED, "Unable to claim homeblock"));
             t.disband();
