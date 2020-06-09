@@ -16,6 +16,6 @@ public interface CustomResourceLoader<T> extends CatalogType {
 
     T load(Path path) throws IOException, ObjectMappingException;
 
-    CompletableFuture<Void> save();
+    void save();
 
 }

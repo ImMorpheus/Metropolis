@@ -284,8 +284,8 @@ public class Metropolis {
                 .join();
         MPLog.getLogger().info("Plots saved");
 
-        for (CustomResourceLoader loader : Sponge.getRegistry().getAllOf(CustomResourceLoader.class)) {
-            loader.save().join();
+        for (CustomResourceLoader<?> loader : Sponge.getRegistry().getAllOf(CustomResourceLoader.class)) {
+            loader.save();
         }
     }
 

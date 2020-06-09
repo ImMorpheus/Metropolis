@@ -104,35 +104,35 @@ public class RankLoader implements CustomResourceLoader<Rank> {
     }
 
     @Override
-    public CompletableFuture<Void> save() {
-        return CompletableFuture.runAsync(() -> {
-            if (Files.notExists(RankLoader.RANK)) {
-                try {
-                    Files.createDirectories(RankLoader.RANK);
-                } catch (IOException e) {
-                    throw new CompletionException(e);
-                }
+    public void save() {
+        if (Files.notExists(RankLoader.RANK)) {
+            try {
+                Files.createDirectories(RankLoader.RANK);
+            } catch (IOException e) {
+                MPLog.getLogger().error("Error while creating save dir");
+                MPLog.getLogger().error("Exception:", e);
+                return;
             }
-            final Collection<? extends CatalogType> types = Sponge.getRegistry().getAllOf(Rank.class);
-            for (CatalogType catalogType : types) {
-                final Path save = RankLoader.RANK.resolve(catalogType.getId() + ".conf");
-                try {
-                    if (Files.notExists(save)) {
-                        Files.createFile(save);
-                    }
-                    SimpleCommentedConfigurationNode n = SimpleCommentedConfigurationNode.root();
-                    ObjectMapper<CatalogType>.BoundInstance mapper = ObjectMapper.forObject(catalogType);
-                    mapper.serialize(n);
-                    HoconConfigurationLoader.builder()
-                            .setPath(save)
-                            .build()
-                            .save(n);
-                } catch (ObjectMappingException | IOException e) {
-                    MPLog.getLogger().error("Error while saving catalog {} {}", catalogType.getClass(), catalogType.getId());
-                    MPLog.getLogger().error("Exception:", e);
+        }
+        final Collection<? extends CatalogType> types = Sponge.getRegistry().getAllOf(Rank.class);
+        for (CatalogType catalogType : types) {
+            final Path save = RankLoader.RANK.resolve(catalogType.getId() + ".conf");
+            try {
+                if (Files.notExists(save)) {
+                    Files.createFile(save);
                 }
+                SimpleCommentedConfigurationNode n = SimpleCommentedConfigurationNode.root();
+                ObjectMapper<CatalogType>.BoundInstance mapper = ObjectMapper.forObject(catalogType);
+                mapper.serialize(n);
+                HoconConfigurationLoader.builder()
+                        .setPath(save)
+                        .build()
+                        .save(n);
+            } catch (ObjectMappingException | IOException e) {
+                MPLog.getLogger().error("Error while saving catalog {} {}", catalogType.getClass(), catalogType.getId());
+                MPLog.getLogger().error("Exception:", e);
             }
-        });
+        }
     }
 
     private Reference2ByteMap<Flag> getCitizenDefaultPermissions() {
