@@ -30,18 +30,16 @@ public class MPCitizenData extends AbstractData<CitizenData, ImmutableCitizenDat
     private Rank rank;
     @Nullable private Set<UUID> friends;
     private Instant joined;
-    private boolean chat;
 
     MPCitizenData() {
-        this(Integer.MIN_VALUE, Ranks.CITIZEN, null, Instant.now(), false);
+        this(Integer.MIN_VALUE, Ranks.CITIZEN, null, Instant.now());
     }
 
-    MPCitizenData(int town, Rank rank, @Nullable Set<UUID> friends, Instant joined, boolean chat) {
+    MPCitizenData(int town, Rank rank, @Nullable Set<UUID> friends, Instant joined) {
         this.town = town;
         this.rank = rank;
         this.friends = friends;
         this.joined = joined;
-        this.chat = chat;
         registerGettersAndSetters();
     }
 
@@ -51,20 +49,17 @@ public class MPCitizenData extends AbstractData<CitizenData, ImmutableCitizenDat
         registerKeyValue(CitizenKeys.RANK, this::rank);
         registerKeyValue(CitizenKeys.FRIENDS, this::friends);
         registerKeyValue(CitizenKeys.JOINED, this::joined);
-        registerKeyValue(CitizenKeys.CHAT, this::chat);
 
         registerFieldGetter(CitizenKeys.TOWN, this::getTown);
         registerFieldGetter(CitizenKeys.RANK, this::getRank);
         registerFieldGetter(CitizenKeys.FRIENDS, this::getFriends);
         registerFieldGetter(CitizenKeys.JOINED, this::getJoined);
-        registerFieldGetter(CitizenKeys.CHAT, this::hasChat);
 
         // Only on mutable implementation
         registerFieldSetter(CitizenKeys.TOWN, this::setTown);
         registerFieldSetter(CitizenKeys.RANK, this::setRank);
         registerFieldSetter(CitizenKeys.FRIENDS, this::setFriends);
         registerFieldSetter(CitizenKeys.JOINED, this::setJoined);
-        registerFieldSetter(CitizenKeys.CHAT, this::setChat);
     }
 
     @Override
@@ -74,7 +69,6 @@ public class MPCitizenData extends AbstractData<CitizenData, ImmutableCitizenDat
         this.rank = merged.rank().get();
         this.friends = merged.friends().get();
         this.joined = merged.joined().get();
-        this.chat = merged.chat().get();
 
         return Optional.of(this);
     }
@@ -91,7 +85,6 @@ public class MPCitizenData extends AbstractData<CitizenData, ImmutableCitizenDat
         }
         Set<UUID> friends = Hacks.friendsFrom(container);
         Optional<Instant> joined = container.getObject(CitizenKeys.JOINED.getQuery(), Instant.class);
-        Optional<Boolean> chat = container.getBoolean(CitizenKeys.CHAT.getQuery());
 
         this.town = town.get();
         this.rank = rank.get();
@@ -99,18 +92,17 @@ public class MPCitizenData extends AbstractData<CitizenData, ImmutableCitizenDat
             this.friends = friends;
         }
         this.joined = joined.orElse(Instant.now());
-        this.chat = chat.orElse(false);
         return Optional.of(this);
     }
 
     @Override
     public CitizenData copy() {
-        return new MPCitizenData(this.town, this.rank, this.friends, this.joined, this.chat);
+        return new MPCitizenData(this.town, this.rank, this.friends, this.joined);
     }
 
     @Override
     public ImmutableCitizenData asImmutable() {
-        return new ImmutableMPCitizenData(this.town, this.rank, this.friends, this.joined, this.chat);
+        return new ImmutableMPCitizenData(this.town, this.rank, this.friends, this.joined);
     }
 
     @Override
@@ -127,7 +119,6 @@ public class MPCitizenData extends AbstractData<CitizenData, ImmutableCitizenDat
             container.set(CitizenKeys.FRIENDS.getQuery(), this.friends);
         }
         container.set(CitizenKeys.JOINED.getQuery(), this.joined);
-        container.set(CitizenKeys.CHAT.getQuery(), this.chat);
 
         return container;
     }
@@ -153,11 +144,6 @@ public class MPCitizenData extends AbstractData<CitizenData, ImmutableCitizenDat
     @Override
     public Value<Instant> joined() {
         return Sponge.getRegistry().getValueFactory().createValue(CitizenKeys.JOINED, this.joined);
-    }
-
-    @Override
-    public Value<Boolean> chat() {
-        return Sponge.getRegistry().getValueFactory().createValue(CitizenKeys.CHAT, this.chat);
     }
 
     private int getTown() {
@@ -191,13 +177,5 @@ public class MPCitizenData extends AbstractData<CitizenData, ImmutableCitizenDat
 
     private void setJoined(Instant joined) {
         this.joined = joined;
-    }
-
-    private boolean hasChat() {
-        return this.chat;
-    }
-
-    private void setChat(boolean chat) {
-        this.chat = chat;
     }
 }

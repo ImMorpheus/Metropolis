@@ -92,7 +92,6 @@ import me.morpheus.metropolis.listeners.MoveEntityTownHandler;
 import me.morpheus.metropolis.listeners.ReloadHandler;
 import me.morpheus.metropolis.listeners.SaveHandler;
 import me.morpheus.metropolis.listeners.SpawnEntityTownHandler;
-import me.morpheus.metropolis.listeners.TownChatHandler;
 import me.morpheus.metropolis.listeners.debug.ChangeBlockDebugHandler;
 import me.morpheus.metropolis.listeners.debug.DamageEntityDebugHandler;
 import me.morpheus.metropolis.plot.PlotTypeRegistryModule;
@@ -186,7 +185,6 @@ public class Metropolis {
         Sponge.getEventManager().registerListeners(this.container, new InteractTownHandler());
         Sponge.getEventManager().registerListeners(this.container, new SpawnEntityTownHandler());
         Sponge.getEventManager().registerListeners(this.container, new ReloadHandler());
-        Sponge.getEventManager().registerListeners(this.container, new TownChatHandler());
         Sponge.getEventManager().registerListeners(this.container, new SaveHandler());
 
         final GlobalConfig g = Sponge.getServiceManager().provideUnchecked(ConfigService.class).getGlobal();
@@ -297,7 +295,6 @@ public class Metropolis {
         event.register(CitizenKeys.RANK);
         event.register(CitizenKeys.FRIENDS);
         event.register(CitizenKeys.JOINED);
-        event.register(CitizenKeys.CHAT);
 
         event.register(TownKeys.DESCRIPTION);
         event.register(TownKeys.MOTD);

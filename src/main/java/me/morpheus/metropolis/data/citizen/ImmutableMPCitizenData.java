@@ -23,14 +23,12 @@ public class ImmutableMPCitizenData extends AbstractImmutableData<ImmutableCitiz
     private final Rank rank;
     @Nullable private final Set<UUID> friends;
     private final Instant joined;
-    private final boolean chat;
 
-    ImmutableMPCitizenData(int town, Rank rank, @Nullable Set<UUID> friends, Instant joined, boolean chat) {
+    ImmutableMPCitizenData(int town, Rank rank, @Nullable Set<UUID> friends, Instant joined) {
         this.town = town;
         this.rank = rank;
         this.friends = friends;
         this.joined = joined;
-        this.chat = chat;
         registerGetters();
     }
     @Override
@@ -39,18 +37,16 @@ public class ImmutableMPCitizenData extends AbstractImmutableData<ImmutableCitiz
         registerKeyValue(CitizenKeys.RANK, this::rank);
         registerKeyValue(CitizenKeys.FRIENDS, this::friends);
         registerKeyValue(CitizenKeys.JOINED, this::joined);
-        registerKeyValue(CitizenKeys.CHAT, this::chat);
 
         registerFieldGetter(CitizenKeys.TOWN, this::getTown);
         registerFieldGetter(CitizenKeys.RANK, this::getRank);
         registerFieldGetter(CitizenKeys.FRIENDS, this::getFriends);
         registerFieldGetter(CitizenKeys.JOINED, this::getJoined);
-        registerFieldGetter(CitizenKeys.CHAT, this::hasChat);
     }
 
     @Override
     public CitizenData asMutable() {
-        return new MPCitizenData(this.town, this.rank, this.friends, this.joined, this.chat);
+        return new MPCitizenData(this.town, this.rank, this.friends, this.joined);
     }
 
     @Override
@@ -67,7 +63,6 @@ public class ImmutableMPCitizenData extends AbstractImmutableData<ImmutableCitiz
             container.set(CitizenKeys.FRIENDS.getQuery(), this.friends);
         }
         container.set(CitizenKeys.JOINED.getQuery(), this.joined);
-        container.set(CitizenKeys.CHAT.getQuery(), this.chat);
 
         return container;
     }
@@ -95,11 +90,6 @@ public class ImmutableMPCitizenData extends AbstractImmutableData<ImmutableCitiz
         return Sponge.getRegistry().getValueFactory().createValue(CitizenKeys.JOINED, this.joined).asImmutable();
     }
 
-    @Override
-    public ImmutableValue<Boolean> chat() {
-        return Sponge.getRegistry().getValueFactory().createValue(CitizenKeys.CHAT, this.chat).asImmutable();
-    }
-
     private int getTown() {
         return this.town;
     }
@@ -115,9 +105,5 @@ public class ImmutableMPCitizenData extends AbstractImmutableData<ImmutableCitiz
 
     private Instant getJoined() {
         return this.joined;
-    }
-
-    private boolean hasChat() {
-        return this.chat;
     }
 }

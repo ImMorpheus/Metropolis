@@ -41,12 +41,5 @@ public final class CitizenKeys {
             .type(TypeTokens.INSTANT_VALUE_TOKEN)
             .build();
 
-    public static final Key<Value<Boolean>> CHAT = Key.builder()
-            .id("chat")
-            .name("chat")
-            .query(DataQuery.of("Chat"))
-            .type(TypeTokens.BOOLEAN_VALUE_TOKEN)
-            .build();
-
     private CitizenKeys() {}
 }

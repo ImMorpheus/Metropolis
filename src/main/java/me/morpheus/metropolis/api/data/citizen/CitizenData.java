@@ -18,6 +18,4 @@ public interface CitizenData extends DataManipulator<CitizenData, ImmutableCitiz
 
     Value<Instant> joined();
 
-    Value<Boolean> chat();
-
 }
