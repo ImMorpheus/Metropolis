@@ -9,7 +9,6 @@ import me.morpheus.metropolis.api.custom.CustomResourceLoader;
 import me.morpheus.metropolis.api.health.IncidentService;
 import me.morpheus.metropolis.api.town.Upgrade;
 import me.morpheus.metropolis.config.ConfigUtil;
-import me.morpheus.metropolis.configurate.serialize.Object2IntSerializer;
 import me.morpheus.metropolis.configurate.serialize.Reference2DoubleSerializer;
 import me.morpheus.metropolis.configurate.serialize.Reference2IntSerializer;
 import me.morpheus.metropolis.error.MPGenericErrors;

@@ -7,7 +7,6 @@ import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.GlobalConfig;
 import me.morpheus.metropolis.config.category.SimplePlotCategory;
-import me.morpheus.metropolis.configurate.serialize.Object2IntSerializer;
 import me.morpheus.metropolis.configurate.serialize.Reference2ByteSerializer;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;

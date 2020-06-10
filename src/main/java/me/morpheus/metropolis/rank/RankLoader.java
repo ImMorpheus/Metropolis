@@ -12,7 +12,6 @@ import me.morpheus.metropolis.api.flag.Flag;
 import me.morpheus.metropolis.api.health.IncidentService;
 import me.morpheus.metropolis.api.rank.Rank;
 import me.morpheus.metropolis.config.ConfigUtil;
-import me.morpheus.metropolis.configurate.serialize.Object2IntSerializer;
 import me.morpheus.metropolis.configurate.serialize.Reference2ByteSerializer;
 import me.morpheus.metropolis.error.MPGenericErrors;
 import me.morpheus.metropolis.health.MPIncident;
