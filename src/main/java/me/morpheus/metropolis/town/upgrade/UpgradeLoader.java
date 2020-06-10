@@ -10,7 +10,6 @@ import me.morpheus.metropolis.api.health.IncidentService;
 import me.morpheus.metropolis.api.town.Upgrade;
 import me.morpheus.metropolis.config.ConfigUtil;
 import me.morpheus.metropolis.configurate.serialize.Reference2DoubleSerializer;
-import me.morpheus.metropolis.configurate.serialize.Reference2IntSerializer;
 import me.morpheus.metropolis.error.MPGenericErrors;
 import me.morpheus.metropolis.health.MPIncident;
 import ninja.leaping.configurate.ConfigurationOptions;
