@@ -1,9 +1,12 @@
 package me.morpheus.metropolis.town.upgrade;
 
+import it.unimi.dsi.fastutil.objects.Reference2ShortMap;
+import me.morpheus.metropolis.api.plot.PlotType;
 import me.morpheus.metropolis.api.town.TownType;
 import me.morpheus.metropolis.api.town.Upgrade;
 import ninja.leaping.configurate.objectmapping.Setting;
 import ninja.leaping.configurate.objectmapping.serialize.ConfigSerializable;
+import org.spongepowered.api.text.Text;
 
 import java.util.Set;
 
@@ -12,21 +15,28 @@ class MPUpgrade implements Upgrade {
 
     @Setting private String id;
     @Setting private String name;
+    @Setting private Text description;
     @Setting(value = "required-towntypes") private Set<TownType> requiredTownTypes;
     @Setting private TownType target;
     @Setting private double cost;
-    @Setting(value = "required-citizens") private short requiredCitizens;
-    @Setting(value = "required-plots") private short requiredPlots;
+    @Setting(value = "max-citizens") private short maxCitizens;
+    @Setting(value = "min-citizens") private short minCitizens;
+    @Setting(value = "max-plots") private Reference2ShortMap<PlotType> maxPlots;
+    @Setting(value = "min-plots") private Reference2ShortMap<PlotType> minPlots;
 
-    public MPUpgrade(String id, String name, Set<TownType> requiredTownTypes, TownType target,
-                     double cost, short requiredCitizens, short requiredPlots) {
+    public MPUpgrade(String id, String name, Text description, Set<TownType> requiredTownTypes, TownType target,
+                     double cost, short maxCitizens, short minCitizens,
+                     Reference2ShortMap<PlotType> maxPlots, Reference2ShortMap<PlotType> minPlots) {
         this.id = id;
         this.name = name;
+        this.description = description;
         this.requiredTownTypes = requiredTownTypes;
         this.target = target;
         this.cost = cost;
-        this.requiredCitizens = requiredCitizens;
-        this.requiredPlots = requiredPlots;
+        this.maxCitizens = maxCitizens;
+        this.minCitizens = minCitizens;
+        this.maxPlots = maxPlots;
+        this.minPlots = minPlots;
     }
 
     private MPUpgrade() {
@@ -45,6 +55,11 @@ class MPUpgrade implements Upgrade {
     }
 
     @Override
+    public Text getDescription() {
+        return this.description;
+    }
+
+    @Override
     public Set<TownType> getRequiredTownTypes() {
         return this.requiredTownTypes;
     }
@@ -60,12 +75,30 @@ class MPUpgrade implements Upgrade {
     }
 
     @Override
-    public short getRequiredCitizens() {
-        return this.requiredCitizens;
+    public short getMaxCitizens() {
+        return this.maxCitizens;
     }
 
     @Override
-    public short getRequiredPlots() {
-        return this.requiredPlots;
+    public short getMinCitizens() {
+        return this.minCitizens;
+    }
+
+    public Reference2ShortMap<PlotType> getMaxPlots() {
+        return this.maxPlots;
+    }
+
+    public Reference2ShortMap<PlotType> getMinPlots() {
+        return this.minPlots;
+    }
+
+    @Override
+    public short getMaxPlots(PlotType type) {
+        return this.maxPlots.getShort(type);
+    }
+
+    @Override
+    public short getMinPlots(PlotType type) {
+        return this.minPlots.getShort(type);
     }
 }

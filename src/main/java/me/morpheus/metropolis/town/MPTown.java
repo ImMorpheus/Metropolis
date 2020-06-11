@@ -184,17 +184,24 @@ public class MPTown implements Town {
 
     @Override
     public boolean upgrade(Upgrade upgrade) {
-        Set<TownType> requiredTownTypes = upgrade.getRequiredTownTypes();
-        if (!requiredTownTypes.contains(this.type)) {
+        if (!upgrade.getRequiredTownTypes().contains(this.type)) {
             return false;
         }
-        short requiredCitizens = upgrade.getRequiredCitizens();
-        if (this.citizens < requiredCitizens) {
+        if (this.citizens < upgrade.getMinCitizens()) {
             return false;
         }
-        short requiredPlots = upgrade.getRequiredPlots();
-        if (this.plots.getShort(PlotTypes.PLOT) < requiredPlots) {
+        if (this.citizens > upgrade.getMaxCitizens()) {
             return false;
+        }
+        final Collection<PlotType> plots = Sponge.getRegistry().getAllOf(PlotType.class);
+        for (PlotType plot : plots) {
+            final short current = this.plots.getShort(plot);
+            if (current < upgrade.getMinPlots(plot)) {
+                return false;
+            }
+            if (current > upgrade.getMaxPlots(plot)) {
+                return false;
+            }
         }
         try (final CauseStackManager.StackFrame frame = Sponge.getCauseStackManager().pushCauseFrame()) {
             final PluginContainer plugin = Sponge.getPluginManager().getPlugin(Metropolis.ID).get();

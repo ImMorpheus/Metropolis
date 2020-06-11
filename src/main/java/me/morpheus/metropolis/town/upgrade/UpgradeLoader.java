@@ -4,12 +4,17 @@ import com.google.common.reflect.TypeToken;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
+import it.unimi.dsi.fastutil.objects.Reference2ShortMap;
+import it.unimi.dsi.fastutil.objects.Reference2ShortOpenHashMap;
 import me.morpheus.metropolis.MPLog;
 import me.morpheus.metropolis.api.custom.CustomResourceLoader;
 import me.morpheus.metropolis.api.health.IncidentService;
+import me.morpheus.metropolis.api.plot.PlotType;
+import me.morpheus.metropolis.api.town.TownTypes;
 import me.morpheus.metropolis.api.town.Upgrade;
 import me.morpheus.metropolis.config.ConfigUtil;
 import me.morpheus.metropolis.configurate.serialize.Reference2DoubleSerializer;
+import me.morpheus.metropolis.configurate.serialize.Reference2ShortSerializer;
 import me.morpheus.metropolis.error.MPGenericErrors;
 import me.morpheus.metropolis.health.MPIncident;
 import ninja.leaping.configurate.ConfigurationOptions;
@@ -23,6 +28,7 @@ import ninja.leaping.configurate.objectmapping.serialize.TypeSerializerCollectio
 import ninja.leaping.configurate.objectmapping.serialize.TypeSerializers;
 import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.text.Text;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -50,26 +56,40 @@ public class UpgradeLoader implements CustomResourceLoader<Upgrade> {
     }
 
     public Collection<Upgrade> load() {
-        if (Files.notExists(UpgradeLoader.UPGRADE)) {
-            return Collections.emptyList();
-        }
-        final List<Upgrade> upgrades = new ArrayList<>();
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(UpgradeLoader.UPGRADE)) {
-            for (Path file : stream) {
-                MPLog.getLogger().info("Loading upgrade from {}", file.getFileName());
-                upgrades.add(load(file));
+        if (Files.exists(UpgradeLoader.UPGRADE)) {
+            final List<Upgrade> upgrades = new ArrayList<>();
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(UpgradeLoader.UPGRADE)) {
+                for (Path file : stream) {
+                    MPLog.getLogger().info("Loading upgrade from {}", file.getFileName());
+                    upgrades.add(load(file));
+                }
+                return upgrades;
+            } catch (Exception e) {
+                Sponge.getServiceManager().provideUnchecked(IncidentService.class)
+                        .create(new MPIncident(MPGenericErrors.config(), e));
+                return Collections.emptyList();
             }
-            return upgrades;
-        } catch (Exception e) {
-            Sponge.getServiceManager().provideUnchecked(IncidentService.class)
-                    .create(new MPIncident(MPGenericErrors.config(), e));
-            return Collections.emptyList();
         }
+        final Reference2ShortMap<PlotType> max = new Reference2ShortOpenHashMap<>();
+        max.defaultReturnValue(Short.MAX_VALUE);
+        final Reference2ShortMap<PlotType> min = new Reference2ShortOpenHashMap<>();
+        min.defaultReturnValue((short) 0);
+        return Collections.singletonList(
+                new MPUpgrade(
+                        "dummyupgrade", "DummyUpgrade", Text.of("DummyDescription"), Collections.emptySet(),
+                        TownTypes.SETTLEMENT, 0.0, Short.MAX_VALUE, (short) 0, max, min
+                )
+        );
     }
 
     @Override
     public Upgrade load(Path path) throws IOException, ObjectMappingException {
+        TypeSerializerCollection serializers = TypeSerializers.getDefaultSerializers().newChild();
+        serializers.registerType(TypeToken.of(Reference2ShortMap.class), new Reference2ShortSerializer());
+
+        ConfigurationOptions options = ConfigurationOptions.defaults().setSerializers(serializers);
         ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder()
+                .setDefaultOptions(options)
                 .setPath(path)
                 .build();
 
@@ -77,7 +97,11 @@ public class UpgradeLoader implements CustomResourceLoader<Upgrade> {
         CommentedConfigurationNode node = loader.load();
         mapper.populate(node);
 
-        return mapper.getInstance();
+        MPUpgrade upgrade = mapper.getInstance();
+        upgrade.getMaxPlots().defaultReturnValue(Short.MAX_VALUE);
+        upgrade.getMinPlots().defaultReturnValue((short) 0);
+
+        return upgrade;
     }
 
     @Override

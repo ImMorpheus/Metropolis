@@ -16,6 +16,7 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Collection;
@@ -43,7 +44,22 @@ public class UpgradeCommand extends AbstractCitizenCommand {
         if (!upgradeOpt.isPresent()) {
             final Collection<Text> upgrades = Sponge.getRegistry().getAllOf(Upgrade.class).stream()
                     .filter(upgrade -> upgrade.getRequiredTownTypes().contains(t.getType()))
-                    .map(upgrade -> Text.of(upgrade.getName()))
+                    .map(upgrade -> Text.builder()
+                            .append(Text.of(upgrade.getName()))
+                            .onHover(TextActions.showText(
+                                            Text.builder()
+                                                    .append(Text.of(TextColors.DARK_GREEN, "Description: ", TextColors.GREEN, upgrade.getDescription()))
+                                                    .append(Text.NEW_LINE)
+                                                    .append(Text.of(TextColors.DARK_GREEN, "Cost: ", TextColors.GREEN, upgrade.getCost()))
+                                                    .append(Text.NEW_LINE)
+                                                    .append(Text.of(TextColors.DARK_GREEN, "Max citizens: ", TextColors.GREEN, upgrade.getMaxCitizens()))
+                                                    .append(Text.NEW_LINE)
+                                                    .append(Text.of(TextColors.DARK_GREEN, "Min citizens: ", TextColors.GREEN, upgrade.getMinCitizens()))
+                                                    .build()
+                                    )
+                            )
+                            .build()
+                    )
                     .collect(Collectors.toList());
 
             if (upgrades.isEmpty()) {
