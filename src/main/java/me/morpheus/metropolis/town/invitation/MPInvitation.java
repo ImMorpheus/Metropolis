@@ -1,6 +1,7 @@
 package me.morpheus.metropolis.town.invitation;
 
 import com.google.common.base.MoreObjects;
+import me.morpheus.metropolis.Metropolis;
 import me.morpheus.metropolis.api.config.ConfigService;
 import me.morpheus.metropolis.api.config.GlobalConfig;
 import me.morpheus.metropolis.api.data.citizen.CitizenData;
@@ -12,13 +13,16 @@ import me.morpheus.metropolis.api.town.invitation.InvitationService;
 import me.morpheus.metropolis.util.TextUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.service.context.Context;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.format.TextColors;
 
 import javax.annotation.Nullable;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 public class MPInvitation implements Invitation {
@@ -80,10 +84,11 @@ public class MPInvitation implements Invitation {
             if (cdOpt.get().town().get().intValue() != this.town) {
                 return false;
             }
-            // TODO check permission
-//            if (cdOpt.get().rank().get()) {
-//
-//            }
+            final Set<Context> contexts = new HashSet<>(sourceOpt.get().getActiveContexts());
+            contexts.add(new Context("townrank", cdOpt.get().rank().get().getId()));
+            if (!sourceOpt.get().hasPermission(contexts, Metropolis.ID + ".commands.town.invite.base")) {
+                return false;
+            }
         }
 
         Optional<User> targetOpt = uss.get(this.target);
