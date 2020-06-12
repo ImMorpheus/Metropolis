@@ -27,3 +27,7 @@ shadowJar {
 }
 
 sponge.plugin.id = "metropolis"
+
+jar.enabled = false
+
+build.dependsOn(shadowJar);
