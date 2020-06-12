@@ -46,7 +46,7 @@ public class SimpleInvitationService implements InvitationService {
         for (Collection<Invitation> collection : this.map.values()) {
             invitations.addAll(collection);
         }
-        return invitations;
+        return Collections.unmodifiableSet(invitations);
     }
 
     @Override
@@ -55,6 +55,6 @@ public class SimpleInvitationService implements InvitationService {
         if (c == null) {
             return Collections.emptyList();
         }
-        return c;
+        return Collections.unmodifiableCollection(c);
     }
 }
