@@ -96,21 +96,23 @@ public class MPInvitation implements Invitation {
     }
 
     @Override
-    public void accept() {
+    public boolean accept() {
         final UserStorageService uss = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
         Optional<User> targetOpt = uss.get(this.target);
         if (!isValid()) {
             targetOpt.flatMap(User::getPlayer).ifPresent(p -> p.sendMessage(TextUtil.watermark(TextColors.RED, "This invitation is no longer valid")));
             remove();
-            return;
+            return false;
         }
         final TownService ts = Sponge.getServiceManager().provideUnchecked(TownService.class);
         ts.get(this.town).get().accept(this.target, Ranks.CITIZEN);
+        return true;
     }
 
     @Override
-    public void refuse() {
+    public boolean refuse() {
         remove();
+        return true;
     }
 
     private void remove() {
