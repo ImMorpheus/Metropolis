@@ -386,13 +386,6 @@ public class Metropolis {
         }
 
         {
-            final CommandSpec invitation = CommandSpec.builder()
-                    .child(new me.morpheus.metropolis.commands.town.invitation.ListCommand(), "list")
-                    .build();
-            t.child(invitation, "invitation");
-        }
-
-        {
             final CommandSpec perm = CommandSpec.builder()
                     .child(new me.morpheus.metropolis.commands.town.plot.perm.RemoveCommand(), "remove")
                     .child(new SetCommand(), "set")
