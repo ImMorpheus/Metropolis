@@ -18,8 +18,8 @@ public interface Invitation {
 
     boolean isValid();
 
-    void accept();
+    boolean accept();
 
-    void refuse();
+    boolean refuse();
 
 }
