@@ -46,12 +46,13 @@ public class InviteCommand extends AbstractCitizenCommand {
         final Text.Builder builder = Text.builder().append(TextUtil.watermark(TextColors.AQUA, NameUtil.getDisplayName(source), " invited you to join ", t.getName()));
         for (Player player : players) {
             final Invitation invitation = is.create(source.getUniqueId(), player.getUniqueId(), t);
+            final Text targetName = NameUtil.getDisplayName(player);
 
             final Text accept = Text.builder("accept")
                     .onHover(TextActions.showText(Text.of(TextColors.LIGHT_PURPLE, "Click to accept")))
                     .onClick(TextActions.executeCallback(target -> {
                         if (invitation.accept()) {
-                            invitation.getTown().ifPresent(town -> town.sendMessage(Text.of(NameUtil.getDisplayName(source), " joined the town")));
+                            invitation.getTown().ifPresent(town -> town.sendMessage(Text.of(targetName, " joined the town")));
                         }
                     }))
                     .build();
@@ -60,7 +61,7 @@ public class InviteCommand extends AbstractCitizenCommand {
                     .onHover(TextActions.showText(Text.of(TextColors.LIGHT_PURPLE, "Click to refuse")))
                     .onClick(TextActions.executeCallback(target -> {
                         if (invitation.refuse()) {
-                            invitation.getTown().ifPresent(town -> town.sendMessage(Text.of(NameUtil.getDisplayName(source), " refused to join the town")));
+                            invitation.getTown().ifPresent(town -> town.sendMessage(Text.of(targetName, " refused to join the town")));
                         }
 
                     }))
